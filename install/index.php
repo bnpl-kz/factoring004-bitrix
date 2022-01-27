@@ -1,5 +1,6 @@
 <?php
 
+use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
 
 class bnpl_payment extends CModule
@@ -46,8 +47,14 @@ class bnpl_payment extends CModule
         );
     }
 
+    public function InstallDB()
+    {
+
+    }
+
     public function DoUninstall()
     {
+        Option::delete($this->MODULE_ID);
         UnRegisterModule($this->MODULE_ID);
         $this->UnInstallFiles();
         return true;
@@ -56,7 +63,12 @@ class bnpl_payment extends CModule
     public function UnInstallFiles()
     {
         return DeleteDirFilesEx(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/include/sale_payment/' . $this->MODULE_ID
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/include/sale_payment/bnplpayment'
         );
+    }
+
+    public function UnInstallDB()
+    {
+
     }
 }
