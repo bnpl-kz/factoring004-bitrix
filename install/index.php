@@ -1,25 +1,27 @@
 <?php
 
-IncludeModuleLangFile(__FILE__);
+use Bitrix\Main\Localization\Loc;
 
 class bnpl_payment extends CModule
 {
-    public const MODULE_ID = 'bnpl.payment';
-
-    public $MODULE_ID = self::MODULE_ID;
+    public $MODULE_ID = 'bnpl.payment';
     public $MODULE_VERSION;
     public $MODULE_VERSION_DATE;
-    public $MODULE_NAME = 'BNPLPayment';
-    public $MODULE_DESCRIPTION = 'BNPL Payment Module';
-    public $PARTNER_NAME = 'BNPLPayment';
-    public $PARTNER_URI = 'http://example.com';
+    public $MODULE_NAME;
+    public $MODULE_DESCRIPTION;
+    public $PARTNER_NAME;
 
     public function __construct()
     {
+        $arModuleVersion = array();
         require __DIR__ . '/version.php';
 
-        $this->MODULE_VERSION = $arModuleVersion["VERSION"] ?? null;
-        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"] ?? null;
+        $this->MODULE_VERSION = $arModuleVersion["VERSION"];
+        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
+
+        $this->MODULE_NAME = Loc::getMessage('BNPL_INSTALL_NAME');
+        $this->MODULE_DESCRIPTION = Loc::getMessage('BNPL_INSTALL_DESCRIPTION');
+        $this->PARTNER_NAME = Loc::getMessage('DEVELOPMENT_TEAM');
     }
 
     /**
