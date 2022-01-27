@@ -5,4 +5,5 @@ $MESS["BNPL_INSTALL_DESCRIPTION"] = "Модуль отплаты BNPL - «Куп
 $MESS["BNPL_INSTALL_TITLE"] = "Установка модуля";
 $MESS["BNPL_UNINSTALL_TITLE"] = "Удаление модуля";
 $MESS["DEVELOPMENT_TEAM"] = "Команда разработчиков BNPL";
+
 ?>

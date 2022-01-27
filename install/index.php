@@ -11,6 +11,9 @@ class bnpl_payment extends CModule
     public $MODULE_DESCRIPTION;
     public $PARTNER_NAME;
 
+    /**
+     * bnpl_payment constructor.
+     */
     public function __construct()
     {
         $arModuleVersion = array();
@@ -24,29 +27,15 @@ class bnpl_payment extends CModule
         $this->PARTNER_NAME = Loc::getMessage('DEVELOPMENT_TEAM');
     }
 
-    /**
-     * @throws Exception
-     */
+
     public function DoInstall()
     {
-        if (IsModuleInstalled('sale')) {
-            $this->InstallFiles();
-            RegisterModule($this->MODULE_ID);
-            $message = 'Success';
-        } else {
-            $message = 'Error';
-        }
-
-        CAdminNotify::Add([
-            'MODULE_ID' => $this->MODULE_ID,
-            'TAG' => 'TEST',
-            'MESSAGE' => $message,
-        ]);
+        $this->InstallFiles();
+        RegisterModule($this->MODULE_ID);
+        return true;
     }
 
-    /**
-     * @throws Exception
-     */
+
     public function InstallFiles()
     {
         CopyDirFiles(
@@ -59,7 +48,6 @@ class bnpl_payment extends CModule
 
     public function DoUninstall()
     {
-        COption::RemoveOption($this->MODULE_ID);
         UnRegisterModule($this->MODULE_ID);
         $this->UnInstallFiles();
     }
@@ -67,7 +55,7 @@ class bnpl_payment extends CModule
     public function UnInstallFiles()
     {
         return DeleteDirFilesEx(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/include/sale_payment/' . $this->MODULE_ID,
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/include/sale_payment/' . $this->MODULE_ID
         );
     }
 }
