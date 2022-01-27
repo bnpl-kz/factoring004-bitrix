@@ -22,9 +22,9 @@ class bnpl_payment extends CModule
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 
-        $this->MODULE_NAME = Loc::getMessage('BNPL_INSTALL_NAME');
-        $this->MODULE_DESCRIPTION = Loc::getMessage('BNPL_INSTALL_DESCRIPTION');
-        $this->PARTNER_NAME = Loc::getMessage('DEVELOPMENT_TEAM');
+        $this->MODULE_NAME = Loc::getMessage('BNPL_PAYMENT_INSTALL_NAME');
+        $this->MODULE_DESCRIPTION = Loc::getMessage('BNPL_PAYMENT_INSTALL_DESCRIPTION');
+        $this->PARTNER_NAME = Loc::getMessage('BNPL_PAYMENT_DEVELOPMENT_TEAM');
     }
 
 
@@ -50,6 +50,7 @@ class bnpl_payment extends CModule
     {
         UnRegisterModule($this->MODULE_ID);
         $this->UnInstallFiles();
+        return true;
     }
 
     public function UnInstallFiles()
