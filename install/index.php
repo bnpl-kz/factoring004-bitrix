@@ -17,7 +17,7 @@ class bnpl_payment extends CModule
     public function __construct()
     {
         $arModuleVersion = array();
-        require __DIR__ . '/version.php';
+        include(__DIR__ . '/version.php');
 
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
