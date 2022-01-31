@@ -1,7 +1,8 @@
 <?php
 
-use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
+use Bitrix\Main\Application;
+use Bitrix\Main\Entity\Base;
 
 class bnpl_payment extends CModule
 {
@@ -11,6 +12,8 @@ class bnpl_payment extends CModule
     public $MODULE_NAME;
     public $MODULE_DESCRIPTION;
     public $PARTNER_NAME;
+
+    private $ORM_ENTITY = array(\Bnpl\Payment\OrdersTable::class, \Bnpl\Payment\PreappsTable::class);
 
     /**
      * bnpl_payment constructor.
@@ -31,8 +34,9 @@ class bnpl_payment extends CModule
 
     public function DoInstall()
     {
-        $this->InstallFiles();
         RegisterModule($this->MODULE_ID);
+        $this->InstallDB();
+        $this->InstallFiles();
         return true;
     }
 
@@ -49,14 +53,20 @@ class bnpl_payment extends CModule
 
     public function InstallDB()
     {
-
+        if (self::IncludeModule($this->MODULE_ID)) {
+            foreach ($this->ORM_ENTITY as $entity) {
+                if (!Application::getConnection()->isTableExists(Base::getInstance($entity)->getDBTableName())) {
+                    Base::getInstance($entity)->createDbTable();
+                }
+            }
+        }
     }
 
     public function DoUninstall()
     {
-        Option::delete($this->MODULE_ID);
-        UnRegisterModule($this->MODULE_ID);
+        $this->UnInstallDB();
         $this->UnInstallFiles();
+        UnRegisterModule($this->MODULE_ID);
         return true;
     }
 
@@ -69,6 +79,13 @@ class bnpl_payment extends CModule
 
     public function UnInstallDB()
     {
-
+        if (self::IncludeModule($this->MODULE_ID)) {
+            foreach ($this->ORM_ENTITY as $entity) {
+                if (Application::getConnection()->isTableExists(Base::getInstance($entity)->getDBTableName())) {
+                    Application::getConnection()
+                        ->dropTable(Base::getInstance($entity)->getDBTableName());
+                }
+            }
+        }
     }
 }
