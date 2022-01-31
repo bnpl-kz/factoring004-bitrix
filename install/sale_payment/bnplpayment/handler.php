@@ -28,6 +28,7 @@ class BNPLPaymentHandler extends PaySystem\ServiceHandler
 
         $this->setExtraParams($busValues + [
             'PAYMENT_ACTION' => $this->getUrl($payment, 'pay'),
+            'ORDER_ID' => $payment->getOrderId(),
         ]);
 
         return $this->showTemplate($payment, "template");
