@@ -1,8 +1,8 @@
 <?php
 
 namespace Bnpl\Payment;
+
 use Bitrix\Main\Entity;
-use Bitrix\Main\SystemException;
 
 class PreappsTable extends Entity\DataManager
 {
@@ -21,26 +21,22 @@ class PreappsTable extends Entity\DataManager
 
     public static function getMap()
     {
-        try {
-            return array(
-                new Entity\IntegerField('ID', array(
-                    'primary' => true,
-                    'autocomplete' => true
-                )),
-                new Entity\StringField('PREAPP_UID', array(
-                    'required' => true
-                )),
-                new Entity\IntegerField('ORDER_ID',array(
-                    'required'=>true
-                )),
-                new Entity\ReferenceField(
-                    'ORDER',
-                    '\Bnpl\Payment\PreappsTable',
-                    array('=this.ORDER_ID','ref.ID')
-                )
-            );
-        } catch (\Exception $e) {
-            $e->getMessage();
-        }
+        return array(
+            new Entity\IntegerField('ID', array(
+                'primary' => true,
+                'autocomplete' => true
+            )),
+            new Entity\StringField('PREAPP_UID', array(
+                'required' => true
+            )),
+            new Entity\IntegerField('ORDER_ID',array(
+                'required'=>true
+            )),
+            new Entity\ReferenceField(
+                'ORDER',
+                '\Bnpl\Payment\PreappsTable',
+                array('=this.ORDER_ID','ref.ID')
+            )
+        );
     }
 }

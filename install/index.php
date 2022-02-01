@@ -72,8 +72,8 @@ class bnpl_payment extends CModule
 
     public function UnInstallFiles()
     {
-        return DeleteDirFilesEx(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/include/sale_payment/bnplpayment'
+       DeleteDirFilesEx(
+            '/bitrix/php_interface/include/sale_payment/bnplpayment'
         );
     }
 
