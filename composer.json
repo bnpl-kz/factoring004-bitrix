@@ -3,8 +3,7 @@
   "require": {
     "php": ">=7.4",
     "bnpl-partners/factoring004": "dev-main",
-    "guzzlehttp/guzzle": "^7.4",
-    "webarchitect609/bitrix-cache": "^1.11"
+    "guzzlehttp/guzzle": "^7.4"
   },
   "license": "MIT",
   "minimum-stability": "dev",
