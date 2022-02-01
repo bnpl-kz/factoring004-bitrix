@@ -1,0 +1,25 @@
+{
+  "type": "library",
+  "require": {
+    "php": ">=7.4",
+    "bnpl-partners/factoring004": "dev-main",
+    "guzzlehttp/guzzle": "^7.4",
+    "webarchitect609/bitrix-cache": "^1.11"
+  },
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "platform": {
+      "php": "7.4.27"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:bnpl-partners/factoring004.git"
+    }
+  ]
+}
