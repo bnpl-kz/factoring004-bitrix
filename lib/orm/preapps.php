@@ -27,7 +27,8 @@ class PreappsTable extends Entity\DataManager
                 'autocomplete' => true
             )),
             new Entity\StringField('PREAPP_UID', array(
-                'required' => true
+                'required' => true,
+                'unique'=>true
             )),
             new Entity\IntegerField('ORDER_ID',array(
                 'required'=>true

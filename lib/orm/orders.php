@@ -2,6 +2,7 @@
 
 namespace Bnpl\Payment;
 
+use Bitrix\Main\Type\Datetime;
 use Bitrix\Main\Entity;
 
 class OrdersTable extends Entity\DataManager
@@ -36,10 +37,19 @@ class OrdersTable extends Entity\DataManager
                 'required' => true
             )),
             new Entity\StringField('STATUS', array(
-                'required' => true
+                'required' => true,
+                'default_value' => 'pending'
             )),
-            new Entity\DatetimeField('CREATED_AT'),
-            new Entity\DatetimeField('UPDATED_AT')
+            new Entity\DatetimeField('CREATED_AT', [
+                'default_value'=>function() {
+                    return Datetime::createFromPhp(new \Datetime());
+                }
+            ]),
+            new Entity\DatetimeField('UPDATED_AT', [
+                'default_value'=>function() {
+                    return Datetime::createFromPhp(new \Datetime());
+                }
+            ])
         );
     }
 }
