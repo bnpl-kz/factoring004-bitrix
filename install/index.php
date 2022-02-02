@@ -49,6 +49,13 @@ class bnpl_payment extends CModule
             true,
             true
         );
+
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions',
+            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/',
+            true,
+            true
+        );
     }
 
     public function InstallDB()
@@ -72,9 +79,8 @@ class bnpl_payment extends CModule
 
     public function UnInstallFiles()
     {
-       DeleteDirFilesEx(
-            '/bitrix/php_interface/include/sale_payment/bnplpayment'
-        );
+       DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpayment');
+       DeleteDirFilesEx('/personal/order/payment/bnplpayment.php');
     }
 
     public function UnInstallDB()
