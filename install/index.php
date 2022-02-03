@@ -1,5 +1,6 @@
 <?php
 
+use Bitrix\Main\EventManager;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
@@ -37,6 +38,7 @@ class bnpl_payment extends CModule
         RegisterModule($this->MODULE_ID);
         $this->InstallDB();
         $this->InstallFiles();
+        $this->installEvents();
         return true;
     }
 
@@ -69,10 +71,21 @@ class bnpl_payment extends CModule
         }
     }
 
+    public function installEvents() {
+        EventManager::getInstance()->registerEventHandler(
+            'sale',
+            'OnSaleComponentOrderCreated',
+            $this->MODULE_ID,
+            '\Bnpl\Payment\EventHandler',
+            'hidePaySystem'
+        );
+    }
+//OnSaleComponentOrderCreated
     public function DoUninstall()
     {
         $this->UnInstallDB();
         $this->UnInstallFiles();
+        $this->uninstallEvents();
         UnRegisterModule($this->MODULE_ID);
         return true;
     }
@@ -93,5 +106,15 @@ class bnpl_payment extends CModule
                 }
             }
         }
+    }
+
+    public function uninstallEvents() {
+        EventManager::getInstance()->unRegisterEventHandler(
+            'sale',
+            'OnSaleComponentOrderCreated',
+            $this->MODULE_ID,
+            '\Bnpl\Payment\EventHandler',
+            'hidePaySystem'
+        );
     }
 }
