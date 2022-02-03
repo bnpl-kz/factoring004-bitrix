@@ -15,7 +15,7 @@ use BnplPartners\Factoring004\PreApp\PreAppMessage;
 class PaymentProcessor
 {
     private Api $api;
-    private PreAppOrderManager $orderManager;
+    private P2reAppOrderManager $orderManager;
 
     public function __construct(Api $api, PreAppOrderManager $orderManager)
     {
