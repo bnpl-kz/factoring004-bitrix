@@ -61,6 +61,10 @@ class PaymentProcessor
 
     private function createPreAppMessage(Order $order, string $serverHost): PreAppMessage
     {
+        $paymentCollection = $order->getPropertyCollection();
+        $phone = $paymentCollection->getPhone();
+        $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
+
         return PreAppMessage::createFromArray([
             'partnerData' => [
                 'partnerName' => BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_PARTNER_NAME')[0],
@@ -72,6 +76,10 @@ class PaymentProcessor
             'itemsQuantity' => $order->getBasket()->count(),
             'successRedirect' => $serverHost,
             'postLink' => $serverHost . '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment',
+            'phoneNumber' => $phone ? $phone->getValue() : null,
+            'deliveryPoint' => [
+                'city' => $city ? $city->getValue() : '',
+            ],
         ]);
     }
 
