@@ -9,6 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/bx_root.php");
 require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
 
+if (!check_bitrix_sessid()) {
+    header('HTTP/1.1 403 Forbidden');
+    exit;
+}
+
 use Bitrix\Main\Application;
 use Bitrix\Sale\BusinessValue;
 use Bnpl\Payment\BitrixSimpleCache;
