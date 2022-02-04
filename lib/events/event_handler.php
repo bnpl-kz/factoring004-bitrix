@@ -3,6 +3,7 @@
 namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
+use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Order;
 
 class EventHandler
@@ -19,11 +20,12 @@ class EventHandler
         array &$arDeliveryServiceAll,
         &$arPaySystemServiceAll
     ): void {
+        if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
+            static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+        }
+
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
-            $index = static::getPaymentSystemIndex($arPaySystemServiceAll);
-            if ($index) {
-                unset($arPaySystemServiceAll[$index]);
-            }
+            static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
     }
 
@@ -35,5 +37,22 @@ class EventHandler
             }
         }
         return null;
+    }
+
+    private static function isIndividualPersonType(int $personTypeId): bool
+    {
+        return (bool) BusinessValuePersonDomainTable::getCount([
+            'PERSON_TYPE_ID' => $personTypeId,
+            'DOMAIN' => 'I',
+        ]);
+    }
+
+    private static function disablePaymentSystemIfEnabled(array &$paymentSystems): void
+    {
+        $index = static::getPaymentSystemIndex($paymentSystems);
+
+        if ($index) {
+            unset($paymentSystems[$index]);
+        }
     }
 }
