@@ -5,31 +5,29 @@ namespace Bnpl\Payment;
 use Bitrix\Main\HttpRequest;
 use Bitrix\Sale\Order;
 
-class EventHandler {
+class EventHandler
+{
+    private const MIN_SUM = 6000;
+    private const MAX_SUM = 200000;
 
-    private $mixSum = 6000;
-    private $maxSum = 200000;
-
-    public function hidePaySystem
-    (
+    public static function hidePaySystem(
         Order $order,
         array &$arUserResult,
         HttpRequest $request,
         array &$arParams,
         array &$arResult,
         array &$arDeliveryServiceAll,
-        &$arPaySystemServiceAll): void
-    {
-        if ($order->getPrice() < $this->mixSum || $order->getPrice() > $this->maxSum) {
-            $index = $this->getPaymentSystemIndex($arPaySystemServiceAll);
+        &$arPaySystemServiceAll
+    ): void {
+        if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
+            $index = static::getPaymentSystemIndex($arPaySystemServiceAll);
             if ($index) {
                 unset($arPaySystemServiceAll[$index]);
             }
         }
     }
 
-
-    private function getPaymentSystemIndex(array $paymentSystems): ?int
+    private static function getPaymentSystemIndex(array $paymentSystems): ?int
     {
         foreach ($paymentSystems as $i => $item) {
             if ($item['NAME'] === 'BNPLPayment') {
