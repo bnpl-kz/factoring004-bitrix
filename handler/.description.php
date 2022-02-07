@@ -48,11 +48,11 @@ $data = array(
             'GROUP' => 'MERCHANT PARAMETERS',
         ),
 
-        'BNPL_PAYMENT_SUCCESS_REDIRECT_URL' => [
+        'BNPL_PAYMENT_SUCCESS_REDIRECT_URL' => array(
             'NAME' => 'Success Redirect URL',
             'SORT' => 800,
             'GROUP' => 'ORDER PARAMETERS',
-        ],
+        ),
 
         'BNPL_PAYMENT_FAIL_REDIRECT' => array(
             'NAME' => 'Fail Redirect URL',
