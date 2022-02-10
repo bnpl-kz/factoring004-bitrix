@@ -80,7 +80,7 @@ class bnpl_payment extends CModule
             'hidePaySystem'
         );
     }
-//OnSaleComponentOrderCreated
+
     public function DoUninstall()
     {
         $this->UnInstallDB();

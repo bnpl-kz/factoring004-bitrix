@@ -29,7 +29,7 @@ class BitrixSimpleCache implements CacheInterface
      * @param string $initDir todo: в битриксе по умолчанию false, тогда за папку отвечает request, но это полный пиздец, по этому в жопу false, всегда string
      * @param string $baseDir
      */
-    public function __construct(BitrixCache $bitrixCache, string $initDir = null, string $baseDir = null)
+    public function __construct(BitrixCache $bitrixCache, $initDir = null, $baseDir = null)
     {
         $this->bitrixCache = $bitrixCache;
 
@@ -61,7 +61,7 @@ class BitrixSimpleCache implements CacheInterface
      *
      * @return Result
      */
-    private function getResult(string $key): Result
+    private function getResult($key)
     {
         $result = new Result();
 
@@ -144,7 +144,7 @@ class BitrixSimpleCache implements CacheInterface
      * @return int
      * @throws \Exception
      */
-    private function dateIntervalToSeconds(\DateInterval $interval): int
+    private function dateIntervalToSeconds(\DateInterval $interval)
     {
         $now = new \DateTimeImmutable();
         $endTime = $now->add($interval);
@@ -159,7 +159,7 @@ class BitrixSimpleCache implements CacheInterface
      * @return mixed
      * @throws \Exception
      */
-    public function getOrSet(string $key, callable $callable, $ttl = null)
+    public function getOrSet($key, callable $callable, $ttl = null)
     {
         $result = $this->getResult($key);
 

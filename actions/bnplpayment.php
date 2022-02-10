@@ -56,7 +56,7 @@ $processor = new PaymentProcessor($api, new PreAppOrderManager());
 
 try {
     $response = $processor->preApp($request);
-} catch (Throwable $e) {
+} catch (\Exception $e) {
     $response = new \Bitrix\Main\HttpResponse();
     $response->setStatus(500);
     $response->setContent('An error occurred. Please try again.');

@@ -19,7 +19,7 @@ class EventHandler
         array &$arResult,
         array &$arDeliveryServiceAll,
         &$arPaySystemServiceAll
-    ): void {
+    ) {
         if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
@@ -29,7 +29,7 @@ class EventHandler
         }
     }
 
-    private static function getPaymentSystemIndex(array $paymentSystems): ?int
+    private static function getPaymentSystemIndex(array $paymentSystems)
     {
         foreach ($paymentSystems as $i => $item) {
             if ($item['NAME'] === 'BNPLPayment') {
@@ -39,7 +39,7 @@ class EventHandler
         return null;
     }
 
-    private static function isIndividualPersonType(int $personTypeId): bool
+    private static function isIndividualPersonType($personTypeId)
     {
         return (bool) BusinessValuePersonDomainTable::getCount([
             'PERSON_TYPE_ID' => $personTypeId,
@@ -47,7 +47,7 @@ class EventHandler
         ]);
     }
 
-    private static function disablePaymentSystemIfEnabled(array &$paymentSystems): void
+    private static function disablePaymentSystemIfEnabled(array &$paymentSystems)
     {
         $index = static::getPaymentSystemIndex($paymentSystems);
 

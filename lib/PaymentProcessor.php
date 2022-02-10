@@ -26,7 +26,7 @@ class PaymentProcessor
     /**
      * @throws \Exception
      */
-    public function preApp(HttpRequest $request): Response
+    public function preApp(HttpRequest $request)
     {
         $order = Order::load($request->get('order_id'));
 
@@ -51,7 +51,7 @@ class PaymentProcessor
             ->addHeader('Location', $preApp->getRedirectLink());
     }
 
-    private function sendErrorResponse(int $status, string $message): Response
+    private function sendErrorResponse($status, $message)
     {
         return (new HttpResponse())
             ->addHeader('Content-Type', 'application/json')
@@ -59,7 +59,7 @@ class PaymentProcessor
             ->setContent(json_encode(compact('message')));
     }
 
-    private function createPreAppMessage(Order $order, string $serverHost): PreAppMessage
+    private function createPreAppMessage(Order $order, $serverHost)
     {
         $paymentCollection = $order->getPropertyCollection();
         $phone = $paymentCollection->getPhone();
@@ -71,8 +71,8 @@ class PaymentProcessor
                 'partnerCode' => BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_PARTNER_CODE')[0],
                 'pointCode' => BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_POINT_CODE')[0],
             ],
-            'billNumber' => (string) $order->getId(),
-            'billAmount' => (int) round($order->getPrice()),
+            'billNumber' => $order->getId(),
+            'billAmount' => round($order->getPrice()),
             'itemsQuantity' => $order->getBasket()->count(),
             'successRedirect' => $serverHost,
             'postLink' => $serverHost . '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment',
@@ -83,7 +83,7 @@ class PaymentProcessor
         ]);
     }
 
-    private function extractServerHost(HttpRequest $request): string
+    private function extractServerHost(HttpRequest $request)
     {
         return $request->getServer()->getRequestScheme() . '://' . $request->getHttpHost();
     }

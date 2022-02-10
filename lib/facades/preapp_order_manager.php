@@ -21,7 +21,7 @@ final class PreAppOrderManager {
         $this->connection = Application::getInstance()->getConnectionPool()->getConnection();
     }
 
-    public function createOrder($bitrixOrderId, $preappId): void
+    public function createOrder($bitrixOrderId, $preappId)
     {
         try {
             $this->connection->startTransaction();
@@ -40,7 +40,7 @@ final class PreAppOrderManager {
 
     }
 
-    public function updateOrder($bitrixOrderId, $status): void
+    public function updateOrder($bitrixOrderId, $status)
     {
         try {
             OrdersTable::update($bitrixOrderId,array(
@@ -51,7 +51,7 @@ final class PreAppOrderManager {
         }
     }
 
-    public function syncOrder($bitrixOrderId, $preappId): void
+    public function syncOrder($bitrixOrderId, $preappId)
     {
         try {
             if ($orderId = $this->getOrderId($bitrixOrderId)) {
@@ -68,7 +68,7 @@ final class PreAppOrderManager {
     }
 
 
-    private function getOrderId($bitrixOrderId): ?int
+    private function getOrderId($bitrixOrderId)
     {
         return OrdersTable::getRow(
             [
