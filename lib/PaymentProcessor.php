@@ -67,9 +67,9 @@ class PaymentProcessor
 
         return PreAppMessage::createFromArray([
             'partnerData' => [
-                'partnerName' => BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_PARTNER_NAME')[0],
-                'partnerCode' => BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_PARTNER_CODE')[0],
-                'pointCode' => BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_POINT_CODE')[0],
+                'partnerName' => BusinessValue::get('BNPL_PAYMENT_PARTNER_NAME', 'bnpl.payment'),
+                'partnerCode' => BusinessValue::get('BNPL_PAYMENT_PARTNER_CODE', 'bnpl.payment'),
+                'pointCode' => BusinessValue::get('BNPL_PAYMENT_POINT_CODE', 'bnpl.payment'),
             ],
             'billNumber' => $order->getId(),
             'billAmount' => round($order->getPrice()),

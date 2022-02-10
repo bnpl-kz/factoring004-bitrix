@@ -39,9 +39,9 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
-$consumerKey = BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_CONSUMER_KEY')[0];
-$consumerSecret = BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_CONSUMER_SECRET')[0];
-$apiHost = BusinessValue::getValuesByCode('bnpl.payment', 'BNPL_PAYMENT_API_HOST')[0];
+$consumerKey = BusinessValue::get('BNPL_PAYMENT_CONSUMER_KEY', 'bnpl.payment');
+$consumerSecret = BusinessValue::get('BNPL_PAYMENT_CONSUMER_SECRET', 'bnpl.payment');
+$apiHost = BusinessValue::get('BNPL_PAYMENT_API_HOST', 'bnpl.payment');
 
 $psrFactory = new HttpFactory();
 $transport = new Transport($psrFactory, $psrFactory, $psrFactory, new Client());
