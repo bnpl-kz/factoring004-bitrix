@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
@@ -12,8 +10,15 @@ use BnplPartners\Factoring004\PreApp\PreAppMessage;
 
 class PaymentProcessor
 {
-    private Api $api;
-    private PreAppOrderManager $orderManager;
+    /**
+     * @var \BnplPartners\Factoring004\Api
+     */
+    private $api;
+
+    /**
+     * @var \Bnpl\Payment\PreAppOrderManager
+     */
+    private $orderManager;
 
     public function __construct(Api $api, PreAppOrderManager $orderManager)
     {
@@ -22,6 +27,8 @@ class PaymentProcessor
     }
 
     /**
+     * @return \Bitrix\Main\HttpResponse
+     *
      * @throws \Exception
      */
     public function preApp(HttpRequest $request)
@@ -49,6 +56,14 @@ class PaymentProcessor
             ->addHeader('Location', $preApp->getRedirectLink());
     }
 
+    /**
+     * @param int $status
+     * @param string $message
+     *
+     * @return \Bitrix\Main\HttpResponse
+     * @throws \Bitrix\Main\ArgumentNullException
+     * @throws \Bitrix\Main\ArgumentTypeException
+     */
     private function sendErrorResponse($status, $message)
     {
         return (new HttpResponse())
@@ -57,6 +72,16 @@ class PaymentProcessor
             ->setContent(json_encode(compact('message')));
     }
 
+    /**
+     * @param string $serverHost
+     *
+     * @return \BnplPartners\Factoring004\PreApp\PreAppMessage
+     *
+     * @throws \Bitrix\Main\ArgumentException
+     * @throws \Bitrix\Main\NotImplementedException
+     * @throws \Bitrix\Main\ObjectPropertyException
+     * @throws \Bitrix\Main\SystemException
+     */
     private function createPreAppMessage(Order $order, $serverHost)
     {
         $paymentCollection = $order->getPropertyCollection();
@@ -81,6 +106,9 @@ class PaymentProcessor
         ]);
     }
 
+    /**
+     * @return string
+     */
     private function extractServerHost(HttpRequest $request)
     {
         return $request->getServer()->getRequestScheme() . '://' . $request->getHttpHost();
