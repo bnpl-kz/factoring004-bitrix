@@ -15,8 +15,8 @@ if (!check_bitrix_sessid()) {
 }
 
 use Bitrix\Main\Application;
-use Bitrix\Sale\BusinessValue;
 use Bnpl\Payment\BitrixSimpleCache;
+use Bnpl\Payment\Config;
 use Bnpl\Payment\PaymentProcessor;
 use Bnpl\Payment\PreAppOrderManager;
 use BnplPartners\Factoring004\Api;
@@ -39,9 +39,9 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
-$consumerKey = BusinessValue::get('BNPL_PAYMENT_CONSUMER_KEY', 'bnpl.payment');
-$consumerSecret = BusinessValue::get('BNPL_PAYMENT_CONSUMER_SECRET', 'bnpl.payment');
-$apiHost = BusinessValue::get('BNPL_PAYMENT_API_HOST', 'bnpl.payment');
+$consumerKey = Config::get('BNPL_PAYMENT_CONSUMER_KEY');
+$consumerSecret = Config::get('BNPL_PAYMENT_CONSUMER_SECRET');
+$apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 
 $psrFactory = new HttpFactory();
 $transport = new Transport($psrFactory, $psrFactory, $psrFactory, new Client());

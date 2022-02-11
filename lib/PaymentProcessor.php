@@ -6,8 +6,6 @@ namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\HttpResponse;
-use Bitrix\Main\Response;
-use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Order;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\PreApp\PreAppMessage;
@@ -67,9 +65,9 @@ class PaymentProcessor
 
         return PreAppMessage::createFromArray([
             'partnerData' => [
-                'partnerName' => BusinessValue::get('BNPL_PAYMENT_PARTNER_NAME', 'bnpl.payment'),
-                'partnerCode' => BusinessValue::get('BNPL_PAYMENT_PARTNER_CODE', 'bnpl.payment'),
-                'pointCode' => BusinessValue::get('BNPL_PAYMENT_POINT_CODE', 'bnpl.payment'),
+                'partnerName' => Config::get('BNPL_PAYMENT_PARTNER_NAME'),
+                'partnerCode' => Config::get('BNPL_PAYMENT_PARTNER_CODE'),
+                'pointCode' => Config::get('BNPL_PAYMENT_POINT_CODE'),
             ],
             'billNumber' => $order->getId(),
             'billAmount' => round($order->getPrice()),

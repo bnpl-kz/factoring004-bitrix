@@ -3,7 +3,6 @@
 namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
-use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Order;
 
@@ -76,7 +75,7 @@ class EventHandler
     private static function isRequiredOptionsFilled()
     {
         foreach (static::REQUIRED_OPTIONS as $option) {
-            if (!BusinessValue::get($option, 'bnpl.payment')) {
+            if (!Config::get($option)) {
                 return false;
             }
         }
