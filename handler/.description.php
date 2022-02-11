@@ -63,7 +63,11 @@ $data = array(
         'BNPL_PAYMENT_POST_LINK' => array(
             'NAME' => 'Post Link',
             'SORT' => 1000,
-            'GROUP' => 'ORDER PARAMETERS'
+            'GROUP' => 'ORDER PARAMETERS',
+            'DEFAULT' => array(
+                'PROVIDER_VALUE' => '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment',
+                'PROVIDER_KEY' => 'VALUE',
+            ),
         ),
     )
 );
