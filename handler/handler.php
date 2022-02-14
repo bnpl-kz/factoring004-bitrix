@@ -16,6 +16,10 @@ use Bitrix\Sale\PaySystem\ServiceResult;
  */
 class BnplPaymentHandler extends PaySystem\ServiceHandler
 {
+    const STATUS_PREAPPROVED = 'preapproved';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_DECLINED = 'declined';
+
     /**
      * @param Payment $payment
      * @param Request|null $request
@@ -92,12 +96,14 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
 
         $status = $request->get('status');
 
-        if ($status === 'completed') {
+        if ($status === static::STATUS_COMPLETED) {
             $result->setOperationType(ServiceResult::MONEY_COMING);
             $psStatus = 'Y';
-        } else {
+        } elseif ($status === static::STATUS_DECLINED) {
             $result->setOperationType(ServiceResult::MONEY_LEAVING);
             $psStatus = 'N';
+        } else {
+            return $result;
         }
 
         $result->setPsData([
@@ -117,5 +123,26 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
     public function getCurrencyList()
     {
         return ['RUB', 'KZT'];
+    }
+
+    /**
+     * @throws \Bitrix\Main\ArgumentNullException
+     * @throws \Bitrix\Main\ArgumentTypeException
+     */
+    public function sendResponse(ServiceResult $result, Request $request)
+    {
+        $response = new Main\HttpResponse();
+        $response->addHeader('Content-Type', 'application/json');
+        $status = $request->get('status');
+
+        if ($status === static::STATUS_PREAPPROVED) {
+            $response->setContent(json_encode(['response' => static::STATUS_PREAPPROVED]));
+        } elseif ($status === static::STATUS_COMPLETED) {
+            $response->setContent(json_encode(['response' => 'ok']));
+        } else {
+            $response->setContent(json_encode(['response' => self::STATUS_DECLINED]));
+        }
+
+        $response->send();
     }
 }
