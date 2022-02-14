@@ -15,6 +15,7 @@ if (!check_bitrix_sessid()) {
 }
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Config\Configuration;
 use Bnpl\Payment\BitrixSimpleCache;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\PaymentProcessor;
@@ -57,9 +58,11 @@ $processor = new PaymentProcessor($api, new PreAppOrderManager());
 try {
     $response = $processor->preApp($request);
 } catch (\Exception $e) {
+    $isDebug = Configuration::getValue('exception_handling')['debug'];
+
     $response = new \Bitrix\Main\HttpResponse();
     $response->setStatus(500);
-    $response->setContent('An error occurred. Please try again.');
+    $response->setContent($isDebug ? $e : 'An error occurred. Please try again.');
     error_log($e);
 }
 
