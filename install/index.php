@@ -53,8 +53,29 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions',
-            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment.php',
+            true,
+            true
+        );
+
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_delivery.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_delivery.php',
+            true,
+            true
+        );
+
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_delivery_check_otp.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_delivery_check_otp.php',
+            true,
+            true
+        );
+
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/template/admin_header.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/admin_header.php',
             true,
             true
         );
@@ -94,6 +115,9 @@ class bnpl_payment extends CModule
     {
        DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpayment');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpayment_delivery.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpayment_delivery_check_otp.php');
+       DeleteDirFilesEx('/bitrix/php_interface/admin_header.php');
     }
 
     public function UnInstallDB()
