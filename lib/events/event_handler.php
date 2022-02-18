@@ -3,7 +3,9 @@
 namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
+use Bitrix\Main\Page\Asset;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
+use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Order;
 
 class EventHandler
@@ -17,6 +19,7 @@ class EventHandler
         'BNPL_PAYMENT_PARTNER_NAME',
         'BNPL_PAYMENT_PARTNER_CODE',
         'BNPL_PAYMENT_POINT_CODE',
+        'BNPL_PAYMENT_FILE'
     ];
 
     public static function hidePaySystem(
@@ -40,6 +43,9 @@ class EventHandler
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
+
+        static::addJS();
+
     }
 
     private static function getPaymentSystemIndex(array $paymentSystems)
@@ -82,4 +88,97 @@ class EventHandler
 
         return true;
     }
+
+    private static function addJS()
+    {
+        $paymentId = static::getPaySystemId();
+        if ($paymentId === null) {
+            return false;
+        }
+
+        $agreementLink = static::getAgreementLink();
+
+        Asset::getInstance()->addString(
+            <<<JS
+                <script>
+                    $(document).ready(function() {
+                        toggleAgreementCheckbox($('input[name="PAY_SYSTEM_ID"]'))
+                        if ($('#bnpl_payment').length) toggleSubmitButton($('#bnpl_payment'))
+                        
+                        $(document).on('click',function(e) {
+                            if (e.target.id == 'bnpl_payment') return
+                            toggleAgreementCheckbox(e.target)
+                        })
+                        
+                        $(document).on('change','#bnpl_payment',function(e) {
+                            toggleSubmitButton(e.target)
+                        })
+                        
+                        function drawCheckbox() {
+                              removeElem()
+                              addElem()
+                        }
+                        
+                        function removeCheckbox() {
+                             removeElem()
+                        }
+                        
+                        function toggleAgreementCheckbox()
+                        {
+                            let payValue = $('input[name="PAY_SYSTEM_ID"]:checked:enabled').val();
+                            if (payValue == '$paymentId') {
+                                drawCheckbox()
+                            } else {
+                                removeCheckbox()
+                            }
+                        }
+                        
+                        function toggleSubmitButton(elem) {
+                            if (elem.checked) {
+                                $('#bnpl-form-button').remove()
+                                $('a[data-save-button]').prop('style','margin: 10px 0')
+                                $('#bnpl-error').remove()
+                            } else {
+                                $('a[data-save-button]').prop('style','display: none !important')
+                                if (!$('#bnpl-form-button').length) {
+                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>Оформить заказ</button>")
+                                }
+                                if (!$('#bnpl-error').length) {
+                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">Вам нужно согласиться с условиями</p>')
+                                }
+                            }
+                            
+                        }
+                        
+                        function addElem() {
+                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='form-check mt-2 bnpl-payment-offer-block'><label class='form-check-label' for=''>Я согласен <a href='$agreementLink' target='_blank'>с условиями платежной системы BNPL</a></label><input class='form-check-input' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/></div>")
+                        }
+                        
+                        function removeElem() {
+                            $('#bnpl-payment-offer-block').remove()
+                        }
+                        
+                    })
+                </script>
+JS
+        );
+    }
+
+
+    private static function getPaySystemId()
+    {
+        return PaySystemActionTable::getRow(array(
+            'filter'=>array('NAME'=>'BNPLPayment')
+        ))['ID'];
+    }
+
+    private static function getAgreementLink()
+    {
+        $id = Config::get('BNPL_PAYMENT_FILE');
+        global $DB;
+        $dbOption = $DB->Query("SELECT SUBDIR, FILE_NAME FROM b_file WHERE ID=$id");
+        $result = $dbOption->Fetch();
+        return '/upload/'.$result['SUBDIR'].'/'.$result['FILE_NAME'];
+    }
+
 }

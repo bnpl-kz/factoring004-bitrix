@@ -11,6 +11,7 @@ $data = array(
     'NAME' => 'BNPLPayment',
     'SORT' => 400,
     'IS_AVAILABLE' => $isAvailable,
+
     'CODES' => array(
         'BNPL_PAYMENT_CONSUMER_KEY' => array(
             'NAME' => 'Consumer Key',
@@ -68,6 +69,15 @@ $data = array(
                 'PROVIDER_VALUE' => '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment',
                 'PROVIDER_KEY' => 'VALUE',
             ),
+        ),
+
+        'BNPL_PAYMENT_FILE' => array(
+            'NAME' => 'Загрузите файл оферты',
+            'SORT' => 1100,
+            'GROUP' => 'ORDER PARAMETERS',
+            'INPUT'   => [
+                'TYPE' => 'FILE',
+            ],
         ),
     )
 );
