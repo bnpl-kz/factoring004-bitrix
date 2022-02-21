@@ -4,6 +4,14 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
+global $DB;
+global $delivery;
+$delivery = array();
+$dbOption = $DB->Query("SELECT ID, NAME FROM b_sale_delivery_srv");
+while ($row = $dbOption->Fetch())
+{
+    $delivery[$row['ID']] = $row['NAME'];
+}
 
 $isAvailable = true;
 
@@ -78,6 +86,18 @@ $data = array(
             'INPUT'   => [
                 'TYPE' => 'FILE',
             ],
+        ),
+
+        'BNPL_PAYMENT_DELIVERY' => array(
+            "NAME" => "Выберите",
+            'SORT' => 1200,
+            'GROUP' => "ORDER PARAMETERS",
+            "TYPE" => "SELECT",
+            'INPUT' => array(
+                'TYPE' => 'ENUM',
+//                'MULTIPLE'=>true,
+                'OPTIONS' => $delivery,
+            )
         ),
     )
 );

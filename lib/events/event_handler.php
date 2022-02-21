@@ -102,12 +102,12 @@ class EventHandler
             <<<JS
                 <script>
                     $(document).ready(function() {
-                        toggleAgreementCheckbox($('input[name="PAY_SYSTEM_ID"]'))
+                        toggleAgreementCheckbox()
                         if ($('#bnpl_payment').length) toggleSubmitButton($('#bnpl_payment'))
                         
                         $(document).on('click',function(e) {
-                            if (e.target.id == 'bnpl_payment') return
-                            toggleAgreementCheckbox(e.target)
+                            if (e.target.id == 'bnpl_payment' || e.target.htmlFor == 'bnpl_payment') return
+                            toggleAgreementCheckbox()
                         })
                         
                         $(document).on('change','#bnpl_payment',function(e) {
@@ -115,8 +115,8 @@ class EventHandler
                         })
                         
                         function drawCheckbox() {
-                              removeElem()
-                              addElem()
+                            removeElem()
+                            addElem()
                         }
                         
                         function removeCheckbox() {
@@ -127,14 +127,17 @@ class EventHandler
                         {
                             let payValue = $('input[name="PAY_SYSTEM_ID"]:checked:enabled').val();
                             if (payValue == '$paymentId') {
+                                if ($('#bnpl-payment-offer-block').length) return
                                 drawCheckbox()
+                                toggleSubmitButton($('#bnpl_payment'))
                             } else {
                                 removeCheckbox()
+                                toggleSubmitButton(null)
                             }
                         }
                         
                         function toggleSubmitButton(elem) {
-                            if (elem.checked) {
+                            if (!elem || elem.checked) {
                                 $('#bnpl-form-button').remove()
                                 $('a[data-save-button]').prop('style','margin: 10px 0')
                                 $('#bnpl-error').remove()
@@ -147,11 +150,10 @@ class EventHandler
                                     $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">Вам нужно согласиться с условиями</p>')
                                 }
                             }
-                            
                         }
                         
                         function addElem() {
-                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='form-check mt-2 bnpl-payment-offer-block'><label class='form-check-label' for=''>Я согласен <a href='$agreementLink' target='_blank'>с условиями платежной системы BNPL</a></label><input class='form-check-input' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/></div>")
+                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>Я согласен <a href='$agreementLink' target='_blank'>с условиями платежной системы BNPL</a></label></div>")
                         }
                         
                         function removeElem() {
