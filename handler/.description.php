@@ -5,13 +5,13 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 
 global $DB;
-global $delivery;
 $delivery = array();
 $dbOption = $DB->Query("SELECT ID, NAME FROM b_sale_delivery_srv");
 while ($row = $dbOption->Fetch())
 {
     $delivery[$row['ID']] = $row['NAME'];
 }
+
 
 $isAvailable = true;
 
@@ -83,21 +83,20 @@ $data = array(
             'NAME' => 'Загрузите файл оферты',
             'SORT' => 1100,
             'GROUP' => 'ORDER PARAMETERS',
-            'INPUT'   => [
+            'INPUT'   => array(
                 'TYPE' => 'FILE',
-            ],
+            ),
         ),
 
-        'BNPL_PAYMENT_DELIVERY' => array(
-            "NAME" => "Выберите",
-            'SORT' => 1200,
-            'GROUP' => "ORDER PARAMETERS",
-            "TYPE" => "SELECT",
-            'INPUT' => array(
-                'TYPE' => 'ENUM',
-//                'MULTIPLE'=>true,
-                'OPTIONS' => $delivery,
-            )
-        ),
     )
 );
+foreach ($delivery as $key => $item) {
+    $data['CODES']['BNPL_PAYMENT_DELIVERY_'.$key] = array(
+            'NAME' => $item,
+            'SORT' => 1200,
+            'GROUP' => 'DELIVERY PARAMETERS',
+            'INPUT' => array(
+                'TYPE' => 'Y/N',
+            ),
+        );
+}

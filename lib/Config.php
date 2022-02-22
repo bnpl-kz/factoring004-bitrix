@@ -2,6 +2,7 @@
 
 namespace Bnpl\Payment;
 
+use App\Http\Controllers\Controller;
 use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\PaySystemActionTable;
 use Exception;
@@ -49,5 +50,25 @@ class Config
         ]);
 
         return static::$paySystemId = isset($result) ? $result['ID'] : null;
+    }
+
+    public static function getDeliveryIds()
+    {
+        $paySysKey = static::findPaySystemId();
+        if (!$paySysKey) {
+            return [];
+        }
+        $result = array();
+        $all = BusinessValue::getConsumerCodePersonMapping()['PAYSYSTEM_'.$paySysKey];
+        foreach ($all as $key => $item) {
+            if (strpos($key,'BNPL_PAYMENT_DELIVERY_') !== false) {
+                foreach ($item as $val) {
+                    if ($val['PROVIDER_VALUE'] === 'Y') {
+                        $result[] = substr($key, strlen('BNPL_PAYMENT_DELIVERY_'));
+                    }
+                }
+            }
+        }
+        return $result;
     }
 }
