@@ -32,6 +32,18 @@ class Config
 
     /**
      * @return string|null
+     */
+    public static function getPaySystemId()
+    {
+        try {
+            return static::findPaySystemId();
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @return string|null
      *
      * @throws \Bitrix\Main\ArgumentException
      * @throws \Bitrix\Main\ObjectPropertyException
