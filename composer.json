@@ -1,9 +1,9 @@
 {
   "type": "library",
   "require": {
-    "php": ">=7.4",
-    "bnpl-partners/factoring004": "dev-main",
-    "guzzlehttp/guzzle": "^7.4"
+    "php": ">=7.0",
+    "bnpl-partners/factoring004": "dev-legacy",
+    "guzzlehttp/guzzle": ">=6.0"
   },
   "license": "MIT",
   "minimum-stability": "dev",
@@ -12,7 +12,7 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "platform": {
-      "php": "7.4.27"
+      "php": "7.0.33"
     }
   },
   "repositories": [
