@@ -103,6 +103,16 @@ class PaymentProcessor
             'deliveryPoint' => [
                 'city' => $city ? $city->getValue() : '',
             ],
+            'items' => array_map(function ($item) {
+                return [
+                    'itemId' => (string) $item->getProductId(),
+                    'itemName' => $item->getField('NAME'),
+                    'itemCategory' => (string) $item->getField('PRICE_TYPE_ID'),
+                    'itemQuantity' => (int) $item->getField('QUANTITY'),
+                    'itemPrice' => (int) round($item->getField('PRICE')),
+                    'itemSum' => (int) round($item->getField('PRICE')),
+                ];
+            }, $order->getBasket()->getBasketItems()),
         ]);
     }
 
