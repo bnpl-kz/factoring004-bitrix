@@ -109,6 +109,12 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
         $result->setPsData([
             'PS_STATUS' => $psStatus,
             'PS_STATUS_CODE' => $status,
+            'PS_STATUS_DESCRIPTION' => 'Factoring004',
+            'PS_STATUS_MESSAGE' => implode('; ', [
+                'Status: ' . $status,
+                'PreAppId: ' . $request->get('preappId'),
+                'BillNumber: ' . $request->get('billNumber'),
+            ]),
             'PS_SUM' => $payment->getSum(),
             'PS_CURRENCY' => $payment->getOrder()->getCurrency(),
             'PS_RESPONSE_DATE' => new DateTime(),
