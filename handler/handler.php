@@ -114,6 +114,10 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
             'PS_RESPONSE_DATE' => new DateTime(),
         ]);
 
+        $order = $payment->getOrder();
+        $order->setField('STATUS_ID', 'P');
+        $order->save();
+
         return $result;
     }
 
