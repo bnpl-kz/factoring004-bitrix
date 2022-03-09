@@ -20,19 +20,18 @@ if (strpos($_SERVER['REQUEST_URI'], 'admin/sale_order_view.php') !== false) {
 
         if ($__order->getShipmentCollection()[0]->getField('STATUS_ID') === 'DF') {
             require_once __DIR__ . '/sale_order_view_disable_script.php';
-            return;
+        } else {
+            \Bitrix\Main\UI\Extension::load('ui.notification');
+            require_once __DIR__ . '/sale_order_view_script.php';
         }
 
         if ($__order->isPaid()) {
             require_once __DIR__ . '/disable_payment_status.php';
+            require_once __DIR__ . '/return_payment.php';
         }
     } catch (ArgumentNullException $e) {
         // do nothing
-        return;
     }
-
-    \Bitrix\Main\UI\Extension::load('ui.notification');
-    require_once __DIR__ . '/sale_order_view_script.php';
 } elseif (strpos($_SERVER['REQUEST_URI'], 'admin/sale_order_shipment_edit.php') !== false) {
     if (empty($_GET['order_id'])) {
         return;
@@ -65,7 +64,9 @@ if (strpos($_SERVER['REQUEST_URI'], 'admin/sale_order_view.php') !== false) {
         }
 
         if ($__order->isPaid()) {
+            \Bitrix\Main\UI\Extension::load('ui.notification');
             require_once __DIR__ . '/disable_payment_status.php';
+            require_once __DIR__ . '/form_return_payment.php';
         }
     } catch (ArgumentNullException $e) {
         // do nothing
