@@ -110,11 +110,18 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    console.log('Test');
     const paymentSelect = document.querySelector('[name="PAYMENT[1][PAY_SYSTEM_ID]"]');
 
     if (paymentSelect) {
+      const input = document.createElement('input');
+
+      input.name = paymentSelect.name;
+      input.value = paymentSelect.value;
+      input.type = 'hidden';
+      input.id = paymentSelect.id;
+
       paymentSelect.disabled = true;
+      paymentSelect.parentElement.appendChild(input);
     }
   });
 </script>
