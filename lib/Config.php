@@ -57,7 +57,7 @@ class Config
 
         $result = PaySystemActionTable::getRow([
             'select' => array('ID'),
-            'filter' => array('NAME' => 'BNPLPayment'),
+            'filter' => array('CODE' => 'factoring004'),
             'limit' => 1,
         ]);
 
@@ -71,13 +71,35 @@ class Config
             return [];
         }
         $result = array();
-        $all = BusinessValue::getConsumerCodePersonMapping()['PAYSYSTEM_'.$paySysKey];
-        foreach ($all as $key => $item) {
+        $allDefaultValues = self::getDeliveryItems('');
+        $allOverrideValues = self::getDeliveryItems('PAYSYSTEM_'.$paySysKey);
+
+        foreach ($allDefaultValues as $id => $val) {
+
+            if (isset($allOverrideValues[$id])) {
+                if ($allOverrideValues[$id] === 'Y') {
+                    $result[] = $id;
+                    unset($allOverrideValues[$id]);
+                }
+            } elseif($val === 'Y') {
+                $result[] = $id;
+            }
+
+        }
+        $result = array_merge($result,array_filter($allOverrideValues, function ($value) {
+            return $value === 'Y';
+        }));
+        return $result;
+    }
+
+
+    private static function getDeliveryItems($prefix)
+    {
+        $result = array();
+        foreach (BusinessValue::getConsumerCodePersonMapping()[$prefix] as $key => $item) {
             if (strpos($key,'BNPL_PAYMENT_DELIVERY_') !== false) {
                 foreach ($item as $val) {
-                    if ($val['PROVIDER_VALUE'] === 'Y') {
-                        $result[] = substr($key, strlen('BNPL_PAYMENT_DELIVERY_'));
-                    }
+                    $result[substr($key, strlen('BNPL_PAYMENT_DELIVERY_'))] = $val['PROVIDER_VALUE'];
                 }
             }
         }

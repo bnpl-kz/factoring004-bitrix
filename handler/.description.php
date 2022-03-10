@@ -16,10 +16,8 @@ while ($row = $dbOption->Fetch())
 $isAvailable = true;
 
 $data = array(
-    'NAME' => 'BNPLPayment',
-    'SORT' => 400,
+    'NAME' => 'Рассрочка 0-0-4',
     'IS_AVAILABLE' => $isAvailable,
-
     'CODES' => array(
         'BNPL_PAYMENT_CONSUMER_KEY' => array(
             'NAME' => 'Consumer Key',
@@ -90,13 +88,20 @@ $data = array(
 
     )
 );
+
 foreach ($delivery as $key => $item) {
     $data['CODES']['BNPL_PAYMENT_DELIVERY_'.$key] = array(
             'NAME' => $item,
             'SORT' => 1200,
             'GROUP' => 'DELIVERY PARAMETERS',
             'INPUT' => array(
-                'TYPE' => 'Y/N',
+                'TYPE' => 'ENUM',
+                'OPTIONS' => array(
+                    'N'=>'Нет',
+                    'Y'=>'Да'
+                ),
             ),
         );
 }
+
+?>

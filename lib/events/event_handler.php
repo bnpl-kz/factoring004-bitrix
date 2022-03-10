@@ -4,6 +4,7 @@ namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Page\Asset;
+use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Order;
@@ -43,7 +44,7 @@ class EventHandler
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
-
+print_r(Config::getDeliveryIds());die;
         static::addJS();
 
     }
@@ -51,7 +52,7 @@ class EventHandler
     private static function getPaymentSystemIndex(array $paymentSystems)
     {
         foreach ($paymentSystems as $i => $item) {
-            if ($item['NAME'] === 'BNPLPayment') {
+            if ($item['CODE'] === 'factoring004') {
                 return $i;
             }
         }
@@ -86,7 +87,7 @@ class EventHandler
             }
         }
 
-        return true;
+        return !empty(Config::getDeliveryIds());
     }
 
     private static function addJS()
@@ -170,7 +171,7 @@ JS
     private static function getPaySystemId()
     {
         return PaySystemActionTable::getRow(array(
-            'filter'=>array('NAME'=>'BNPLPayment')
+            'filter'=>array('CODE'=>'factoring004')
         ))['ID'];
     }
 

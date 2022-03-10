@@ -4,7 +4,7 @@ use Bitrix\Main\EventManager;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
-
+use Bitrix\Main\IO\File;
 class bnpl_payment extends CModule
 {
     public $MODULE_ID = 'bnpl.payment';
@@ -86,6 +86,10 @@ class bnpl_payment extends CModule
             true,
             true
         );
+
+        $source = Application::getDocumentRoot() . '/bitrix/modules/' . $this->MODULE_ID . '/install';
+        $logo_dir = Application::getDocumentRoot() . '/bitrix/images/sale/sale_payments/';
+        File::putFileContents($logo_dir . 'bnpl.png', File::getFileContents($source . "/sale_payment/bnplpayment/bnplpayment.png"));
     }
 
     public function InstallDB()
