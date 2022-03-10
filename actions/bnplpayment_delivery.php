@@ -42,11 +42,12 @@ $consumerKey = Config::get('BNPL_PAYMENT_CONSUMER_KEY');
 $consumerSecret = Config::get('BNPL_PAYMENT_CONSUMER_SECRET');
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $partnerCode = Config::get('BNPL_PAYMENT_PARTNER_CODE');
+$tokenPath = Config::getOAuthTokenPath();
 
 $transport = new GuzzleTransport();
 $cache = new BitrixSimpleCache(Application::getInstance()->getCache());
 
-$tokenManager = new OAuthTokenManager(rtrim($apiHost, '/') . '/oauth2', $consumerKey, $consumerSecret, $transport);
+$tokenManager = new OAuthTokenManager(rtrim($apiHost, '/') . $tokenPath, $consumerKey, $consumerSecret, $transport);
 $tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
 $api = Api::create($apiHost, new BearerTokenAuth($tokenManager->getAccessToken()->getAccessToken()), $transport);
 $request = Context::getCurrent()->getRequest();

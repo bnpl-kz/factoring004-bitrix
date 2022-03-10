@@ -41,11 +41,12 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 $consumerKey = Config::get('BNPL_PAYMENT_CONSUMER_KEY');
 $consumerSecret = Config::get('BNPL_PAYMENT_CONSUMER_SECRET');
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
+$tokenPath = Config::getOAuthTokenPath();
 
 $transport = new GuzzleTransport();
 $cache = new BitrixSimpleCache(Application::getInstance()->getCache());
 
-$tokenManager = new OAuthTokenManager($apiHost . '/oauth2', $consumerKey, $consumerSecret, $transport);
+$tokenManager = new OAuthTokenManager(rtrim($apiHost, '/') . $tokenPath, $consumerKey, $consumerSecret, $transport);
 $tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
 $api = Api::create($apiHost, new BearerTokenAuth($tokenManager->getAccessToken()->getAccessToken()), $transport);
 
