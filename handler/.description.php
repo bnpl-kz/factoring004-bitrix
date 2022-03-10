@@ -37,6 +37,16 @@ $data = array(
             'GROUP' => 'CREDENTIALS',
         ),
 
+        'BNPL_PAYMENT_API_OAUTH_TOKEN_PATH' => array(
+            'NAME' => 'OAuth Token Path',
+            'SORT' => 350,
+            'GROUP' => 'CREDENTIALS',
+            'DEFAULT' => array(
+                'PROVIDER_VALUE' => '/',
+                'PROVIDER_KEY' => 'VALUE',
+            ),
+        ),
+
         'BNPL_PAYMENT_PARTNER_NAME' => array(
             'NAME' => 'Partner Name',
             'SORT' => 400,
