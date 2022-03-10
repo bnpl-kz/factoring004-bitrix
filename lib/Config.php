@@ -43,6 +43,17 @@ class Config
     }
 
     /**
+     * @return string
+     */
+    public static function getOAuthTokenPath()
+    {
+        $path = static::get('BNPL_PAYMENT_API_OAUTH_TOKEN_PATH');
+        $path = trim($path ?: '', " /\t\n\r\0\x0B");
+
+        return '/' . $path;
+    }
+
+    /**
      * @return string|null
      *
      * @throws \Bitrix\Main\ArgumentException
