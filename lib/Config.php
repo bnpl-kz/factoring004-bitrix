@@ -96,6 +96,9 @@ class Config
     private static function getDeliveryItems($prefix)
     {
         $result = array();
+        if (!isset(BusinessValue::getConsumerCodePersonMapping()[$prefix])) {
+            return [];
+        }
         foreach (BusinessValue::getConsumerCodePersonMapping()[$prefix] as $key => $item) {
             if (strpos($key,'BNPL_PAYMENT_DELIVERY_') !== false) {
                 foreach ($item as $val) {

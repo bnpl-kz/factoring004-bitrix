@@ -44,7 +44,6 @@ class EventHandler
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
-print_r(Config::getDeliveryIds());die;
         static::addJS();
 
     }
