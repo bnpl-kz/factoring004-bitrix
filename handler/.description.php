@@ -65,21 +65,33 @@ $data = array(
             'GROUP' => 'MERCHANT PARAMETERS',
         ),
 
+        'BNPL_PAYMENT_PARTNER_EMAIL' => array(
+            'NAME' => 'Partner Email',
+            'SORT' => 700,
+            'GROUP' => 'MERCHANT PARAMETERS',
+        ),
+
+        'BNPL_PAYMENT_PARTNER_WEBSITE' => array(
+            'NAME' => 'Partner Website',
+            'SORT' => 800,
+            'GROUP' => 'MERCHANT PARAMETERS',
+        ),
+
         'BNPL_PAYMENT_SUCCESS_REDIRECT_URL' => array(
             'NAME' => 'Success Redirect URL',
-            'SORT' => 800,
+            'SORT' => 900,
             'GROUP' => 'ORDER PARAMETERS',
         ),
 
         'BNPL_PAYMENT_FAIL_REDIRECT' => array(
             'NAME' => 'Fail Redirect URL',
-            'SORT' => 900,
+            'SORT' => 1000,
             'GROUP' => 'ORDER PARAMETERS'
         ),
 
         'BNPL_PAYMENT_POST_LINK' => array(
             'NAME' => 'Post Link',
-            'SORT' => 1000,
+            'SORT' => 1100,
             'GROUP' => 'ORDER PARAMETERS',
             'DEFAULT' => array(
                 'PROVIDER_VALUE' => '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment',
@@ -89,7 +101,7 @@ $data = array(
 
         'BNPL_PAYMENT_FILE' => array(
             'NAME' => 'Загрузите файл оферты',
-            'SORT' => 1100,
+            'SORT' => 1200,
             'GROUP' => 'ORDER PARAMETERS',
             'INPUT'   => array(
                 'TYPE' => 'FILE',
@@ -102,7 +114,7 @@ $data = array(
 foreach ($delivery as $key => $item) {
     $data['CODES']['BNPL_PAYMENT_DELIVERY_'.$key] = array(
             'NAME' => $item,
-            'SORT' => 1200,
+            'SORT' => 1300,
             'GROUP' => 'DELIVERY PARAMETERS',
             'INPUT' => array(
                 'TYPE' => 'ENUM',
