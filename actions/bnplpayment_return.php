@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
+use Bitrix\Sale\Order;
 use Bnpl\Payment\BitrixSimpleCache;
 use Bnpl\Payment\Config;
 use BnplPartners\Factoring004\Api;
@@ -18,6 +19,7 @@ use BnplPartners\Factoring004\ChangeStatus\ReturnOrder;
 use BnplPartners\Factoring004\ChangeStatus\ReturnStatus;
 use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
 use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
+use BnplPartners\Factoring004\Otp\SendOtpReturn;
 use BnplPartners\Factoring004\Transport\GuzzleTransport;
 
 define("NO_KEEP_STATISTIC", true);
@@ -51,20 +53,28 @@ $api = Api::create($apiHost, new BearerTokenAuth($tokenManager->getAccessToken()
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 $orderId = $request->get('order_id');
+$ids = Config::getDeliveryIds();
 
 try {
-    $result = $api->changeStatus->changeStatusJson([
-        new MerchantsOrders($partnerCode, [new ReturnOrder($orderId, ReturnStatus::RETURN(), 0)])
-    ]);
-
-    if ($result->getSuccessfulResponses()) {
-        $response->setContent(json_encode(['success' => true]));
+    if (array_intersect($ids, Order::load($orderId)->getDeliveryIdList())) {
+        // should send OTP
+        $api->otp->sendOtpReturn(new SendOtpReturn(0, $partnerCode, $orderId));
+        $response->setContent(json_encode(['otp' => true, 'success' => true]));
     } else {
-        $responses = $result->getErrorResponses();
+        // Delivery without OTP
+        $result = $api->changeStatus->changeStatusJson([
+            new MerchantsOrders($partnerCode, [new ReturnOrder($orderId, ReturnStatus::RETURN(), 0)])
+        ]);
 
-        foreach ($responses as $response) {
-            $response->setContent(json_encode(['success' => false, 'response' => $response->toArray()]));
-            break;
+        if ($result->getSuccessfulResponses()) {
+            $response->setContent(json_encode(['success' => true]));
+        } else {
+            $responses = $result->getErrorResponses();
+
+            foreach ($responses as $res) {
+                $response->setContent(json_encode(['success' => false, 'response' => $res->toArray()]));
+                break;
+            }
         }
     }
 
