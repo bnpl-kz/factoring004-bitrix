@@ -93,6 +93,8 @@ class PaymentProcessor
                 'partnerName' => Config::get('BNPL_PAYMENT_PARTNER_NAME'),
                 'partnerCode' => Config::get('BNPL_PAYMENT_PARTNER_CODE'),
                 'pointCode' => Config::get('BNPL_PAYMENT_POINT_CODE'),
+                'partnerEmail' => Config::get('BNPL_PAYMENT_PARTNER_EMAIL'),
+                'partnerWebsite' => Config::get('BNPL_PAYMENT_PARTNER_WEBSITE'),
             ],
             'billNumber' => (string) $order->getId(),
             'billAmount' => (int) round($order->getPrice()),
