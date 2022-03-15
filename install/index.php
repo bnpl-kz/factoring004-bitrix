@@ -96,7 +96,7 @@ class bnpl_payment extends CModule
 
         $source = Application::getDocumentRoot() . '/bitrix/modules/' . $this->MODULE_ID . '/install';
         $logo_dir = Application::getDocumentRoot() . '/bitrix/images/sale/sale_payments/';
-        File::putFileContents($logo_dir . 'bnpl.png', File::getFileContents($source . "/sale_payment/bnplpayment/bnplpayment.png"));
+        File::putFileContents($logo_dir . 'bnplpayment.png', File::getFileContents($source . "/sale_payment/bnplpayment/bnplpayment.png"));
     }
 
     public function InstallDB()
@@ -138,6 +138,7 @@ class bnpl_payment extends CModule
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_return.php');
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_return_check_otp.php');
        DeleteDirFilesEx('/bitrix/php_interface/admin_header.php');
+       DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
     }
 
     public function UnInstallDB()
