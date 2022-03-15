@@ -87,6 +87,9 @@ class PaymentProcessor
         $paymentCollection = $order->getPropertyCollection();
         $phone = $paymentCollection->getPhone();
         $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
+        $itemsQuantity = array_map(function ($item) {
+            return (int) $item->getField('QUANTITY');
+        }, $order->getBasket()->getBasketItems());
 
         return PreAppMessage::createFromArray([
             'partnerData' => [
@@ -98,7 +101,7 @@ class PaymentProcessor
             ],
             'billNumber' => (string) $order->getId(),
             'billAmount' => (int) round($order->getPrice()),
-            'itemsQuantity' => $order->getBasket()->count(),
+            'itemsQuantity' => array_sum($itemsQuantity),
             'successRedirect' => $serverHost,
             'postLink' => $serverHost . $this->resolvePostLink(),
             'phoneNumber' => $phone ? $phone->getValue() : null,
