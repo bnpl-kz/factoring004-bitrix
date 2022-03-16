@@ -6,6 +6,7 @@ use Bitrix\Main;
 use Bitrix\Main\Error;
 use Bitrix\Main\Request;
 use Bitrix\Main\Type\DateTime;
+use Bitrix\Main\Web\Json;
 use Bitrix\Sale\Payment;
 use Bitrix\Sale\PaySystem;
 use Bitrix\Sale\PaySystem\Logger;
@@ -53,11 +54,17 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
     /**
      * @param Request $request
      *
-     * @return string
+     * @return string|null
      */
     public function getPaymentIdFromRequest(Request $request)
     {
-        return $request->get('billNumber');
+        try {
+            $data = Json::decode($this->readInputStream());
+        } catch (Main\ArgumentException $e) {
+            return null;
+        }
+
+        return isset($data['billNumber']) ? $data['billNumber'] : null;
     }
 
     /**
@@ -94,7 +101,13 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
             return $result->addError(new Error($error));
         }
 
-        $status = $request->get('status');
+        try {
+            $data = Json::decode($this->readInputStream());
+        } catch (Main\ArgumentException $e) {
+            return $result;
+        }
+
+        $status = $data['status'];
 
         if ($status === static::STATUS_COMPLETED) {
             $result->setOperationType(ServiceResult::MONEY_COMING);
@@ -112,8 +125,8 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
             'PS_STATUS_DESCRIPTION' => 'Factoring004',
             'PS_STATUS_MESSAGE' => implode('; ', [
                 'Status: ' . $status,
-                'PreAppId: ' . $request->get('preappId'),
-                'BillNumber: ' . $request->get('billNumber'),
+                'PreAppId: ' . $data['preappId'],
+                'BillNumber: ' . $data['billNumber'],
             ]),
             'PS_SUM' => $payment->getSum(),
             'PS_CURRENCY' => $payment->getOrder()->getCurrency(),
@@ -136,23 +149,40 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
     }
 
     /**
-     * @throws \Bitrix\Main\ArgumentNullException
-     * @throws \Bitrix\Main\ArgumentTypeException
+     * @throws \Bitrix\Main\ArgumentException
      */
     public function sendResponse(ServiceResult $result, Request $request)
     {
         $response = new Main\HttpResponse();
         $response->addHeader('Content-Type', 'application/json');
-        $status = $request->get('status');
+
+        try {
+            $data = Json::decode($this->readInputStream());
+        } catch (Main\ArgumentException $e) {
+            $response->setStatus(400);
+            $response->setContent(Json::encode(['error' => 'Invalid JSON']));
+            $response->send();
+            return;
+        }
+
+        $status = $data['status'];
 
         if ($status === static::STATUS_PREAPPROVED) {
-            $response->setContent(json_encode(['response' => static::STATUS_PREAPPROVED]));
+            $response->setContent(Json::encode(['response' => static::STATUS_PREAPPROVED]));
         } elseif ($status === static::STATUS_COMPLETED) {
-            $response->setContent(json_encode(['response' => 'ok']));
+            $response->setContent(Json::encode(['response' => 'ok']));
         } else {
-            $response->setContent(json_encode(['response' => self::STATUS_DECLINED]));
+            $response->setContent(Json::encode(['response' => static::STATUS_DECLINED]));
         }
 
         $response->send();
+    }
+
+    /**
+     * @return string
+     */
+    private function readInputStream()
+    {
+        return file_get_contents('php://input');
     }
 }
