@@ -90,15 +90,11 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
         $result = new ServiceResult();
 
         if ($payment->isPaid()) {
-            $error = 'Order has already payed';
-            Logger::addError($error);
-            return $result->addError(new Error($error));
+            return $result;
         }
 
         if ($payment->getOrder()->isCanceled()) {
-            $error = 'Order is canceled';
-            Logger::addError($error);
-            return $result->addError(new Error($error));
+            return $result;
         }
 
         try {
