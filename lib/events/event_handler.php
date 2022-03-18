@@ -155,7 +155,7 @@ class EventHandler
                         }
                         
                         function addElem() {
-                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>Я согласен <a href='$agreementLink' target='_blank'>с условиями платежной системы BNPL</a></label></div>")
+                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>Я согласен <a href='$agreementLink' target='_blank'>с условиями платежной системы Рассрочка 0-0-4</a></label></div>")
                         }
                         
                         function removeElem() {
