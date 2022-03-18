@@ -19,14 +19,14 @@ $data = array(
     'NAME' => 'Рассрочка 0-0-4',
     'IS_AVAILABLE' => $isAvailable,
     'CODES' => array(
-        'BNPL_PAYMENT_CONSUMER_KEY' => array(
-            'NAME' => 'Consumer Key',
+        'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN' => array(
+            'NAME' => 'OAuth Preapp Token',
             'SORT' => 100,
             'GROUP' => 'CREDENTIALS',
         ),
 
-        'BNPL_PAYMENT_CONSUMER_SECRET' => array(
-            'NAME' => 'Consumer Secret',
+        'BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN' => array(
+            'NAME' => 'OAuth Accounting Service Token',
             'SORT' => 200,
             'GROUP' => 'CREDENTIALS',
         ),
@@ -35,16 +35,6 @@ $data = array(
             'NAME' => 'API Host',
             'SORT' => 300,
             'GROUP' => 'CREDENTIALS',
-        ),
-
-        'BNPL_PAYMENT_API_OAUTH_TOKEN_PATH' => array(
-            'NAME' => 'OAuth Token Path',
-            'SORT' => 350,
-            'GROUP' => 'CREDENTIALS',
-            'DEFAULT' => array(
-                'PROVIDER_VALUE' => '/',
-                'PROVIDER_KEY' => 'VALUE',
-            ),
         ),
 
         'BNPL_PAYMENT_PARTNER_NAME' => array(

@@ -2,7 +2,6 @@
 
 namespace Bnpl\Payment;
 
-use App\Http\Controllers\Controller;
 use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\PaySystemActionTable;
 use Exception;
@@ -40,17 +39,6 @@ class Config
         } catch (Exception $e) {
             return null;
         }
-    }
-
-    /**
-     * @return string
-     */
-    public static function getOAuthTokenPath()
-    {
-        $path = static::get('BNPL_PAYMENT_API_OAUTH_TOKEN_PATH');
-        $path = trim($path ?: '', " /\t\n\r\0\x0B");
-
-        return '/' . $path;
     }
 
     /**

@@ -6,17 +6,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
-use Bnpl\Payment\BitrixSimpleCache;
 use Bnpl\Payment\Config;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
-use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
-use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
 use BnplPartners\Factoring004\Otp\CheckOtpReturn;
-use BnplPartners\Factoring004\Transport\GuzzleTransport;
 
 define("NO_KEEP_STATISTIC", true);
 define("NO_AGENT_STATISTIC", true);
@@ -38,14 +33,9 @@ $consumerKey = Config::get('BNPL_PAYMENT_CONSUMER_KEY');
 $consumerSecret = Config::get('BNPL_PAYMENT_CONSUMER_SECRET');
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $partnerCode = Config::get('BNPL_PAYMENT_PARTNER_CODE');
-$tokenPath = Config::getOAuthTokenPath();
+$accountingServiceToken = Config::get('BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN');
 
-$transport = new GuzzleTransport();
-$cache = new BitrixSimpleCache(Application::getInstance()->getCache());
-
-$tokenManager = new OAuthTokenManager(rtrim($apiHost, '/') . $tokenPath, $consumerKey, $consumerSecret, $transport);
-$tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
-$api = Api::create($apiHost, new BearerTokenAuth($tokenManager->getAccessToken()->getAccessToken()), $transport);
+$api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken));
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 $orderId = $request->get('order_id');
