@@ -1,9 +1,9 @@
 <?php
 
-$MESS["BNPL_PAYMENT_INSTALL_NAME"] = "ÐœÐ¾Ð´ÑƒÐ»ÑŒ Ð¾Ñ‚Ð¿Ð»Ð°Ñ‚Ñ‹ BNPL";
-$MESS["BNPL_PAYMENT_INSTALL_DESCRIPTION"] = "ÐœÐ¾Ð´ÑƒÐ»ÑŒ Ð¾Ñ‚Ð¿Ð»Ð°Ñ‚Ñ‹ BNPL - Â«ÐšÑƒÐ¿Ð¸ ÑÐµÐ¹Ñ‡Ð°Ñ, Ð¿Ð»Ð°Ñ‚Ð¸ Ð¿Ð¾Ñ‚Ð¾Ð¼Â»";
-$MESS["BNPL_PAYMENT_INSTALL_TITLE"] = "Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¼Ð¾Ð´ÑƒÐ»Ñ";
-$MESS["BNPL_PAYMENT_UNINSTALL_TITLE"] = "Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð´ÑƒÐ»Ñ";
-$MESS["BNPL_PAYMENT_DEVELOPMENT_TEAM"] = "ÐšÐ¾Ð¼Ð°Ð½Ð´Ð° Ñ€Ð°Ð·Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸ÐºÐ¾Ð² BNPL";
+$MESS["BNPL_PAYMENT_INSTALL_NAME"] = "Ìîäóëü îòïëàòû BNPL";
+$MESS["BNPL_PAYMENT_INSTALL_DESCRIPTION"] = "Ìîäóëü îòïëàòû BNPL - «Êóïè ñåé÷àñ, ïëàòè ïîòîì»";
+$MESS["BNPL_PAYMENT_INSTALL_TITLE"] = "Óñòàíîâêà ìîäóëÿ";
+$MESS["BNPL_PAYMENT_UNINSTALL_TITLE"] = "Óäàëåíèå ìîäóëÿ";
+$MESS["BNPL_PAYMENT_DEVELOPMENT_TEAM"] = "Êîìàíäà ðàçðàáîò÷èêîâ BNPL";
 
 ?>

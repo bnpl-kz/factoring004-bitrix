@@ -16,7 +16,7 @@ while ($row = $dbOption->Fetch())
 $isAvailable = true;
 
 $data = array(
-    'NAME' => 'Р Р°СЃСЃСЂРѕС‡РєР° 0-0-4',
+    'NAME' => 'Рассрочка 0-0-4',
     'IS_AVAILABLE' => $isAvailable,
     'CODES' => array(
         'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN' => array(
@@ -78,7 +78,7 @@ $data = array(
         ),
 
         'BNPL_PAYMENT_FILE' => array(
-            'NAME' => 'Р—Р°РіСЂСѓР·РёС‚Рµ С„Р°Р№Р» РѕС„РµСЂС‚С‹',
+            'NAME' => 'Загрузите файл оферты',
             'SORT' => 1200,
             'GROUP' => 'ORDER PARAMETERS',
             'INPUT'   => array(
@@ -97,8 +97,8 @@ foreach ($delivery as $key => $item) {
             'INPUT' => array(
                 'TYPE' => 'ENUM',
                 'OPTIONS' => array(
-                    'N'=>'РќРµС‚',
-                    'Y'=>'Р”Р°'
+                    'N'=>'Нет',
+                    'Y'=>'Да'
                 ),
             ),
         );

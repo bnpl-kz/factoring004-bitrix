@@ -13,7 +13,7 @@
             if (elem.value === 'bnplpayment') {
                 document.querySelector("[name='CODE']").readOnly = true
                 document.querySelector("[name='CODE']").value = 'factoring004'
-                description.body.innerText = 'Р‘С‹СЃС‚СЂРѕРµ РѕС„РѕСЂРјР»РµРЅРёРµ СЂР°СЃСЃСЂРѕС‡РєРё РЅР° 4 РјРµСЃСЏС†Р° Р±РµР· РїРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅРѕР№ РѕРїР»Р°С‚С‹';
+                description.body.innerText = 'Быстрое оформление рассрочки на 4 месяца без первоначальной оплаты';
             } else {
                 document.querySelector("[name='CODE']").readOnly = false
                 document.querySelector("[name='CODE']").value = ''

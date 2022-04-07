@@ -146,16 +146,16 @@ class EventHandler
                             } else {
                                 $('a[data-save-button]').prop('style','display: none !important')
                                 if (!$('#bnpl-form-button').length) {
-                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>РћС„РѕСЂРјРёС‚СЊ Р·Р°РєР°Р·</button>")
+                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>Оформить заказ</button>")
                                 }
                                 if (!$('#bnpl-error').length) {
-                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">Р’Р°Рј РЅСѓР¶РЅРѕ СЃРѕРіР»Р°СЃРёС‚СЊСЃСЏ СЃ СѓСЃР»РѕРІРёСЏРјРё</p>')
+                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">Вам нужно согласиться с условиями</p>')
                                 }
                             }
                         }
                         
                         function addElem() {
-                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>РЇ СЃРѕРіР»Р°СЃРµРЅ <a href='$agreementLink' target='_blank'>СЃ СѓСЃР»РѕРІРёСЏРјРё РїР»Р°С‚РµР¶РЅРѕР№ СЃРёСЃС‚РµРјС‹ Р Р°СЃСЃСЂРѕС‡РєР° 0-0-4</a></label></div>")
+                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>Я согласен <a href='$agreementLink' target='_blank'>с условиями платежной системы Рассрочка 0-0-4</a></label></div>")
                         }
                         
                         function removeElem() {
