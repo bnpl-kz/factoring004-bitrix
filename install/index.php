@@ -5,14 +5,16 @@ use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
 use Bitrix\Main\IO\File;
+
 class bnpl_payment extends CModule
 {
-    public $MODULE_ID = 'bnpl.payment';
-    public $MODULE_VERSION;
-    public $MODULE_VERSION_DATE;
-    public $MODULE_NAME;
-    public $MODULE_DESCRIPTION;
-    public $PARTNER_NAME;
+    var $MODULE_ID = 'bnpl.payment';
+    var $MODULE_VERSION;
+    var $MODULE_VERSION_DATE;
+    var $MODULE_NAME;
+    var $MODULE_DESCRIPTION;
+    var $PARTNER_NAME;
+    var $PARTNER_URI;
 
     private $ORM_ENTITY = array(\Bnpl\Payment\OrdersTable::class, \Bnpl\Payment\PreappsTable::class);
 
@@ -30,6 +32,7 @@ class bnpl_payment extends CModule
         $this->MODULE_NAME = Loc::getMessage('BNPL_PAYMENT_INSTALL_NAME');
         $this->MODULE_DESCRIPTION = Loc::getMessage('BNPL_PAYMENT_INSTALL_DESCRIPTION');
         $this->PARTNER_NAME = Loc::getMessage('BNPL_PAYMENT_DEVELOPMENT_TEAM');
+        $this->PARTNER_URI = "https://alfabank.kz/";
     }
 
 
