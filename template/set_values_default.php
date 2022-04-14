@@ -13,7 +13,7 @@
             if (elem.value === 'bnplpayment') {
                 document.querySelector("[name='CODE']").readOnly = true
                 document.querySelector("[name='CODE']").value = 'factoring004'
-                description.body.innerText = 'Ѕыстрое оформление рассрочки на 4 мес€ца без первоначальной оплаты';
+                description.body.innerText = '<?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_DESCRIPTION"); ?>';
             } else {
                 document.querySelector("[name='CODE']").readOnly = false
                 document.querySelector("[name='CODE']").value = ''

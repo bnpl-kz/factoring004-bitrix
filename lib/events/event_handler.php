@@ -8,6 +8,7 @@ use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Order;
+use Bitrix\Main\Localization\Loc;
 
 class EventHandler
 {
@@ -21,8 +22,7 @@ class EventHandler
         'BNPL_PAYMENT_PARTNER_CODE',
         'BNPL_PAYMENT_POINT_CODE',
         'BNPL_PAYMENT_PARTNER_EMAIL',
-        'BNPL_PAYMENT_PARTNER_WEBSITE',
-        'BNPL_PAYMENT_FILE'
+        'BNPL_PAYMENT_PARTNER_WEBSITE'
     ];
 
     public static function hidePaySystem(
@@ -46,8 +46,10 @@ class EventHandler
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
-        static::addJS();
 
+        if (Config::get('BNPL_PAYMENT_FILE')) {
+            static::addJS();
+        }
     }
 
     private static function getPaymentSystemIndex(array $paymentSystems)
@@ -99,6 +101,10 @@ class EventHandler
         }
 
         $agreementLink = static::getAgreementLink();
+        $agreementText = Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT');
+        $agreementTextLink =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_LINK');
+        $agreementTextError =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
+        $agreementTextButton =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON');
 
         Asset::getInstance()->addString(
             <<<JS
@@ -146,16 +152,16 @@ class EventHandler
                             } else {
                                 $('a[data-save-button]').prop('style','display: none !important')
                                 if (!$('#bnpl-form-button').length) {
-                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>�������� �����</button>")
+                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>$agreementTextButton</button>")
                                 }
                                 if (!$('#bnpl-error').length) {
-                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">��� ����� ����������� � ���������</p>')
+                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">$agreementTextError</p>')
                                 }
                             }
                         }
                         
                         function addElem() {
-                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>� �������� <a href='$agreementLink' target='_blank'>� ��������� ��������� ������� ��������� 0-0-4</a></label></div>")
+                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>$agreementText <a href='$agreementLink' target='_blank'>$agreementTextLink</a></label></div>")
                         }
                         
                         function removeElem() {
@@ -179,6 +185,9 @@ JS
     private static function getAgreementLink()
     {
         $id = Config::get('BNPL_PAYMENT_FILE');
+        if (!$id) {
+            return '';
+        }
         global $DB;
         $dbOption = $DB->Query("SELECT SUBDIR, FILE_NAME FROM b_file WHERE ID=$id");
         $result = $dbOption->Fetch();

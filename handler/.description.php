@@ -1,5 +1,7 @@
 <?php
 
+use Bitrix\Main\Localization\Loc;
+
 if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     exit;
 }
@@ -16,7 +18,7 @@ while ($row = $dbOption->Fetch())
 $isAvailable = true;
 
 $data = array(
-    'NAME' => 'Рассрочка 0-0-4',
+    'NAME' => Loc::getMessage('BNPL_PAYMENT_NAME'),
     'IS_AVAILABLE' => $isAvailable,
     'CODES' => array(
         'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN' => array(
@@ -78,7 +80,8 @@ $data = array(
         ),
 
         'BNPL_PAYMENT_FILE' => array(
-            'NAME' => 'Загрузите файл оферты',
+            'NAME' => Loc::getMessage('BNPL_PAYMENT_FILE_NAME'),
+            'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_FILE_DESCRIPTION'),
             'SORT' => 1200,
             'GROUP' => 'ORDER PARAMETERS',
             'INPUT'   => array(
@@ -97,8 +100,8 @@ foreach ($delivery as $key => $item) {
             'INPUT' => array(
                 'TYPE' => 'ENUM',
                 'OPTIONS' => array(
-                    'N'=>'Нет',
-                    'Y'=>'Да'
+                    'N'=>Loc::getMessage('BNPL_PAYMENT_DELIVERY_NO'),
+                    'Y'=>Loc::getMessage('BNPL_PAYMENT_DELIVERY_YES')
                 ),
             ),
         );
