@@ -8,10 +8,12 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 global $DB;
 $delivery = array();
-$dbOption = $DB->Query("SELECT ID, NAME FROM b_sale_delivery_srv");
-while ($row = $dbOption->Fetch())
-{
-    $delivery[$row['ID']] = $row['NAME'];
+$dbOption = $DB->Query("SELECT ID, NAME FROM b_sale_delivery_srv", true);
+if ($dbOption) {
+    while ($row = $dbOption->Fetch())
+    {
+        $delivery[$row['ID']] = $row['NAME'];
+    }
 }
 
 
