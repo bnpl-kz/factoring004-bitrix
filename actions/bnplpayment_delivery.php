@@ -15,6 +15,7 @@ use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\ChangeStatus\DeliveryOrder;
 use BnplPartners\Factoring004\ChangeStatus\DeliveryStatus;
 use BnplPartners\Factoring004\ChangeStatus\MerchantsOrders;
+use BnplPartners\Factoring004\Exception\ValidationException;
 use BnplPartners\Factoring004\Otp\SendOtp;
 
 define("NO_KEEP_STATISTIC", true);
@@ -33,8 +34,6 @@ if (!check_bitrix_sessid()) {
 CModule::IncludeModule('bnpl.payment');
 CModule::IncludeModule('sale');
 
-$consumerKey = Config::get('BNPL_PAYMENT_CONSUMER_KEY');
-$consumerSecret = Config::get('BNPL_PAYMENT_CONSUMER_SECRET');
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $partnerCode = Config::get('BNPL_PAYMENT_PARTNER_CODE');
 $accountingServiceToken = Config::get('BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN');
@@ -66,10 +65,13 @@ try {
     $response->setStatus(200);
 } catch (Exception $e) {
     $isDebug = Configuration::getValue('exception_handling')['debug'];
+    $error = $e instanceof ValidationException
+        ? json_encode($e->getResponse(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        : $e;
 
     $response->setStatus(500);
-    $response->setContent(json_encode(['success' => false, 'error' => $isDebug ? (string) $e : 'An error occurred. Please try again.']));
-    error_log($e);
+    $response->setContent(json_encode(['success' => false, 'error' => $isDebug ? $error : 'An error occurred. Please try again.']));
+    error_log($error);
 }
 
 $response->addHeader('Content-Type', 'application/json');

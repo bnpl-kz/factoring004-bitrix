@@ -22,9 +22,7 @@ use Bnpl\Payment\PaymentProcessor;
 use Bnpl\Payment\PreAppOrderManager;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
-use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
-use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
-use BnplPartners\Factoring004\Transport\GuzzleTransport;
+use BnplPartners\Factoring004\Exception\ValidationException;
 
 define("STOP_STATISTICS", true);
 define('NO_AGENT_CHECK', true);
@@ -38,8 +36,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
-$consumerKey = Config::get('BNPL_PAYMENT_CONSUMER_KEY');
-$consumerSecret = Config::get('BNPL_PAYMENT_CONSUMER_SECRET');
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $preAppToken = Config::get('BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN');
 
@@ -52,11 +48,14 @@ try {
     $response = $processor->preApp($request);
 } catch (\Exception $e) {
     $isDebug = Configuration::getValue('exception_handling')['debug'];
+    $error = $e instanceof ValidationException
+        ? json_encode($e->getResponse(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        : $e;
 
     $response = new \Bitrix\Main\HttpResponse();
     $response->setStatus(500);
-    $response->setContent($isDebug ? $e : 'An error occurred. Please try again.');
-    error_log($e);
+    $response->setContent($isDebug ? $error : 'An error occurred. Please try again.');
+    error_log($error);
 }
 
 $response->send();
