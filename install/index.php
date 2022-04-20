@@ -104,13 +104,7 @@ class bnpl_payment extends CModule
 
     public function InstallDB()
     {
-        if (self::IncludeModule($this->MODULE_ID)) {
-            foreach ($this->ORM_ENTITY as $entity) {
-                if (!Application::getConnection()->isTableExists(Base::getInstance($entity)->getDBTableName())) {
-                    Base::getInstance($entity)->createDbTable();
-                }
-            }
-        }
+        $this->setupDB('install');
     }
 
     public function installEvents() {
@@ -121,6 +115,23 @@ class bnpl_payment extends CModule
             '\Bnpl\Payment\EventHandler',
             'hidePaySystem'
         );
+    }
+    
+    /**
+     * @param String $mode - install или uninstall
+     */
+
+    private function setupDB($mode = 'install')
+    {
+        global $DB;
+        if ( !in_array($mode , ['install', 'uninstall']) ) {
+            return false;
+        }
+        if (self::IncludeModule('sale')) {
+            $result = $DB->RunSQLBatch($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/" . $this->MODULE_ID . "/install/db/" . $mode . ".sql");
+        } else {
+            echo "no module";
+        }
     }
 
     public function DoUninstall()
@@ -146,14 +157,7 @@ class bnpl_payment extends CModule
 
     public function UnInstallDB()
     {
-        if (self::IncludeModule($this->MODULE_ID)) {
-            foreach ($this->ORM_ENTITY as $entity) {
-                if (Application::getConnection()->isTableExists(Base::getInstance($entity)->getDBTableName())) {
-                    Application::getConnection()
-                        ->dropTable(Base::getInstance($entity)->getDBTableName());
-                }
-            }
-        }
+        $this->setupDB('uninstall');
     }
 
     public function uninstallEvents() {
