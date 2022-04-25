@@ -110,10 +110,18 @@ class bnpl_payment extends CModule
     public function installEvents() {
         EventManager::getInstance()->registerEventHandler(
             'sale',
-            'OnSaleComponentOrderCreated',
+            'OnSaleComponentOrderOneStepPaySystem',
             $this->MODULE_ID,
             '\Bnpl\Payment\EventHandler',
             'hidePaySystem'
+        );
+        // для проверки подтверждения офферты если выбрана оплата BNPL
+        EventManager::getInstance()->registerEventHandler(
+            'sale',
+            'OnBeforeOrderAdd',
+            $this->MODULE_ID,
+            '\Bnpl\Payment\EventHandler',
+            'validateBnplOrder'
         );
     }
     
@@ -163,10 +171,17 @@ class bnpl_payment extends CModule
     public function uninstallEvents() {
         EventManager::getInstance()->unRegisterEventHandler(
             'sale',
-            'OnSaleComponentOrderCreated',
+            'OnSaleComponentOrderOneStepPaySystem',
             $this->MODULE_ID,
             '\Bnpl\Payment\EventHandler',
             'hidePaySystem'
+        );
+        EventManager::getInstance()->unRegisterEventHandler(
+            'sale',
+            'OnBeforeOrderAdd',
+            $this->MODULE_ID,
+            '\Bnpl\Payment\EventHandler',
+            'validateBnplOrder'
         );
     }
 }

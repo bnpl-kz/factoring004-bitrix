@@ -2,13 +2,8 @@
 
 namespace Bnpl\Payment;
 
-use Bitrix\Main\HttpRequest;
-use Bitrix\Main\Page\Asset;
-use Bitrix\Sale\BusinessValue;
-use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
-use Bitrix\Sale\Internals\PaySystemActionTable;
-use Bitrix\Sale\Order;
-use Bitrix\Main\Localization\Loc;
+use \Bitrix\Main\Loader;
+use CSalePaySystemAction;
 
 class EventHandler
 {
@@ -25,38 +20,57 @@ class EventHandler
         'BNPL_PAYMENT_PARTNER_WEBSITE'
     ];
 
+
+
+    public static function validateBnplOrder(&$arFields)
+    {
+        $paymentSystemId = $arFields['PAY_SYSTEM_ID'];
+
+        if (self::isBnplPayment($paymentSystemId)) {
+            $bnplOfferCheck = isset($_POST['bnpl-payment-offer']) ? $_POST['bnpl-payment-offer'] : false;
+            if (!$bnplOfferCheck) {
+                global $APPLICATION;
+                $text = GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
+                $APPLICATION->ThrowException($text);
+                return false;
+            }
+        }
+    }
+
+
     public static function hidePaySystem(
-        Order $order,
-        array &$arUserResult,
-        HttpRequest $request,
-        array &$arParams,
-        array &$arResult,
-        array &$arDeliveryServiceAll,
-        &$arPaySystemServiceAll
+        &$arResult,
+        &$arUserResult,
+        $arParams
     ) {
-        if (!static::isRequiredOptionsFilled()) {
-            static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+        // echo '<pre>';
+        // print_r($arResult);
+        // echo '</pre>';
+        $bnplPS = self::getPaymentSystem($arResult['PAY_SYSTEM']);
+        $bnplParams = unserialize($bnplPS['PSA_PARAMS']);
+        if (!static::isRequiredOptionsFilled($bnplParams)) {
+            static::disablePaymentSystemIfEnabled($arResult['PAY_SYSTEM'], $bnplPS['ID']);
             return;
         }
 
         if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
-            static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+            static::disablePaymentSystemIfEnabled($arResult['PAY_SYSTEM'], $bnplPS['ID']);
         }
 
-        if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
-            static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+        if ($arResult['ORDER_PRICE'] < static::MIN_SUM || $arResult['ORDER_PRICE'] > static::MAX_SUM) {
+            static::disablePaymentSystemIfEnabled($arResult['PAY_SYSTEM'], $bnplPS['ID']);
         }
 
-        if (Config::get('BNPL_PAYMENT_FILE')) {
-            static::addJS();
+        if ($bnplParams['BNPL_PAYMENT_FILE']) {
+            static::addJS($bnplPS['ID'], $bnplParams['BNPL_PAYMENT_FILE']);
         }
     }
 
-    private static function getPaymentSystemIndex(array $paymentSystems)
+    private static function getPaymentSystem(array $paymentSystems)
     {
         foreach ($paymentSystems as $i => $item) {
-            if ($item['CODE'] === 'factoring004') {
-                return $i;
+            if (self::isBnplPaymentByAction($item['PSA_ACTION_FILE'])) {
+                return $item;
             }
         }
         return null;
@@ -64,28 +78,21 @@ class EventHandler
 
     private static function isIndividualPersonType($personTypeId)
     {
-        return (bool) BusinessValuePersonDomainTable::getCount([
-            'PERSON_TYPE_ID' => $personTypeId,
-            'DOMAIN' => 'I',
-        ]);
+        return (bool) $personTypeId == 1;
     }
 
-    private static function disablePaymentSystemIfEnabled(array &$paymentSystems)
+    private static function disablePaymentSystemIfEnabled(array &$paymentSystems, $paySystemId)
     {
-        $index = static::getPaymentSystemIndex($paymentSystems);
-
-        if ($index) {
-            unset($paymentSystems[$index]);
-        }
+        unset($paymentSystems[$paySystemId]);
     }
 
     /**
      * @return bool
      */
-    private static function isRequiredOptionsFilled()
+    private static function isRequiredOptionsFilled($paymentParams)
     {
         foreach (static::REQUIRED_OPTIONS as $option) {
-            if (!Config::get($option)) {
+            if (!array_key_exists($option, $paymentParams)) {
                 return false;
             }
         }
@@ -93,22 +100,43 @@ class EventHandler
         return true;
     }
 
-    private static function addJS()
-    {
-        $paymentId = static::getPaySystemId();
-        if ($paymentId === null) {
+    private static function isBnplPayment($paymentId)
+    {   
+        $action = new CSalePaySystemAction();
+        $payment = $action->GetList(
+            false,
+            ['PAY_SYSTEM_ID' => $paymentId],
+            false,
+            false,
+            ['ACTION_FILE']
+        )->Fetch();
+        if ($payment) {
+            return self::isBnplPaymentByAction($payment['ACTION_FILE']);
+        } else {
             return false;
         }
+    }
 
-        $agreementLink = static::getAgreementLink();
-        $agreementText = Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT');
-        $agreementTextLink =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_LINK');
-        $agreementTextError =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
-        $agreementTextButton =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON');
+    private static function isBnplPaymentByAction($paymentAction)
+    {
+        $actionParts = explode('/', $paymentAction);
+        $actionIndex = count($actionParts)-1;
+        return $actionParts[$actionIndex] == 'bnplpayment';
+    }
 
-        Asset::getInstance()->addString(
-            <<<JS
-                <script>
+    private static function addJS($paymentId, $bnplAgreementFileId)
+    {
+
+        IncludeModuleLangFile(__FILE__);
+
+        $agreementLink = static::getAgreementLink($bnplAgreementFileId['VALUE']);
+        $agreementText = GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT');
+        $agreementTextLink =  GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT_LINK');
+        $agreementTextError =  GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
+        $agreementTextButton =  GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON');
+
+        echo <<<JS
+                <script id="bnpl-script">
                     $(document).ready(function() {
                         toggleAgreementCheckbox()
                         if ($('#bnpl_payment').length) toggleSubmitButton($('#bnpl_payment'))
@@ -134,6 +162,7 @@ class EventHandler
                         function toggleAgreementCheckbox()
                         {
                             let payValue = $('input[name="PAY_SYSTEM_ID"]:checked:enabled').val();
+                            console.log(payValue);
                             if (payValue == '$paymentId') {
                                 if ($('#bnpl-payment-offer-block').length) return
                                 drawCheckbox()
@@ -150,18 +179,16 @@ class EventHandler
                                 $('a[data-save-button]').prop('style','margin: 10px 0')
                                 $('#bnpl-error').remove()
                             } else {
-                                $('a[data-save-button]').prop('style','display: none !important')
-                                if (!$('#bnpl-form-button').length) {
-                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>$agreementTextButton</button>")
-                                }
                                 if (!$('#bnpl-error').length) {
-                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">$agreementTextError</p>')
+                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger"> $agreementTextError</p>')
                                 }
                             }
                         }
                         
                         function addElem() {
-                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>$agreementText <a href='$agreementLink' target='_blank'>$agreementTextLink</a></label></div>")
+                            formLast = $("form[action='/personal/order/make/']").children("input").slice(-2);
+                            console.log(formLast);
+                            $(formLast[0]).after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/> $agreementText <a href='$agreementLink' target='_blank'> $agreementTextLink</a></label></div>")
                         }
                         
                         function removeElem() {
@@ -170,24 +197,11 @@ class EventHandler
                         
                     })
                 </script>
-JS
-        );
+JS;
     }
 
-
-    private static function getPaySystemId()
+    private static function getAgreementLink($id)
     {
-        return PaySystemActionTable::getRow(array(
-            'filter'=>array('CODE'=>'factoring004')
-        ))['ID'];
-    }
-
-    private static function getAgreementLink()
-    {
-        $id = Config::get('BNPL_PAYMENT_FILE');
-        if (!$id) {
-            return '';
-        }
         global $DB;
         $dbOption = $DB->Query("SELECT SUBDIR, FILE_NAME FROM b_file WHERE ID=$id");
         $result = $dbOption->Fetch();
