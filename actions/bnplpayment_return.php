@@ -12,6 +12,8 @@ use Bitrix\Sale\Order;
 use Bnpl\Payment\Config;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
+use BnplPartners\Factoring004\ChangeStatus\CancelOrder;
+use BnplPartners\Factoring004\ChangeStatus\CancelStatus;
 use BnplPartners\Factoring004\ChangeStatus\MerchantsOrders;
 use BnplPartners\Factoring004\ChangeStatus\ReturnOrder;
 use BnplPartners\Factoring004\ChangeStatus\ReturnStatus;
@@ -43,9 +45,29 @@ $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 $orderId = $request->get('order_id');
 $ids = Config::getDeliveryIds();
+$order = Order::load($orderId);
+$deliveryStatus = $order->getShipmentCollection()[0]->getField('STATUS_ID');
 
 try {
-    if (array_intersect($ids, Order::load($orderId)->getDeliveryIdList())) {
+    if ($deliveryStatus !== 'DF') {
+        // cancel order
+        $result = $api->changeStatus->changeStatusJson([
+            new MerchantsOrders($partnerCode, [
+                new CancelOrder($request->get('order_id'), CancelStatus::CANCEL()),
+            ]),
+        ]);
+
+        if ($result->getSuccessfulResponses()) {
+            $response->setContent(json_encode(['success' => true, 'cancel' => true]));
+        } else {
+            $responses = $result->getErrorResponses();
+
+            foreach ($responses as $res) {
+                $response->setContent(json_encode(['success' => false, 'response' => $res->toArray()]));
+                break;
+            }
+        }
+    } elseif (array_intersect($ids, $order->getDeliveryIdList())) {
         // should send OTP
         $api->otp->sendOtpReturn(new SendOtpReturn(0, $partnerCode, $orderId));
         $response->setContent(json_encode(['otp' => true, 'success' => true]));

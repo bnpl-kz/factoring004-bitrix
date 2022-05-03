@@ -34,7 +34,7 @@
             return;
           }
 
-          if (!data.otp) {
+          if (!data.otp || data.cancel) {
             originalAction.call(this);
             return;
           }

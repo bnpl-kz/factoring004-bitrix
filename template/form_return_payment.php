@@ -71,7 +71,7 @@
             return;
           }
 
-          if (!data.otp) {
+          if (!data.otp || data.cancel) {
             submitForm();
             return;
           }
