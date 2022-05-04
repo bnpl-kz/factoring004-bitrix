@@ -1,6 +1,6 @@
 <?php
 
-// require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $classes = array(
     '\Bnpl\Payment\PreAppOrderManager' => 'lib/facades/preapp_order_manager.php',
