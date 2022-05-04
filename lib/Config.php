@@ -10,6 +10,8 @@ class Config
 {
     const KEY_PREFIX = 'PAYSYSTEM_';
 
+    private static $bnplParams;
+
     /**
      * @var string|null
      */
@@ -22,9 +24,13 @@ class Config
      */
     public static function get($key)
     {
-        try {
-            return BusinessValue::get($key, static::KEY_PREFIX . static::findPaySystemId());
-        } catch (Exception $e) {
+        static::getPaySystemId();
+        static::getBNPLParams();
+        print_r(static::$bnplParams);
+        if ( array_key_exists($key, static::$bnplParams)) {
+            echo $key . ' - ' . static::$bnplParams[$key]['VALUE'] . '<br>';
+            return static::$bnplParams[$key]['VALUE'];
+        } else {
             return null;
         }
     }
@@ -54,13 +60,31 @@ class Config
             return static::$paySystemId;
         }
 
-        $result = PaySystemActionTable::getRow([
-            'select' => array('ID'),
-            'filter' => array('CODE' => 'factoring004'),
-            'limit' => 1,
-        ]);
+        $paySystemAction = \CSalePaySystemAction::GetList(
+            [],
+            array('%ACTION_FILE' => 'bnplpayment'),
+            false,
+            false,
+            ['PAY_SYSTEM_ID']
+        );
+        $action = $paySystemAction->Fetch();
+        return static::$paySystemId = isset($action) ? $action['PAY_SYSTEM_ID'] : null;
+    }
 
-        return static::$paySystemId = isset($result) ? $result['ID'] : null;
+    private static function getBNPLParams()
+    {
+        $paySystemAction = \CSalePaySystemAction::GetList(
+            [],
+            array('PAY_SYSTEM_ID' => static::$paySystemId),
+            false,
+            false,
+            ['PARAMS']
+        );
+
+        $action = $paySystemAction->Fetch();
+        $params = unserialize($action['PARAMS']);
+
+        static::$bnplParams = $params;
     }
 
     public static function getDeliveryIds()
