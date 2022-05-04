@@ -13,8 +13,5 @@ if (SM_VERSION == '16.0.11') {
         if (isset($item['DEFAULT'])) {
             $item['VALUE'] = $item['DEFAULT']['PROVIDER_VALUE'];
         }
-        if (isset($item['INPUT'])) {
-            $item = array_merge($item, $item['INPUT']);
-        }
     }
 }

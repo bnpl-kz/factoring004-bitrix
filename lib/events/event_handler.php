@@ -129,7 +129,7 @@ class EventHandler
 
         IncludeModuleLangFile(__FILE__);
 
-        $agreementLink = static::getAgreementLink($bnplAgreementFileId['VALUE']);
+        $agreementLink = $bnplAgreementFileId['VALUE'];
         $agreementText = GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT');
         $agreementTextLink =  GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT_LINK');
         $agreementTextError =  GetMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
