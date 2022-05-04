@@ -17,11 +17,13 @@ if (!check_bitrix_sessid()) {
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
 use Bnpl\Payment\Config;
+use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PaymentProcessor;
 use Bnpl\Payment\PreAppOrderManager;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ValidationException;
+use BnplPartners\Factoring004\Transport\GuzzleTransport;
 
 define("STOP_STATISTICS", true);
 define('NO_AGENT_CHECK', true);
@@ -38,7 +40,9 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $preAppToken = Config::get('BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN');
 
-$api = Api::create($apiHost, new BearerTokenAuth($preAppToken));
+$transport = new GuzzleTransport();
+$transport->setLogger(DebugLoggerFactory::create()->createLogger());
+$api = Api::create($apiHost, new BearerTokenAuth($preAppToken), $transport);
 
 $request = Application::getInstance()->getContext()->getRequest();
 $processor = new PaymentProcessor($api, new PreAppOrderManager());

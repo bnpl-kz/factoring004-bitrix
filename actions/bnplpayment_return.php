@@ -10,6 +10,7 @@ use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
 use Bitrix\Sale\Order;
 use Bnpl\Payment\Config;
+use Bnpl\Payment\DebugLoggerFactory;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\ChangeStatus\CancelOrder;
@@ -19,6 +20,7 @@ use BnplPartners\Factoring004\ChangeStatus\ReturnOrder;
 use BnplPartners\Factoring004\ChangeStatus\ReturnStatus;
 use BnplPartners\Factoring004\Exception\ValidationException;
 use BnplPartners\Factoring004\Otp\SendOtpReturn;
+use BnplPartners\Factoring004\Transport\GuzzleTransport;
 
 define("NO_KEEP_STATISTIC", true);
 define("NO_AGENT_STATISTIC", true);
@@ -40,7 +42,9 @@ $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $partnerCode = Config::get('BNPL_PAYMENT_PARTNER_CODE');
 $accountingServiceToken = Config::get('BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN');
 
-$api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken));
+$transport = new GuzzleTransport();
+$transport->setLogger(DebugLoggerFactory::create()->createLogger());
+$api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $transport);
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 $orderId = $request->get('order_id');
