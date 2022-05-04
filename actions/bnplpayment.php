@@ -16,7 +16,6 @@ if (!check_bitrix_sessid()) {
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
-use Bnpl\Payment\BitrixSimpleCache;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\PaymentProcessor;
 use Bnpl\Payment\PreAppOrderManager;
