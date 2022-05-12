@@ -78,7 +78,16 @@ try {
     } else {
         // Delivery without OTP
         $result = $api->changeStatus->changeStatusJson([
-            new MerchantsOrders($partnerCode, [new ReturnOrder($orderId, ReturnStatus::RETURN(), 0)])
+            new MerchantsOrders(
+                $partnerCode,
+                [
+                    new ReturnOrder(
+                        $orderId,
+                        ReturnStatus::RETURN(),
+                        0
+                    )
+                ]
+            )
         ]);
 
         if ($result->getSuccessfulResponses()) {

@@ -42,8 +42,20 @@ $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $tran
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 
+// get order paid sum
+$order = \Bitrix\Sale\Order::load($orderId);
+$paidSum = $order->getSumPaid();
+
+
 try {
-    $api->otp->checkOtp(new CheckOtp($partnerCode, $request->get('order_id'), $request->get('otp')));
+    $api->otp->checkOtp(
+        new CheckOtp(
+            $partnerCode,
+            $request->get('order_id'),
+            $request->get('otp'),
+            $paidSum
+        )
+    );
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
 } catch (Exception $e) {
