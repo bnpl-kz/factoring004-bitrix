@@ -20,5 +20,9 @@
       "type": "vcs",
       "url": "git@github.com:bnpl-partners/factoring004.git"
     }
-  ]
+  ],
+  "autoload": {
+    "classmap": ["lib"],
+    "exclude-from-classmap": ["lib/events", "lib/exceptions", "lib/facades", "lib/orm"]
+  }
 }
