@@ -11,6 +11,7 @@ use Bitrix\Sale\PaySystem;
 use Bitrix\Sale\PaySystem\ServiceResult;
 use Bitrix\Sale\ResultError;
 use Bnpl\Payment\Config;
+use Bnpl\Payment\DebugLoggerFactory;
 use BnplPartners\Factoring004\Exception\InvalidSignatureException;
 use BnplPartners\Factoring004\Signature\PostLinkSignatureValidator;
 
@@ -107,6 +108,8 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
 
         if (isset($data['signature'])) {
             require_once __DIR__ . '/../vendor/autoload.php';
+
+            DebugLoggerFactory::create()->createLogger()->debug('POSTLINK: ' . Json::encode($data));
 
             try {
                 $this->validateSignature($data);
