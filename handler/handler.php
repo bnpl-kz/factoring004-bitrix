@@ -106,16 +106,14 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
             return $result;
         }
 
-        if (isset($data['signature'])) {
-            require_once __DIR__ . '/../vendor/autoload.php';
+        require_once __DIR__ . '/../vendor/autoload.php';
 
-            DebugLoggerFactory::create()->createLogger()->debug('POSTLINK: ' . Json::encode($data));
+        DebugLoggerFactory::create()->createLogger()->debug('POSTLINK: ' . Json::encode($data));
 
-            try {
-                $this->validateSignature($data);
-            } catch (InvalidSignatureException $e) {
-                return $result->addError(new ResultError('Invalid signature', 'INVALID_SIGNATURE'));
-            }
+        try {
+            $this->validateSignature($data);
+        } catch (InvalidSignatureException $e) {
+            return $result->addError(new ResultError('Invalid signature', 'INVALID_SIGNATURE'));
         }
 
         $status = $data['status'];
