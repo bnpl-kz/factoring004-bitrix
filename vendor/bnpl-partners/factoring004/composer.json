@@ -1,0 +1,37 @@
+{
+    "name": "bnpl-partners/factoring004",
+    "description": "Buy now pay later API SDK",
+    "keywords": [],
+    "type": "library",
+    "require": {
+        "php": ">=7.0",
+        "ext-json": "*",
+        "psr/http-factory": "^1.0",
+        "psr/http-client": "^1.0",
+        "myclabs/php-enum": "^1.6",
+        "psr/simple-cache": "^1.0",
+        "guzzlehttp/guzzle": ">=6.0",
+        "psr/log": "^1.1"
+    },
+    "require-dev": {
+
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BnplPartners\\Factoring004\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BnplPartners\\Factoring004\\": "tests/"
+        }
+    },
+    "authors": [],
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
+    }
+}
