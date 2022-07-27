@@ -41,6 +41,7 @@ $transport->setLogger(DebugLoggerFactory::create()->createLogger());
 $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $transport);
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
+$orderId = $request->get('order_id');
 
 // get order paid sum
 $order = \Bitrix\Sale\Order::load($orderId);
@@ -51,7 +52,7 @@ try {
     $api->otp->checkOtp(
         new CheckOtp(
             $partnerCode,
-            $request->get('order_id'),
+            $orderId,
             $request->get('otp'),
             $paidSum
         )
