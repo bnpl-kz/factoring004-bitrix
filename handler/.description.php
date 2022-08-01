@@ -71,16 +71,6 @@ $data = array(
             'GROUP' => 'MERCHANT PARAMETERS',
         ),
 
-        'BNPL_PAYMENT_POST_LINK' => array(
-            'NAME' => 'Post Link',
-            'SORT' => 1100,
-            'GROUP' => 'ORDER PARAMETERS',
-            'DEFAULT' => array(
-                'PROVIDER_VALUE' => '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment',
-                'PROVIDER_KEY' => 'VALUE',
-            ),
-        ),
-
         'BNPL_PAYMENT_FILE' => array(
             'NAME' => Loc::getMessage('BNPL_PAYMENT_FILE_NAME'),
             'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_FILE_DESCRIPTION'),

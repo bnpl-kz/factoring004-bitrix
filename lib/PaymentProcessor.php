@@ -134,8 +134,6 @@ class PaymentProcessor
      */
     private function resolvePostLink()
     {
-        $value = Config::get('BNPL_PAYMENT_POST_LINK');
-
-        return $value ?: '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment';
+        return '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment';
     }
 }
