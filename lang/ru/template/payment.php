@@ -1,3 +1,3 @@
 <?php
 
-$MESS['BNPL_PAYMENT_PAY_BUTTON'] = 'Îïëàòèòü';
+$MESS['BNPL_PAYMENT_PAY_BUTTON'] = 'ÐžÐ¿Ð»Ð°Ñ‚Ð¸Ñ‚ÑŒ';

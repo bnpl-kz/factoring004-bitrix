@@ -1,6 +1,6 @@
 <?php
 
-$MESS['BNPL_PAYMENT_AGREEMENT_TEXT'] = 'ß îçíàêîìëåí è ñîãëàñåí ñ óñëîâèÿìè';
-$MESS['BNPL_PAYMENT_AGREEMENT_TEXT_LINK'] = 'Ðàññðî÷êà 0-0-4';
-$MESS['BNPL_PAYMENT_AGREEMENT_TEXT_ERROR'] = 'Âàì íåîáõîäèìî ñîãëàñèòüñÿ ñ óñëîâèÿìè!';
-$MESS['BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON'] = 'Îôîðìèòü çàêàç';
+$MESS['BNPL_PAYMENT_AGREEMENT_TEXT'] = 'Ð¯ Ð¾Ð·Ð½Ð°ÐºÐ¾Ð¼Ð»ÐµÐ½ Ð¸ ÑÐ¾Ð³Ð»Ð°ÑÐµÐ½ Ñ ÑƒÑÐ»Ð¾Ð²Ð¸ÑÐ¼Ð¸';
+$MESS['BNPL_PAYMENT_AGREEMENT_TEXT_LINK'] = 'Ð Ð°ÑÑÑ€Ð¾Ñ‡ÐºÐ° 0-0-4';
+$MESS['BNPL_PAYMENT_AGREEMENT_TEXT_ERROR'] = 'Ð’Ð°Ð¼ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ ÑÐ¾Ð³Ð»Ð°ÑÐ¸Ñ‚ÑŒÑÑ Ñ ÑƒÑÐ»Ð¾Ð²Ð¸ÑÐ¼Ð¸!';
+$MESS['BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON'] = 'ÐžÑ„Ð¾Ñ€Ð¼Ð¸Ñ‚ÑŒ Ð·Ð°ÐºÐ°Ð·';

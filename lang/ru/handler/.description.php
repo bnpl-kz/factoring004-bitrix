@@ -1,7 +1,7 @@
 <?php
 
-$MESS["BNPL_PAYMENT_NAME"] = 'Ðàññðî÷êà 0-0-4';
-$MESS["BNPL_PAYMENT_FILE_NAME"] = 'Ôàéë îôåðòû';
-$MESS["BNPL_PAYMENT_FILE_DESCRIPTION"] = 'Çàãðóçèòå ôàéë îôåðòû, åñëè âàì íåîáõîäèìî åãî îòîáðàçèòü êëèåíòó';
-$MESS["BNPL_PAYMENT_DELIVERY_YES"] = 'Äà';
-$MESS["BNPL_PAYMENT_DELIVERY_NO"] = 'Íåò';
+$MESS["BNPL_PAYMENT_NAME"] = 'Ð Ð°ÑÑÑ€Ð¾Ñ‡ÐºÐ° 0-0-4';
+$MESS["BNPL_PAYMENT_FILE_NAME"] = 'Ð¤Ð°Ð¹Ð» Ð¾Ñ„ÐµÑ€Ñ‚Ñ‹';
+$MESS["BNPL_PAYMENT_FILE_DESCRIPTION"] = 'Ð—Ð°Ð³Ñ€ÑƒÐ·Ð¸Ñ‚Ðµ Ñ„Ð°Ð¹Ð» Ð¾Ñ„ÐµÑ€Ñ‚Ñ‹, ÐµÑÐ»Ð¸ Ð²Ð°Ð¼ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ ÐµÐ³Ð¾ Ð¾Ñ‚Ð¾Ð±Ñ€Ð°Ð·Ð¸Ñ‚ÑŒ ÐºÐ»Ð¸ÐµÐ½Ñ‚Ñƒ';
+$MESS["BNPL_PAYMENT_DELIVERY_YES"] = 'Ð”Ð°';
+$MESS["BNPL_PAYMENT_DELIVERY_NO"] = 'ÐÐµÑ‚';
