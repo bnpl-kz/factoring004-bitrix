@@ -1,0 +1,8 @@
+Change token inputs to textarea
+Add cancel order feature
+Add debug logger
+Add amount parameter in delivery method
+Add postlink signature validation and debugging
+Updates SDK and other dependencies to the last version
+Remove postlink optional parameters
+Fixed other errors
