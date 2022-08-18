@@ -4,7 +4,6 @@ namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Page\Asset;
-use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Order;
@@ -34,6 +33,10 @@ class EventHandler
         array &$arDeliveryServiceAll,
         &$arPaySystemServiceAll
     ) {
+        if (!Config::getPaySystemId()) {
+            return;
+        }
+
         if (!static::isRequiredOptionsFilled()) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
             return;
@@ -41,10 +44,12 @@ class EventHandler
 
         if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+            return;
         }
 
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+            return;
         }
 
         if (Config::get('BNPL_PAYMENT_FILE')) {
