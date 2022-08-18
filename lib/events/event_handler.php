@@ -4,7 +4,6 @@ namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Page\Asset;
-use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Order;
@@ -34,6 +33,10 @@ class EventHandler
         array &$arDeliveryServiceAll,
         &$arPaySystemServiceAll
     ) {
+        if (!Config::getPaySystemId()) {
+            return;
+        }
+
         if (!static::isRequiredOptionsFilled()) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
             return;
@@ -41,11 +44,15 @@ class EventHandler
 
         if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+            return;
         }
 
         if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+            return;
         }
+
+        static::addSchedule();
 
         if (Config::get('BNPL_PAYMENT_FILE')) {
             static::addJS();
@@ -194,4 +201,46 @@ JS
         return '/upload/'.$result['SUBDIR'].'/'.$result['FILE_NAME'];
     }
 
+    private static function addSchedule()
+    {
+        $paySystemId = Config::getPaySystemId();
+
+        Asset::getInstance()->addCss('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
+        Asset::getInstance()->addString('<script src="/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS . '" defer></script>');
+        Asset::getInstance()->addString(
+            <<<JS
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const editActivePaySystemBlock = BX.Sale.OrderAjaxComponent.editActivePaySystemBlock;
+                        
+                        BX.Sale.OrderAjaxComponent.editActivePaySystemBlock = function (activeNodeMode) {
+                          editActivePaySystemBlock.call(this, activeNodeMode);
+                      
+                          if (!activeNodeMode) return;
+                          
+                          const input = document.getElementById('ID_PAY_SYSTEM_ID_' + $paySystemId);
+                          
+                          if (!input.checked) return;
+                          
+                          const totalAmountSelector = '#bx-soa-total .bx-soa-cart-total-line-total .bx-soa-cart-d';
+                          const totalAmountElem = document.querySelector(totalAmountSelector);
+                          const schedule = new Factoring004.PaymentSchedule({
+                            elemId: 'factoring004-schedule',
+                            totalAmount: Math.ceil(parseFloat(totalAmountElem.textContent.replace(/\s+/g, ''))),
+                          });
+                          
+                          const elem = document.createElement('div');
+                          elem.id = 'factoring004-schedule';
+                            
+                          schedule.renderTo(elem);
+                        
+                          this.paySystemBlockNode
+                            .querySelector('.bx-soa-section-content .bx-soa-pp')
+                            .insertAdjacentElement('afterend', elem);
+                        };
+                    });
+                </script>
+JS
+        );
+    }
 }
