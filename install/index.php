@@ -5,6 +5,7 @@ use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
 use Bitrix\Main\IO\File;
+use Bnpl\Payment\PaymentScheduleAsset;
 
 class bnpl_payment extends CModule
 {
@@ -97,6 +98,20 @@ class bnpl_payment extends CModule
             true
         );
 
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/schedule/' . PaymentScheduleAsset::FILE_CSS,
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS,
+            true,
+            true
+        );
+
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/schedule/' . PaymentScheduleAsset::FILE_JS,
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS,
+            true,
+            true
+        );
+
         $source = Application::getDocumentRoot() . '/bitrix/modules/' . $this->MODULE_ID . '/install';
         $logo_dir = Application::getDocumentRoot() . '/bitrix/images/sale/sale_payments/';
         File::putFileContents($logo_dir . 'bnplpayment.png', File::getFileContents($source . "/sale_payment/bnplpayment/bnplpayment.png"));
@@ -142,6 +157,8 @@ class bnpl_payment extends CModule
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_return_check_otp.php');
        DeleteDirFilesEx('/bitrix/php_interface/admin_header.php');
        DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
+       DeleteDirFilesEx('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
+       DeleteDirFilesEx('/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS);
     }
 
     public function UnInstallDB()
