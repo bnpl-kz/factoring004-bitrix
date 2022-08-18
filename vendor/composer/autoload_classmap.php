@@ -69,6 +69,7 @@ return array(
     'Bnpl\\Payment\\Config' => $baseDir . '/lib/Config.php',
     'Bnpl\\Payment\\DebugLoggerFactory' => $baseDir . '/lib/DebugLoggerFactory.php',
     'Bnpl\\Payment\\PaymentProcessor' => $baseDir . '/lib/PaymentProcessor.php',
+    'Bnpl\\Payment\\PaymentScheduleAsset' => $baseDir . '/lib/PaymentScheduleAsset.php',
     'Bnpl\\Payment\\SimpleDebugLogger' => $baseDir . '/lib/SimpleDebugLogger.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'GuzzleHttp\\BodySummarizer' => $vendorDir . '/guzzlehttp/guzzle/src/BodySummarizer.php',

@@ -48,8 +48,8 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -141,6 +141,7 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
         'Bnpl\\Payment\\Config' => __DIR__ . '/../..' . '/lib/Config.php',
         'Bnpl\\Payment\\DebugLoggerFactory' => __DIR__ . '/../..' . '/lib/DebugLoggerFactory.php',
         'Bnpl\\Payment\\PaymentProcessor' => __DIR__ . '/../..' . '/lib/PaymentProcessor.php',
+        'Bnpl\\Payment\\PaymentScheduleAsset' => __DIR__ . '/../..' . '/lib/PaymentScheduleAsset.php',
         'Bnpl\\Payment\\SimpleDebugLogger' => __DIR__ . '/../..' . '/lib/SimpleDebugLogger.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'GuzzleHttp\\BodySummarizer' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/BodySummarizer.php',
