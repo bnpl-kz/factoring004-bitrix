@@ -52,6 +52,8 @@ class EventHandler
             return;
         }
 
+        static::addSchedule();
+
         if (Config::get('BNPL_PAYMENT_FILE')) {
             static::addJS();
         }
@@ -199,4 +201,46 @@ JS
         return '/upload/'.$result['SUBDIR'].'/'.$result['FILE_NAME'];
     }
 
+    private static function addSchedule()
+    {
+        $paySystemId = Config::getPaySystemId();
+
+        Asset::getInstance()->addCss('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
+        Asset::getInstance()->addString('<script src="/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS . '" defer></script>');
+        Asset::getInstance()->addString(
+            <<<JS
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const editActivePaySystemBlock = BX.Sale.OrderAjaxComponent.editActivePaySystemBlock;
+                        
+                        BX.Sale.OrderAjaxComponent.editActivePaySystemBlock = function (activeNodeMode) {
+                          editActivePaySystemBlock.call(this, activeNodeMode);
+                      
+                          if (!activeNodeMode) return;
+                          
+                          const input = document.getElementById('ID_PAY_SYSTEM_ID_' + $paySystemId);
+                          
+                          if (!input.checked) return;
+                          
+                          const totalAmountSelector = '#bx-soa-total .bx-soa-cart-total-line-total .bx-soa-cart-d';
+                          const totalAmountElem = document.querySelector(totalAmountSelector);
+                          const schedule = new Factoring004.PaymentSchedule({
+                            elemId: 'factoring004-schedule',
+                            totalAmount: Math.ceil(parseFloat(totalAmountElem.textContent.replace(/\s+/g, ''))),
+                          });
+                          
+                          const elem = document.createElement('div');
+                          elem.id = 'factoring004-schedule';
+                            
+                          schedule.renderTo(elem);
+                        
+                          this.paySystemBlockNode
+                            .querySelector('.bx-soa-section-content .bx-soa-pp')
+                            .insertAdjacentElement('afterend', elem);
+                        };
+                    });
+                </script>
+JS
+        );
+    }
 }
