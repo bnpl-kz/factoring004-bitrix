@@ -126,7 +126,7 @@ class PaymentProcessor
      */
     private function extractServerHost(HttpRequest $request)
     {
-        return $request->getServer()->getRequestScheme() . '://' . $request->getHttpHost();
+        return $request->getServer()->getRequestScheme() . '://' . $request->getServer()->getHttpHost();
     }
 
     /**
