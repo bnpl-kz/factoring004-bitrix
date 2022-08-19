@@ -14,6 +14,9 @@ use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use BnplPartners\Factoring004\Exception\InvalidSignatureException;
 use BnplPartners\Factoring004\Signature\PostLinkSignatureValidator;
+use Exception;
+
+require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
  * @package Sale\Handlers\PaySystem
@@ -57,7 +60,7 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
     /**
      * @param Request $request
      *
-     * @return string|null
+     * @return int|null
      */
     public function getPaymentIdFromRequest(Request $request)
     {
@@ -67,7 +70,23 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
             return null;
         }
 
-        return isset($data['billNumber']) ? $data['billNumber'] : null;
+        if (empty($data['billNumber'])) {
+            return null;
+        }
+
+        try {
+            $payments = Payment::loadForOrder($data['billNumber']);
+        } catch (Exception $e) {
+            return null;
+        }
+
+        foreach ($payments as $payment) {
+            if ($payment->getPaymentSystemId() === (int) Config::getPaySystemId()) {
+                return $payment->getId();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -105,8 +124,6 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
         } catch (Main\ArgumentException $e) {
             return $result;
         }
-
-        require_once __DIR__ . '/../vendor/autoload.php';
 
         DebugLoggerFactory::create()->createLogger()->debug('POSTLINK: ' . Json::encode($data));
 
