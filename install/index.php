@@ -112,6 +112,13 @@ class bnpl_payment extends CModule
             true
         );
 
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_error.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_error.php',
+            true,
+            true
+        );
+
         mkdir($_SERVER['DOCUMENT_ROOT'] . '/bitrix/tmp/factoring004', 0755, true);
 
         $source = Application::getDocumentRoot() . '/bitrix/modules/' . $this->MODULE_ID . '/install';
@@ -162,6 +169,7 @@ class bnpl_payment extends CModule
        DeleteDirFilesEx('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
        DeleteDirFilesEx('/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS);
        DeleteDirFilesEx('/bitrix/tmp/factoring004');
+       DeleteDirFilesEx('/personal/order/payment/bnplpayment_error.php');
     }
 
     public function UnInstallDB()
