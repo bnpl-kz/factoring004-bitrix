@@ -76,9 +76,7 @@ try {
         $error = $isDebug ? $e->getMessage() : 'An error occurred. Please try again.';
     }
 
-    $response = new \Bitrix\Main\HttpResponse();
-    $response->setStatus(500);
-    $response->setContent($error);
+    $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpayment_error.php');
 }
 
 $response->send();
