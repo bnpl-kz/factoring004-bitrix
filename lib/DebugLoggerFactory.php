@@ -18,26 +18,31 @@ class DebugLoggerFactory
 
     public function createLogger(): LoggerInterface
     {
-        if (!$this->isEnabled()) {
+        $path = $this->getLogPath();
+        $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $path;
+
+        if (!is_writable(dirname($fullPath))) {
             return new NullLogger();
         }
 
+        $level = $this->isDebug() ? LogLevel::DEBUG : LogLevel::INFO;
+
         if (class_exists('\Bitrix\Main\Diag\Logger')) {
-            return $this->createPsrLogger();
+            return $this->createPsrLogger($fullPath, $level);
         }
 
-        return new SimpleDebugLogger($this->getLogPath());
+        return new SimpleDebugLogger($path, $level);
     }
 
-    private function isEnabled(): bool
+    private function isDebug(): bool
     {
         return (bool) Configuration::getValue('exception_handling')['debug'] ?? false;
     }
 
-    private function createPsrLogger(): LoggerInterface
+    private function createPsrLogger(string $path, string $level): LoggerInterface
     {
-        $logger = new \Bitrix\Main\Diag\FileLogger($this->getLogPath());
-        $logger->setLevel(LogLevel::DEBUG);
+        $logger = new \Bitrix\Main\Diag\FileLogger($path);
+        $logger->setLevel($level);
 
         return $logger;
     }
@@ -46,6 +51,10 @@ class DebugLoggerFactory
     {
         $config = Configuration::getValue('exception_handling')['log'] ?? [];
         $path = $config['settings']['file'] ?? '';
+
+        if (empty($path)) {
+            return 'bitrix/tmp/factoring004/' . $this->getLogFilename();
+        }
 
         $path = pathinfo($path, PATHINFO_DIRNAME);
         $path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $path);
