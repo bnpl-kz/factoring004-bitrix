@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
 use Bnpl\Payment\Config;
+use Bitrix\Sale\Order;
 use Bnpl\Payment\DebugLoggerFactory;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
@@ -44,9 +45,52 @@ $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $tran
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 $orderId = $request->get('order_id');
-
+$amount = $request->get('amount') ?: 0;
+$returnItems = $request->get('returnItems') ?: false;
 try {
-    $api->otp->checkOtpReturn(new CheckOtpReturn(0, $partnerCode, $request->get('order_id'), $request->get('otp')));
+    $order = Order::load($orderId);
+    if ($amount > 0) {
+        $amountAR = $order->getSumPaid() - $amount;
+        if ($amountAR <= 0) {
+            $amountAR = 0;
+        }
+    } else {
+        $amountAR = 0;
+    }
+    $api->otp->checkOtpReturn(new CheckOtpReturn($amountAR, $partnerCode, $request->get('order_id'), $request->get('otp')));
+    // обновление корзины
+    if (!empty($returnItems)) {
+        $returnItems = json_decode($returnItems, true);
+        $basket = $order->getBasket();
+        foreach ($returnItems as $returnItem) {
+
+            if ($basketItem = $basket->getItemById($returnItem['ID'])) {
+                $newQuantity = $basketItem->getQuantity() - $returnItem['quant'];
+                if ($newQuantity > 0) {
+                    $basketItem->setField('QUANTITY', $newQuantity);
+                } else {
+                    $basketItem->delete();
+                }
+                $basketItem->save();
+            }
+        }
+    }
+    // возврат платежей
+    $bnplPaymentService = null;
+    foreach ($order->getPaymentCollection() as $payment) {
+        $paySystemService = $payment->getPaySystem();
+        if ($paySystemService->getField('CODE') == 'factoring004') {
+            $bnplPaymentService = $paySystemService;
+        }
+        $payment->setReturn("P");
+    }
+    // Добавление нового платежа на сумму после возврата
+    if ($amountAR > 0) {
+        $newPayment = $order->getPaymentCollection()->createItem($bnplPaymentService);
+        $newPayment->setField('SUM', $amountAR);
+        $newPayment->setPaid('Y');
+    }
+    $order->save();
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
 } catch (Exception $e) {

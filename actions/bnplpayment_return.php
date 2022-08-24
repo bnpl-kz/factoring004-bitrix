@@ -50,6 +50,8 @@ $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $tran
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
 $orderId = $request->get('order_id');
+$amount = $request->get('amount') ?: 0;
+$returnItems = $request->get('returnItems') ?: false;
 $ids = Config::getDeliveryIds();
 $order = Order::load($orderId);
 $deliveryStatus = $order->getShipmentCollection()[0]->getField('STATUS_ID');
@@ -75,24 +77,71 @@ try {
         }
     } elseif (array_intersect($ids, $order->getDeliveryIdList())) {
         // should send OTP
-        $api->otp->sendOtpReturn(new SendOtpReturn(0, $partnerCode, $orderId));
+        $amountAR = 0;
+        if ($amount > 0) {
+            $amountAR = $order->getSumPaid() - $amount;
+        }
+        $api->otp->sendOtpReturn(new SendOtpReturn($amountAR, $partnerCode, $orderId));
         $response->setContent(json_encode(['otp' => true, 'success' => true]));
     } else {
         // Delivery without OTP
+        $returnType = ReturnStatus::RETURN();
+        $amountAR = 0;
+        if ($amount > 0) {
+            $amountAR = $order->getSumPaid() - $amount;
+            if ($amountAR > 0) {
+                $returnType = ReturnStatus::PARTRETURN();
+            } else {
+                $amountAR = 0;
+            }
+        }
         $result = $api->changeStatus->changeStatusJson([
             new MerchantsOrders(
                 $partnerCode,
                 [
                     new ReturnOrder(
                         $orderId,
-                        ReturnStatus::RETURN(),
-                        0
+                        $returnType,
+                        $amountAR
                     )
                 ]
             )
         ]);
 
         if ($result->getSuccessfulResponses()) {
+            // обновление корзины
+            if (!empty($returnItems)) {
+                $returnItems = json_decode($returnItems, true);
+                $basket = $order->getBasket();
+                foreach ($returnItems as $returnItem) {
+
+                    if ($basketItem = $basket->getItemById($returnItem['ID'])) {
+                        $newQuantity = $basketItem->getQuantity() - $returnItem['quant'];
+                        if ($newQuantity > 0) {
+                            $basketItem->setField('QUANTITY', $newQuantity);
+                        } else {
+                            $basketItem->delete();
+                        }
+                        $basketItem->save();
+                    }
+                }
+            }
+            // возврат платежей
+            $bnplPaymentService = false;
+            foreach ($order->getPaymentCollection() as $payment) {
+                $paySystemService = $payment->getPaySystem();
+                if ($paySystemService->getField('CODE') == 'factoring004') {
+                    $bnplPaymentService = $paySystemService;
+                }
+                $payment->setReturn("P");
+            }
+            // Добавление нового платежа на сумму после возврата
+            if ($amountAR > 0) {
+                $newPayment = $order->getPaymentCollection()->createItem($bnplPaymentService);
+                $newPayment->setField('SUM', $amountAR);
+                $newPayment->setPaid('Y');
+            }
+            $order->save();
             $response->setContent(json_encode(['success' => true]));
         } else {
             $responses = $result->getErrorResponses();
