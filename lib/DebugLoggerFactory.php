@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bnpl\Payment;
 
 use Bitrix\Main\Config\Configuration;
+use Bitrix\Main\Diag\LogFormatter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
@@ -43,6 +44,12 @@ class DebugLoggerFactory
     {
         $logger = new \Bitrix\Main\Diag\FileLogger($path);
         $logger->setLevel($level);
+        $logger->setFormatter(new class() extends LogFormatter {
+            public function format($message, array $context = []): string
+            {
+                return parent::format($message, $context) . PHP_EOL;
+            }
+        });
 
         return $logger;
     }
