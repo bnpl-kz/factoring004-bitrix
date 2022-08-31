@@ -224,15 +224,19 @@ JS
                           
                           const totalAmountSelector = '#bx-soa-total .bx-soa-cart-total-line-total .bx-soa-cart-d';
                           const totalAmountElem = document.querySelector(totalAmountSelector);
-                          const schedule = new Factoring004.PaymentSchedule({
-                            elemId: 'factoring004-schedule',
-                            totalAmount: Math.ceil(parseFloat(totalAmountElem.textContent.replace(/\s+/g, ''))),
-                          });
+                          let elem = document.getElementById('factoring004-schedule');
                           
-                          const elem = document.createElement('div');
-                          elem.id = 'factoring004-schedule';
+                          if (!elem) {
+                            const schedule = new Factoring004.PaymentSchedule({
+                              elemId: 'factoring004-schedule',
+                              totalAmount: Math.ceil(parseFloat(totalAmountElem.textContent.replace(/\s+/g, ''))),
+                            });
+                          
+                            elem = document.createElement('div');
+                            elem.id = 'factoring004-schedule';
                             
-                          schedule.renderTo(elem);
+                            schedule.renderTo(elem);
+                          }
                         
                           this.paySystemBlockNode
                             .querySelector('.bx-soa-section-content .bx-soa-pp')
