@@ -23,8 +23,6 @@ class EventHandler
         'BNPL_PAYMENT_PARTNER_NAME',
         'BNPL_PAYMENT_PARTNER_CODE',
         'BNPL_PAYMENT_POINT_CODE',
-        'BNPL_PAYMENT_PARTNER_EMAIL',
-        'BNPL_PAYMENT_PARTNER_WEBSITE'
     ];
 
     public static function hidePaySystem(
