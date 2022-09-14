@@ -1,3 +1,6 @@
+<?php
+    require_once __DIR__ . '/partial_return.php';
+?>
 <script>
   BX.Sale.Admin.OrderPayment.prototype.initPaidPopup = function () {
     var generalStatusFields = BX.findChildrenByClassName(BX('PAYMENT_BLOCK_STATUS_INFO_' + this.index), 'not_paid', true);
@@ -7,6 +10,8 @@
     if (this.viewForm) indexes.push(this.index + '_SHORT');
 
     var menu = [];
+
+    this.initFactoring004PartialRefund();
 
     if (Object.keys(this.psToReturn).length > 0) {
       menu.push(
@@ -56,6 +61,7 @@
             }
           }, this),
         },
+        this.getFactoring004PartialRefundMenuItem(),
       );
     }
 
