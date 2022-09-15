@@ -11,6 +11,8 @@ use Bitrix\Main\Context;
 use Bnpl\Payment\Config;
 use Bitrix\Sale\Order;
 use Bnpl\Payment\DebugLoggerFactory;
+use Bnpl\Payment\PartialRefundManager;
+use Bnpl\Payment\PartialRefundManagerException;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
@@ -42,55 +44,47 @@ $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
 $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $transport);
-$request = Context::getCurrent()->getRequest();
+$context = Context::getCurrent();
+$request = $context->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
-$orderId = $request->get('order_id');
-$amount = $request->get('amount') ?: 0;
-$returnItems = $request->get('returnItems') ?: false;
+$connection = $context->getApplication()->getConnectionPool()->getConnection();
+
+if (strpos($request->getHeader('Content-Type'), 'json') !== false) {
+    $data = json_decode($request->getInput(), true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $response->setStatus(400);
+        $response->send();
+        exit;
+    }
+
+    $orderId = $data['order_id'] ?? null;
+    $amount = $data['amount'] ?? 0;
+    $returnItems = $data['returnItems'] ?? [];
+    $otp = $data['otp'] ?? '';
+} else {
+    $orderId = $request->get('order_id');
+    $amount = $request->get('amount') ?? 0;
+    $returnItems = $request->get('returnItems') ?? [];
+    $otp = $request->get('otp') ?? '';
+}
+
 try {
     $order = Order::load($orderId);
-    if ($amount > 0) {
-        $amountAR = $order->getSumPaid() - $amount;
-        if ($amountAR <= 0) {
-            $amountAR = 0;
-        }
-    } else {
-        $amountAR = 0;
-    }
-    $api->otp->checkOtpReturn(new CheckOtpReturn($amountAR, $partnerCode, $request->get('order_id'), $request->get('otp')));
-    // обновление корзины
-    if (!empty($returnItems)) {
-        $returnItems = json_decode($returnItems, true);
-        $basket = $order->getBasket();
-        foreach ($returnItems as $returnItem) {
+    $amountAR = (int) ceil($order->getSumPaid() - $amount);
 
-            if ($basketItem = $basket->getItemById($returnItem['ID'])) {
-                $newQuantity = $basketItem->getQuantity() - $returnItem['quant'];
-                if ($newQuantity > 0) {
-                    $basketItem->setField('QUANTITY', $newQuantity);
-                } else {
-                    $basketItem->delete();
-                }
-                $basketItem->save();
-            }
-        }
+    if ($returnItems) {
+        $manager = PartialRefundManager::create($order, $returnItems);
+        $amountAR = $manager->calculateAmount();
+        $connection->startTransaction();
+
+        $manager->refund();
     }
-    // возврат платежей
-    $bnplPaymentService = null;
-    foreach ($order->getPaymentCollection() as $payment) {
-        $paySystemService = $payment->getPaySystem();
-        if ($paySystemService->getField('CODE') == 'factoring004') {
-            $bnplPaymentService = $paySystemService;
-        }
-        $payment->setReturn("P");
-    }
-    // Добавление нового платежа на сумму после возврата
-    if ($amountAR > 0) {
-        $newPayment = $order->getPaymentCollection()->createItem($bnplPaymentService);
-        $newPayment->setField('SUM', $amountAR);
-        $newPayment->setPaid('Y');
-    }
-    $order->save();
+
+    $api->otp->checkOtpReturn(new CheckOtpReturn($amountAR, $partnerCode, $orderId, $otp));
+
+    $connection->commitTransaction();
+
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
 } catch (Exception $e) {
@@ -111,6 +105,9 @@ try {
             json_encode($errorResponse->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ));
         $error = $errorResponse->getMessage();
+    } elseif ($e instanceof PartialRefundManagerException) {
+        $logger->error($e);
+        $error = $e->getMessage();
     } else {
         $isDebug = Configuration::getValue('exception_handling')['debug'];
 
