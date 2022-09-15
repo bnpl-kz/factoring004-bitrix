@@ -63,22 +63,22 @@ try {
     $response->setContent(json_encode(['success' => true]));
 } catch (Exception $e) {
     if ($e instanceof ErrorResponseException) {
-        $response = $e->getErrorResponse();
+        $errorResponse = $e->getErrorResponse();
         $logger->error(sprintf(
             '%s: %s: %s',
-            $response->getError(),
-            $response->getMessage(),
-            json_encode($response->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            $errorResponse->getError(),
+            $errorResponse->getMessage(),
+            json_encode($errorResponse->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ));
-        $error = $response->getError() . ': ' . $response->getMessage();
+        $error = $errorResponse->getError() . ': ' . $errorResponse->getMessage();
     } elseif ($e instanceof ValidationException) {
-        $response = $e->getResponse();
+        $errorResponse = $e->getResponse();
         $logger->error(sprintf(
             '%s: %s',
-            $response->getMessage(),
-            json_encode($response->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            $errorResponse->getMessage(),
+            json_encode($errorResponse->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ));
-        $error = $response->getMessage();
+        $error = $errorResponse->getMessage();
     } else {
         $isDebug = Configuration::getValue('exception_handling')['debug'];
 
