@@ -29,7 +29,7 @@
         })
         .then(data => {
           if (!data.success) {
-            this.enable();
+            setTimeout(() => this.enable(), 100);
             modal.ShowError(data.response.message)
             return;
           }
@@ -89,7 +89,7 @@
                       throw new Error('Status: ' + res.status);
                     })
                     .then(() => {
-                      this.enable();
+                      setTimeout(() => this.enable(), 100);
                       popup.Close();
                       originalAction.call(self);
                     })
