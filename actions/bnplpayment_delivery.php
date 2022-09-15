@@ -51,32 +51,17 @@ $ids = Config::getDeliveryIds();
 
 // get order paid sum
 $order = \Bitrix\Sale\Order::load($orderId);
-$paidSum = $order->getSumPaid();
+$paidSum = (int) ceil($order->getSumPaid());
 
 try {
     if (array_intersect($ids, $order->getDeliveryIdList())) {
         // should send OTP
-        $api->otp->sendOtp(
-            new SendOtp(
-                $partnerCode,
-                $orderId,
-                $paidSum
-            )
-        );
+        $api->otp->sendOtp(new SendOtp($partnerCode, $orderId, $paidSum));
         $response->setContent(json_encode(['otp' => true, 'success' => true]));
     } else {
         // Delivery without OTP
         $result = $api->changeStatus->changeStatusJson([
-            new MerchantsOrders(
-                $partnerCode,
-                [
-                    new DeliveryOrder(
-                        $orderId,
-                        DeliveryStatus::DELIVERY(),
-                        $paidSum
-                    )
-                ]
-            )
+            new MerchantsOrders($partnerCode, [new DeliveryOrder($orderId, DeliveryStatus::DELIVERY(), $paidSum)]),
         ]);
 
         if ($result->getSuccessfulResponses()) {

@@ -47,18 +47,10 @@ $orderId = $request->get('order_id');
 
 // get order paid sum
 $order = \Bitrix\Sale\Order::load($orderId);
-$paidSum = $order->getSumPaid();
 
 
 try {
-    $api->otp->checkOtp(
-        new CheckOtp(
-            $partnerCode,
-            $orderId,
-            $request->get('otp'),
-            $paidSum
-        )
-    );
+    $api->otp->checkOtp(new CheckOtp($partnerCode, $orderId, $request->get('otp'), (int) ceil($order->getSumPaid())));
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
 } catch (Exception $e) {
