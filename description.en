@@ -1,8 +1,11 @@
-Change token inputs to textarea
-Add cancel order feature
-Add debug logger
-Add amount parameter in delivery method
-Add postlink signature validation and debugging
-Updates SDK and other dependencies to the last version
-Remove postlink optional parameters
-Fixed other errors
+Parameters partner_email and partner_website are not required
+Shows payment method always
+Adds partial refunds
+Adds payment error page
+Adds payment schedule
+Improves logger
+Fix payment schedule duplicating
+Fix finding payment method
+Fix postlink port
+Fix amount rounding
+Other improvements
