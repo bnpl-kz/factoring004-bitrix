@@ -16,6 +16,7 @@ if (!check_bitrix_sessid()) {
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
+use Bitrix\Main\Engine\Response\Json;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PaymentProcessor;
@@ -76,7 +77,13 @@ try {
         $error = $isDebug ? $e->getMessage() : 'An error occurred. Please try again.';
     }
 
-    $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpayment_error.php');
+    if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
+        $response = (new Json([
+            'redirectErrorPage' => '/personal/order/payment/bnplpayment_error.php'
+        ]));
+    } else {
+        $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpayment_error.php');
+    }
 }
 
 $response->send();

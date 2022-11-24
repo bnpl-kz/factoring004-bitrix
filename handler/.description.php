@@ -75,12 +75,28 @@ $data = array(
             'NAME' => Loc::getMessage('BNPL_PAYMENT_FILE_NAME'),
             'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_FILE_DESCRIPTION'),
             'SORT' => 1200,
-            'GROUP' => 'ORDER PARAMETERS',
+            'GROUP' => 'CLIENT PARAMETERS',
             'INPUT'   => array(
                 'TYPE' => 'FILE',
             ),
         ),
 
+        'BNPL_PAYMENT_CLIENT_ROUTE' => array(
+            'NAME' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE'),
+            'SORT' => 1250,
+            'GROUP' => 'CLIENT PARAMETERS',
+            'INPUT' => array(
+                'TYPE' => 'ENUM',
+                'OPTIONS' => array(
+                    'redirect' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE_REDIRECT'),
+                    'modal' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE_MODAL')
+                ),
+            ),
+            'DEFAULT' => array(
+                'PROVIDER_KEY' => 'INPUT',
+                'PROVIDER_VALUE' => 'redirect'
+            )
+        ),
     )
 );
 
