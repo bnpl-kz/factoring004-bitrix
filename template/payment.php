@@ -50,6 +50,7 @@ if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
                                     onLoad: () => bnplpaymentButton.attr('disabled', true),
                                     onError: () => window.location.replace(res.redirectLink),
                                     onClosed: () => bnplpaymentButton.attr('disabled', false),
+                                    onDeclined: () => window.location.replace('/')
                                     onEnd: () => window.location.replace('/')
                                   }
                                 });
