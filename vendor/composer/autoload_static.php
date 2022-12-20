@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
+class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -48,8 +48,8 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -78,6 +78,7 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
     );
 
     public static $classMap = array (
+        'BnplPartners\\Factoring004\\AbstractEnum' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/AbstractEnum.php',
         'BnplPartners\\Factoring004\\AbstractResource' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/AbstractResource.php',
         'BnplPartners\\Factoring004\\Api' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Api.php',
         'BnplPartners\\Factoring004\\ArrayInterface' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/ArrayInterface.php',
@@ -114,6 +115,14 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
         'BnplPartners\\Factoring004\\OAuth\\OAuthToken' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/OAuth/OAuthToken.php',
         'BnplPartners\\Factoring004\\OAuth\\OAuthTokenManager' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/OAuth/OAuthTokenManager.php',
         'BnplPartners\\Factoring004\\OAuth\\OAuthTokenManagerInterface' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/OAuth/OAuthTokenManagerInterface.php',
+        'BnplPartners\\Factoring004\\Order\\AbstractStatusConfirmation' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/AbstractStatusConfirmation.php',
+        'BnplPartners\\Factoring004\\Order\\ChangeStatusCaller' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/ChangeStatusCaller.php',
+        'BnplPartners\\Factoring004\\Order\\Delivery' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/Delivery.php',
+        'BnplPartners\\Factoring004\\Order\\FullRefund' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/FullRefund.php',
+        'BnplPartners\\Factoring004\\Order\\OrderManager' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/OrderManager.php',
+        'BnplPartners\\Factoring004\\Order\\PartialRefund' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/PartialRefund.php',
+        'BnplPartners\\Factoring004\\Order\\StatusConfirmationInterface' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/StatusConfirmationInterface.php',
+        'BnplPartners\\Factoring004\\Order\\StatusConfirmationResponse' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Order/StatusConfirmationResponse.php',
         'BnplPartners\\Factoring004\\Otp\\CheckOtp' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Otp/CheckOtp.php',
         'BnplPartners\\Factoring004\\Otp\\CheckOtpReturn' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Otp/CheckOtpReturn.php',
         'BnplPartners\\Factoring004\\Otp\\DtoOtp' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Otp/DtoOtp.php',
@@ -140,6 +149,9 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
         'BnplPartners\\Factoring004\\Transport\\TransportInterface' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Transport/TransportInterface.php',
         'Bnpl\\Payment\\Config' => __DIR__ . '/../..' . '/lib/Config.php',
         'Bnpl\\Payment\\DebugLoggerFactory' => __DIR__ . '/../..' . '/lib/DebugLoggerFactory.php',
+        'Bnpl\\Payment\\EmptyBasketItemsException' => __DIR__ . '/../..' . '/lib/EmptyBasketItemsException.php',
+        'Bnpl\\Payment\\PartialRefundManager' => __DIR__ . '/../..' . '/lib/PartialRefundManager.php',
+        'Bnpl\\Payment\\PartialRefundManagerException' => __DIR__ . '/../..' . '/lib/PartialRefundManagerException.php',
         'Bnpl\\Payment\\PaymentProcessor' => __DIR__ . '/../..' . '/lib/PaymentProcessor.php',
         'Bnpl\\Payment\\PaymentScheduleAsset' => __DIR__ . '/../..' . '/lib/PaymentScheduleAsset.php',
         'Bnpl\\Payment\\SimpleDebugLogger' => __DIR__ . '/../..' . '/lib/SimpleDebugLogger.php',
@@ -221,6 +233,7 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
         'GuzzleHttp\\Psr7\\StreamWrapper' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/StreamWrapper.php',
         'GuzzleHttp\\Psr7\\UploadedFile' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/UploadedFile.php',
         'GuzzleHttp\\Psr7\\Uri' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Uri.php',
+        'GuzzleHttp\\Psr7\\UriComparator' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/UriComparator.php',
         'GuzzleHttp\\Psr7\\UriNormalizer' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/UriNormalizer.php',
         'GuzzleHttp\\Psr7\\UriResolver' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/UriResolver.php',
         'GuzzleHttp\\Psr7\\Utils' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Utils.php',
@@ -267,9 +280,9 @@ class ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit334eff7c61f7062c1d371c07f7d67ab2::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a::$classMap;
 
         }, null, ClassLoader::class);
     }

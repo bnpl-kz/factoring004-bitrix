@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -28,7 +26,13 @@ class CheckOtpReturn implements ArrayInterface
      */
     private $otp;
 
-    public function __construct(int $amountAr, string $merchantId, string $merchantOrderId, string $otp)
+    /**
+     * @param int $amountAr
+     * @param string $merchantId
+     * @param string $merchantOrderId
+     * @param string $otp
+     */
+    public function __construct($amountAr, $merchantId, $merchantOrderId, $otp)
     {
         $this->amountAr = $amountAr;
         $this->merchantId = $merchantId;
@@ -40,36 +44,50 @@ class CheckOtpReturn implements ArrayInterface
      * @param array<string, mixed> $checkOtpReturn
      *
      * @psalm-param array{amountAR: int, merchantId: string, merchantOrderId: string, otp: string} $checkOtpReturn
+     * @return \BnplPartners\Factoring004\Otp\CheckOtpReturn
      */
-    public static function createFromArray($checkOtpReturn): CheckOtpReturn
+    public static function createFromArray(array $checkOtpReturn)
     {
         return new self($checkOtpReturn['amountAR'], $checkOtpReturn['merchantId'], $checkOtpReturn['merchantOrderId'], $checkOtpReturn['otp']);
     }
 
-    public function getAmountAr(): int
+    /**
+     * @return int
+     */
+    public function getAmountAr()
     {
         return $this->amountAr;
     }
 
-    public function getMerchantId(): string
+    /**
+     * @return string
+     */
+    public function getMerchantId()
     {
         return $this->merchantId;
     }
 
-    public function getMerchantOrderId(): string
+    /**
+     * @return string
+     */
+    public function getMerchantOrderId()
     {
         return $this->merchantOrderId;
     }
 
-    public function getOtp(): string
+    /**
+     * @return string
+     */
+    public function getOtp()
     {
         return $this->otp;
     }
 
     /**
      * @psalm-return array{amountAR: int, merchantId: string, merchantOrderId: string, otp: string}
+     * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'amountAR' => $this->getAmountAr(),

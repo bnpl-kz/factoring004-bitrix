@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Response;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -35,9 +33,11 @@ class ValidationErrorResponse implements JsonSerializable, ArrayInterface
 
     /**
      * @param \BnplPartners\Factoring004\PreApp\ValidationErrorDetail[] $details
-     * @param string|null $prefix
+     * @param int $code
+     * @param string $message
+     * @param string $prefix
      */
-    public function __construct(int $code, array $details, string $message, $prefix = null)
+    public function __construct($code, array $details, $message, $prefix = null)
     {
         $this->code = $code;
         $this->details = $details;
@@ -49,18 +49,22 @@ class ValidationErrorResponse implements JsonSerializable, ArrayInterface
      * @param array<string, mixed> $response
      *
      * @psalm-param array{
-          * code: int|string,
-          * details: array{error: string, field: string}[],
-          * message: string,
-          * prefix?: string
-       * } $error
+     * code: int|string,
+     * details: array{error: string, field: string}[],
+     * message: string,
+     * prefix?: string
+     * } $error
+     * @return \BnplPartners\Factoring004\Response\ValidationErrorResponse
      */
-    public static function createFromArray($response): ValidationErrorResponse
+    public static function createFromArray(array $response)
     {
-        return new self((int) $response['code'], ValidationErrorDetail::createMany($response['details'] ?? []), $response['message'], $response['prefix'] ?? null);
+        return new self((int) $response['code'], ValidationErrorDetail::createMany(isset($response['details']) ? $response['details'] : []), $response['message'], isset($response['prefix']) ? $response['prefix'] : null);
     }
 
-    public function getCode(): int
+    /**
+     * @return int
+     */
+    public function getCode()
     {
         return $this->code;
     }
@@ -68,12 +72,15 @@ class ValidationErrorResponse implements JsonSerializable, ArrayInterface
     /**
      * @return \BnplPartners\Factoring004\PreApp\ValidationErrorDetail[]
      */
-    public function getDetails(): array
+    public function getDetails()
     {
         return $this->details;
     }
 
-    public function getMessage(): string
+    /**
+     * @return string
+     */
+    public function getMessage()
     {
         return $this->message;
     }
@@ -90,7 +97,7 @@ class ValidationErrorResponse implements JsonSerializable, ArrayInterface
      * @return array<string, mixed>
      * @psalm-return array{code: int, details: array{error: string, field: string}[], message: string, prefix?: string}
      */
-    public function toArray(): array
+    public function toArray()
     {
         $data = [
             'code' => $this->getCode(),
@@ -110,7 +117,7 @@ class ValidationErrorResponse implements JsonSerializable, ArrayInterface
     /**
      * @return array<string, mixed>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

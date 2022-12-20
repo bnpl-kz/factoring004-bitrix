@@ -1,30 +1,29 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
 use BnplPartners\Factoring004\Transport\Response;
 use BnplPartners\Factoring004\Transport\TransportInterface;
-use Psr\Http\Client\ClientInterface;
+use GuzzleHttp\ClientInterface;
 
 class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testChangeStatusJson(): void
+    public function testChangeStatusJson()
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
         ]);
 
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('PUT', '/accountingservice/1.0/changeStatus/json', [$orders->toArray()], [])
+            ->with('PUT', '/accounting/changeStatus/json', [$orders->toArray()], [])
             ->willReturn(new Response(200, [], [
                 'SuccessfulResponses' => [['error' => '', 'msg' => 'message']],
                 'ErrorResponses' => [],
@@ -42,18 +41,19 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testChangeStatusJsonWithError(): void
+    public function testChangeStatusJsonWithError()
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
         ]);
 
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('PUT', '/accountingservice/1.0/changeStatus/json', [$orders->toArray()], [])
+            ->with('PUT', '/accounting/changeStatus/json', [$orders->toArray()], [])
             ->willReturn(new Response(200, [], [
                 'SuccessfulResponses' => [],
                 'ErrorResponses' => [['code' => 'code', 'error' => 'error', 'message' => 'message']],
@@ -71,18 +71,19 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testChangeStatusJsonWithMixedResponse(): void
+    public function testChangeStatusJsonWithMixedResponse()
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
         ]);
 
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('PUT', '/accountingservice/1.0/changeStatus/json', [$orders->toArray()], [])
+            ->with('PUT', '/accounting/changeStatus/json', [$orders->toArray()], [])
             ->willReturn(new Response(200, [], [
                 'SuccessfulResponses' => [['error' => '', 'msg' => 'message']],
                 'ErrorResponses' => [['code' => 'code', 'error' => 'error', 'message' => 'message']],
@@ -98,13 +99,16 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
         $this->assertEquals($expected, $response);
     }
 
-    protected function callResourceMethod(ClientInterface $client): void
+    /**
+     * @return void
+     */
+    protected function callResourceMethod(ClientInterface $client)
     {
         $resource = new ChangeStatusResource($this->createTransport($client), static::BASE_URI);
         $resource->changeStatusJson([
             MerchantsOrders::createFromArray([
                 'merchantId' => '1',
-                'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
+                'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
             ]),
         ]);
     }

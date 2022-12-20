@@ -1,22 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
 use BnplPartners\Factoring004\Exception\ValidationException;
 use BnplPartners\Factoring004\Response\PreAppResponse;
 use BnplPartners\Factoring004\Response\ValidationErrorResponse;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use Psr\Http\Client\ClientInterface;
 
 class PreAppResourceTest extends AbstractResourceTest
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreApp(): void
+    public function testPreApp()
     {
         $data = [
             'preappId' => '102dbb8f-ca4e-7cad-a3f2-aa98107a1f03',
@@ -25,7 +24,7 @@ class PreAppResourceTest extends AbstractResourceTest
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(200, [], json_encode(compact('data'))));
 
         $preApp = new PreAppResource($this->createTransport($client), static::BASE_URI);
@@ -36,8 +35,9 @@ class PreAppResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreAppWithValidationError(): void
+    public function testPreAppWithValidationError()
     {
         $data = [
             'error' => [
@@ -65,7 +65,7 @@ class PreAppResourceTest extends AbstractResourceTest
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(400, ['Content-Type' => 'application/json'], json_encode($data)));
 
         $preApp = new PreAppResource($this->createTransport($client), static::BASE_URI);
@@ -79,7 +79,10 @@ class PreAppResourceTest extends AbstractResourceTest
         }
     }
 
-    protected function callResourceMethod(ClientInterface $client): void
+    /**
+     * @return void
+     */
+    protected function callResourceMethod(ClientInterface $client)
     {
         $resource = new PreAppResource($this->createTransport($client), static::BASE_URI);
         $resource->preApp(PreAppMessage::createFromArray(PreAppMessageTest::REQUIRED_DATA));

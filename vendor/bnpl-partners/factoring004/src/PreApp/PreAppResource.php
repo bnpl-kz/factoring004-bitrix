@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\AbstractResource;
@@ -26,11 +24,11 @@ class PreAppResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
      * @throws \BnplPartners\Factoring004\Exception\ValidationException
      * @throws \BnplPartners\Factoring004\Exception\ApiException
-     * @param \BnplPartners\Factoring004\PreApp\PreAppMessage $data
+     * @return \BnplPartners\Factoring004\Response\PreAppResponse
      */
-    public function preApp($data): PreAppResponse
+    public function preApp(PreAppMessage $data)
     {
-        $response = $this->postRequest('/bnpl-partners/1.0/preapp', $data->toArray());
+        $response = $this->postRequest('/bnpl/v2/preapp', $data->toArray());
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return PreAppResponse::createFromArray($response->getBody()['data']);
@@ -67,13 +65,13 @@ class PreAppResource extends AbstractResource
         }
 
         if (empty($data['code'])) {
-            throw new UnexpectedResponseException($response, $data['message'] ?? 'Unexpected response schema');
+            throw new UnexpectedResponseException($response, isset($data['message']) ? $data['message'] : 'Unexpected response schema');
         }
 
         $code = (int) $data['code'];
 
         if (in_array($code, static::AUTH_ERROR_CODES, true)) {
-            throw new AuthenticationException($data['description'] ?? '', $data['message'] ?? '', $code);
+            throw new AuthenticationException(isset($data['description']) ? $data['description'] : '', isset($data['message']) ? $data['message'] : '', $code);
         }
 
         /** @psalm-suppress ArgumentTypeCoercion */

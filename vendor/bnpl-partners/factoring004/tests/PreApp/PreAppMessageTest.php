@@ -1,17 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
+use BnplPartners\Factoring004\AbstractTestCase;
 use DateTime;
-use DateTimeInterface;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 
-class PreAppMessageTest extends TestCase
+class PreAppMessageTest extends AbstractTestCase
 {
-    public const REQUIRED_DATA = [
+    const REQUIRED_DATA = [
         'partnerData' => [
             'partnerName' => 'a',
             'partnerCode' => 'b',
@@ -34,123 +31,48 @@ class PreAppMessageTest extends TestCase
                 'itemSum' => 8000,
             ],
         ],
-        'partnerEmail' => 'test@example.com',
-        'partnerWebsite' => 'http://example.com',
     ];
 
-    private PreAppMessage $message;
-
-    protected function setUp(): void
+    /**
+     * @testWith [0]
+     *           [-1]
+     * @return void
+     * @param int $billAmount
+     */
+    public function testBillAmountIsPositiveInt($billAmount)
     {
-        parent::setUp();
+        $this->expectException(InvalidArgumentException::class);
 
-        $this->message = new PreAppMessage(
-            new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'),
-            '1',
-            6000,
-            1,
-            'http://example.com/success',
-            'http://example.com/internal',
-            [Item::createFromArray(static::REQUIRED_DATA['items'][0])],
-            'test@example.com',
-            'http://example.com',
-        );
+        new PreAppMessage(new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'), '1', $billAmount, 1, 'http://example.com/success', 'http://example.com/internal', [Item::createFromArray(static::REQUIRED_DATA['items'][0])]);
     }
 
     /**
      * @testWith [0]
      *           [-1]
+     * @return void
+     * @param int $itemsQuantity
      */
-    public function testBillAmountIsPositiveInt(int $billAmount): void
+    public function testItemsQuantityIsPositiveInt($itemsQuantity)
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new PreAppMessage(
-            new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'),
-            '1',
-            $billAmount,
-            1,
-            'http://example.com/success',
-            'http://example.com/internal',
-            [Item::createFromArray(static::REQUIRED_DATA['items'][0])],
-            'test@example.com',
-            'http://example.com',
-        );
+        new PreAppMessage(new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'), '1', 6000, $itemsQuantity, 'http://example.com/success', 'http://example.com/internal', [Item::createFromArray(static::REQUIRED_DATA['items'][0])]);
     }
 
     /**
-     * @testWith [0]
-     *           [-1]
+     * @return void
      */
-    public function testItemsQuantityIsPositiveInt(int $itemsQuantity): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new PreAppMessage(
-            new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'),
-            '1',
-            6000,
-            $itemsQuantity,
-            'http://example.com/success',
-            'http://example.com/internal',
-            [Item::createFromArray(static::REQUIRED_DATA['items'][0])],
-            'test@example.com',
-            'http://example.com',
-        );
-    }
-
-    /**
-     * @testWith ["test"]
-     *           ["test@"]
-     *           ["test@example"]
-     *           ["test@localhost"]
-     */
-    public function testPartnerEmailIsNotValidEmail(string $partnerEmail): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new PreAppMessage(
-            new PartnerData('a', 'b', 'c'),
-            '1',
-            6000,
-            1,
-            'http://example.com/success',
-            'http://example.com/internal',
-            [Item::createFromArray(static::REQUIRED_DATA['items'][0])],
-            $partnerEmail,
-            'http://example.com',
-        );
-    }
-
-    /**
-     * @testWith ["test"]
-     *           ["localhost"]
-     */
-    public function testPartnerWebsiteIsNotValidDomain(string $partnerWebsite): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new PreAppMessage(
-            new PartnerData('a', 'b', 'c'),
-            '1',
-            6000,
-            1,
-            'http://example.com/success',
-            'http://example.com/internal',
-            [Item::createFromArray(static::REQUIRED_DATA['items'][0])],
-            'test@example.com',
-            $partnerWebsite,
-        );
-    }
-
-    public function testCreateFromArray(): void
+    public function testCreateFromArray()
     {
         $data = PreAppMessage::createFromArray(static::REQUIRED_DATA);
 
-        $this->assertEquals($this->message, $data);
+        $this->assertEquals($this->getExpectedMessage(), $data);
     }
 
-    public function testCreateFromArrayWithOptionalData(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArrayWithOptionalData()
     {
         $data = PreAppMessage::createFromArray(static::REQUIRED_DATA + ['failRedirect' => 'http://example.com/failed']);
         $this->assertEquals('http://example.com/failed', $data->getFailRedirect());
@@ -212,142 +134,188 @@ class PreAppMessageTest extends TestCase
      * @param array<string, mixed> $data
      *
      * @dataProvider invalidArraysProvider
+     * @return void
      */
-    public function testCreateFromArrayFailed(array $data): void
+    public function testCreateFromArrayFailed(array $data)
     {
         $this->expectException(InvalidArgumentException::class);
 
         PreAppMessage::createFromArray($data);
     }
 
-    public function testGetPartnerData(): void
+    /**
+     * @return void
+     */
+    public function testGetPartnerData()
     {
         $this->assertEquals(
             new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'),
-            $this->message->getPartnerData(),
+            $this->getExpectedMessage()->getPartnerData()
         );
     }
 
-    public function testGetBillNumber(): void
+    /**
+     * @return void
+     */
+    public function testGetBillNumber()
     {
-        $this->assertEquals('1', $this->message->getBillNumber());
+        $this->assertEquals('1', $this->getExpectedMessage()->getBillNumber());
     }
 
-    public function testGetBillAmount(): void
+    /**
+     * @return void
+     */
+    public function testGetBillAmount()
     {
-        $this->assertEquals(6000, $this->message->getBillAmount());
+        $this->assertEquals(6000, $this->getExpectedMessage()->getBillAmount());
     }
 
-    public function testGetItemsQuantity(): void
+    /**
+     * @return void
+     */
+    public function testGetItemsQuantity()
     {
-        $this->assertEquals(1, $this->message->getItemsQuantity());
+        $this->assertEquals(1, $this->getExpectedMessage()->getItemsQuantity());
     }
 
-    public function testGetSuccessRedirect(): void
+    /**
+     * @return void
+     */
+    public function testGetSuccessRedirect()
     {
-        $this->assertEquals('http://example.com/success', $this->message->getSuccessRedirect());
+        $this->assertEquals('http://example.com/success', $this->getExpectedMessage()->getSuccessRedirect());
     }
 
-    public function testGetPostLink(): void
+    /**
+     * @return void
+     */
+    public function testGetPostLink()
     {
-        $this->assertEquals('http://example.com/internal', $this->message->getPostLink());
+        $this->assertEquals('http://example.com/internal', $this->getExpectedMessage()->getPostLink());
     }
 
-    public function testGetFailRedirect(): void
+    /**
+     * @return void
+     */
+    public function testGetFailRedirect()
     {
-        $this->assertEmpty($this->message->getFailRedirect());
+        $this->assertEmpty($this->getExpectedMessage()->getFailRedirect());
     }
 
-    public function testSetFailRedirect(): void
+    /**
+     * @return void
+     */
+    public function testSetFailRedirect()
     {
-        $this->message->setFailRedirect('http://example.com/failed');
-        $this->assertEquals('http://example.com/failed', $this->message->getFailRedirect());
+        $expected = $this->getExpectedMessage()->setFailRedirect('http://example.com/failed');
+        $this->assertEquals('http://example.com/failed', $expected->getFailRedirect());
     }
 
-    public function testGetPhoneNumber(): void
+    /**
+     * @return void
+     */
+    public function testGetPhoneNumber()
     {
-        $this->assertEmpty($this->message->getPhoneNumber());
+        $this->assertEmpty($this->getExpectedMessage()->getPhoneNumber());
     }
 
-    public function testSetPhoneNumber(): void
+    /**
+     * @return void
+     */
+    public function testSetPhoneNumber()
     {
-        $this->message->setPhoneNumber('77771234567');
-        $this->assertEquals('77771234567', $this->message->getPhoneNumber());
+        $expected = $this->getExpectedMessage()->setPhoneNumber('77771234567');
+        $this->assertEquals('77771234567', $expected->getPhoneNumber());
 
-        $this->message->setPhoneNumber('77770000000');
-        $this->assertEquals('77770000000', $this->message->getPhoneNumber());
+        $expected = $this->getExpectedMessage()->setPhoneNumber('77770000000');
+        $this->assertEquals('77770000000', $expected->getPhoneNumber());
 
         $this->expectException(InvalidArgumentException::class);
-        $this->message->setPhoneNumber('77absc789');
+        $this->getExpectedMessage()->setPhoneNumber('77absc789');
     }
 
-    public function testGetExpiresAt(): void
+    /**
+     * @return void
+     */
+    public function testGetExpiresAt()
     {
-        $this->assertNull($this->message->getExpiresAt());
+        $this->assertNull($this->getExpectedMessage()->getExpiresAt());
     }
 
-    public function testSetExpiresAt(): void
+    /**
+     * @return void
+     */
+    public function testSetExpiresAt()
     {
         $expiresAt = new DateTime();
-        $this->message->setExpiresAt($expiresAt);
-        $this->assertEquals($expiresAt, $this->message->getExpiresAt());
+        $expected = $this->getExpectedMessage()->setExpiresAt($expiresAt);
+        $this->assertEquals($expiresAt, $expected->getExpiresAt());
     }
 
-    public function testGetDeliveryDate(): void
+    /**
+     * @return void
+     */
+    public function testGetDeliveryDate()
     {
-        $this->assertNull($this->message->getDeliveryDate());
+        $this->assertNull($this->getExpectedMessage()->getDeliveryDate());
     }
 
-    public function testSetDeliveryDate(): void
+    /**
+     * @return void
+     */
+    public function testSetDeliveryDate()
     {
         $deliveryDate = new DateTime();
-        $this->message->setDeliveryDate($deliveryDate);
-        $this->assertEquals($deliveryDate, $this->message->getDeliveryDate());
+        $expected = $this->getExpectedMessage()->setDeliveryDate($deliveryDate);
+        $this->assertEquals($deliveryDate, $expected->getDeliveryDate());
     }
 
-    public function testGetDeliveryPoint(): void
+    /**
+     * @return void
+     */
+    public function testGetDeliveryPoint()
     {
-        $this->assertEmpty($this->message->getDeliveryPoint());
+        $this->assertEmpty($this->getExpectedMessage()->getDeliveryPoint());
     }
 
-    public function testSetDeliveryPoint(): void
+    /**
+     * @return void
+     */
+    public function testSetDeliveryPoint()
     {
         $deliveryPoint = new DeliveryPoint();
-        $this->message->setDeliveryPoint($deliveryPoint);
-        $this->assertEquals($deliveryPoint, $this->message->getDeliveryPoint());
+        $expected = $this->getExpectedMessage()->setDeliveryPoint($deliveryPoint);
+        $this->assertEquals($deliveryPoint, $expected->getDeliveryPoint());
     }
 
-    public function testGetPartnerEmail(): void
+    /**
+     * @return void
+     */
+    public function testGetItems()
     {
-        $this->assertEquals('test@example.com', $this->message->getPartnerEmail());
+        $this->assertEquals([Item::createFromArray(static::REQUIRED_DATA['items'][0])], $this->getExpectedMessage()->getItems());
     }
 
-    public function testGetPartnerWebsite(): void
-    {
-        $this->assertEquals('http://example.com', $this->message->getPartnerWebsite());
-    }
-
-    public function testGetItems(): void
-    {
-        $this->assertEquals([Item::createFromArray(static::REQUIRED_DATA['items'][0])], $this->message->getItems());
-    }
-
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $expected = static::REQUIRED_DATA;
-        $this->assertEquals($expected, $this->message->toArray());
+        $this->assertEquals($expected, $this->getExpectedMessage()->toArray());
 
-        $this->message->setFailRedirect('http://example.com/failed');
-        $this->message->setPhoneNumber('77771234567');
-        $this->message->setExpiresAt($expiresAt = new DateTime());
-        $this->message->setDeliveryDate($deliveryDate = new DateTime());
-        $this->message->setDeliveryPoint(DeliveryPoint::createFromArray(['flat' => '10', 'house' => '15']));
+        $message = $this->getExpectedMessage()
+            ->setFailRedirect('http://example.com/failed')
+            ->setPhoneNumber('77771234567')
+            ->setExpiresAt($expiresAt = new DateTime())
+            ->setDeliveryDate($deliveryDate = new DateTime())
+            ->setDeliveryPoint(DeliveryPoint::createFromArray(['flat' => '10', 'house' => '15']));
 
         $expected = static::REQUIRED_DATA + [
             'failRedirect' => 'http://example.com/failed',
             'phoneNumber' => '77771234567',
-            'expiresAt' => $expiresAt->format(DateTimeInterface::ISO8601),
-            'deliveryDate' => $deliveryDate->format(DateTimeInterface::ISO8601),
+            'expiresAt' => $expiresAt->format('Y-m-d\TH:i:sO'),
+            'deliveryDate' => $deliveryDate->format('Y-m-d\TH:i:sO'),
             'deliveryPoint' => [
                 'flat' => '10',
                 'house' => '15',
@@ -358,10 +326,13 @@ class PreAppMessageTest extends TestCase
             ],
             'items' => static::REQUIRED_DATA['items'],
         ];
-        $this->assertEquals($expected, $this->message->toArray());
+        $this->assertEquals($expected, $message->toArray());
     }
 
-    public function invalidArraysProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function invalidArraysProvider()
     {
         return [
             [[]],
@@ -384,6 +355,22 @@ class PreAppMessageTest extends TestCase
                 'postLink' => 'http://example.com/internal',
             ]],
         ];
+    }
+
+    /**
+     * @return \BnplPartners\Factoring004\PreApp\PreAppMessage
+     */
+    private function getExpectedMessage()
+    {
+        return  new PreAppMessage(
+            new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com'),
+            '1',
+            6000,
+            1,
+            'http://example.com/success',
+            'http://example.com/internal',
+            [Item::createFromArray(static::REQUIRED_DATA['items'][0])]
+        );
     }
 }
 

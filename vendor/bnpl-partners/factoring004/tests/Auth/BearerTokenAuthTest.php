@@ -1,15 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Auth;
 
 use GuzzleHttp\Psr7\Request;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class BearerTokenAuthTest extends TestCase
+class BearerTokenAuthTest extends AbstractTestCase
 {
-    public function testApply(): void
+    /**
+     * @return void
+     */
+    public function testApply()
     {
         $auth = new BearerTokenAuth('test');
         $request = new Request('GET', '/');

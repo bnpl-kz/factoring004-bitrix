@@ -1,20 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Transport;
 
 use BnplPartners\Factoring004\Exception\DataSerializationException;
 use GuzzleHttp\Psr7\Response as PsrResponse;
 use GuzzleHttp\Psr7\Utils;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ResponseTest extends TestCase
+class ResponseTest extends AbstractTestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
+     * @return void
      */
-    public function testCreateFromPsrResponse(): void
+    public function testCreateFromPsrResponse()
     {
         $psrResponse = new PsrResponse();
         $response = new Response(200, [], []);
@@ -39,7 +38,10 @@ class ResponseTest extends TestCase
         Response::createFromPsrResponse($psrResponse);
     }
 
-    public function testGetStatusCode(): void
+    /**
+     * @return void
+     */
+    public function testGetStatusCode()
     {
         $response = new Response(200, []);
         $this->assertEquals(200, $response->getStatusCode());
@@ -48,7 +50,10 @@ class ResponseTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testGetHeaders(): void
+    /**
+     * @return void
+     */
+    public function testGetHeaders()
     {
         $response = new Response(200, []);
         $this->assertEmpty($response->getHeaders());
@@ -57,7 +62,10 @@ class ResponseTest extends TestCase
         $this->assertEquals(['Content-Type' => 'application/json'], $response->getHeaders());
     }
 
-    public function testGetBody(): void
+    /**
+     * @return void
+     */
+    public function testGetBody()
     {
         $response = new Response(200, []);
         $this->assertEmpty($response->getBody());

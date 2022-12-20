@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\AbstractResource;
@@ -9,7 +7,6 @@ use BnplPartners\Factoring004\Exception\AuthenticationException;
 use BnplPartners\Factoring004\Exception\EndpointUnavailableException;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
 use BnplPartners\Factoring004\Exception\UnexpectedResponseException;
-use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
 
 class ChangeStatusResource extends AbstractResource
@@ -24,12 +21,13 @@ class ChangeStatusResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
+     * @return \BnplPartners\Factoring004\ChangeStatus\ChangeStatusResponse
      */
-    public function changeStatusJson($merchantOrders): ChangeStatusResponse
+    public function changeStatusJson(array $merchantOrders)
     {
         $response = $this->request(
             'PUT',
-            '/accountingservice/1.0/changeStatus/json',
+            '/accounting/changeStatus/json',
             array_map(function (MerchantsOrders $orders) {
                 return $orders->toArray();
             }, $merchantOrders)
@@ -64,17 +62,17 @@ class ChangeStatusResource extends AbstractResource
             }
 
             if (empty($data['code'])) {
-                throw new UnexpectedResponseException($response, $data['message'] ?? 'Unexpected response schema');
+                throw new UnexpectedResponseException($response, isset($data['message']) ? $data['message'] : 'Unexpected response schema');
             }
 
             $code = (int) $data['code'];
 
             if (in_array($code, static::AUTH_ERROR_CODES, true)) {
-                throw new AuthenticationException($data['description'] ?? '', $data['message'] ?? '', $code);
+                throw new AuthenticationException(isset($data['description']) ? $data['description'] : '', isset($data['message']) ? $data['message'] : '', $code);
             }
 
             /** @psalm-suppress ArgumentTypeCoercion */
-            throw new ErrorResponseException(ErrorResponse::createFromArray($data));
+            throw new ErrorResponseException(\BnplPartners\Factoring004\Response\ErrorResponse::createFromArray($data));
         }
     }
 }

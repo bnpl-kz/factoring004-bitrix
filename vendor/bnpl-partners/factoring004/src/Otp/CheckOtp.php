@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -23,13 +21,18 @@ class CheckOtp implements ArrayInterface
      * @var string
      */
     private $otp;
-
     /**
      * @var int
      */
     private $amount;
 
-    public function __construct(string $merchantId, string $merchantOrderId, string $otp, int $amount)
+    /**
+     * @param string $merchantId
+     * @param string $merchantOrderId
+     * @param string $otp
+     * @param int $amount
+     */
+    public function __construct($merchantId, $merchantOrderId, $otp, $amount)
     {
         $this->merchantId = $merchantId;
         $this->merchantOrderId = $merchantOrderId;
@@ -40,31 +43,42 @@ class CheckOtp implements ArrayInterface
     /**
      * @param array<string, mixed> $checkOtp
      * @psalm-param array{merchantId: string, merchantOrderId: string, otp: string, amount: int} $checkOtp
+     * @return \BnplPartners\Factoring004\Otp\CheckOtp
      */
-    public static function createFromArray($checkOtp): CheckOtp
+    public static function createFromArray(array $checkOtp)
     {
         return new self($checkOtp['merchantId'], $checkOtp['merchantOrderId'], $checkOtp['otp'], $checkOtp['amount']);
     }
 
-    public function getMerchantId(): string
+    /**
+     * @return string
+     */
+    public function getMerchantId()
     {
         return $this->merchantId;
     }
 
-    public function getMerchantOrderId(): string
+    /**
+     * @return string
+     */
+    public function getMerchantOrderId()
     {
         return $this->merchantOrderId;
     }
 
-    public function getOtp(): string
+    /**
+     * @return string
+     */
+    public function getOtp()
     {
         return $this->otp;
     }
 
     /**
      * @psalm-return array{merchantId: string, merchantOrderId: string, otp: string}
+     * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'merchantId' => $this->getMerchantId(),
@@ -74,7 +88,10 @@ class CheckOtp implements ArrayInterface
         ];
     }
 
-    public function getAmount(): int
+    /**
+     * @return int
+     */
+    public function getAmount()
     {
         return $this->amount;
     }
