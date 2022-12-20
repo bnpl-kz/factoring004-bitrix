@@ -2,7 +2,7 @@
   "type": "library",
   "require": {
     "php": ">=7.0",
-    "bnpl-partners/factoring004": "dev-legacy",
+    "bnpl-partners/factoring004": "^1.0",
     "guzzlehttp/guzzle": ">=6.0"
   },
   "license": "MIT",
@@ -15,12 +15,6 @@
       "php": "7.2.34"
     }
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:bnpl-partners/factoring004.git"
-    }
-  ],
   "autoload": {
     "classmap": ["lib"],
     "exclude-from-classmap": ["lib/events", "lib/exceptions", "lib/facades", "lib/orm"]

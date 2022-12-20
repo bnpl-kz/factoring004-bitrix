@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Exception;
 
 use BnplPartners\Factoring004\Transport\ResponseInterface;
@@ -14,18 +12,26 @@ class UnexpectedResponseException extends ApiException
      */
     private $response;
 
+    /**
+     * @param \Throwable $previous
+     * @param string $message
+     * @param int $code
+     */
     public function __construct(
         ResponseInterface $response,
-        string $message = '',
-        int $code = 0,
-        Throwable $previous = null
+        $message = '',
+        $code = 0,
+        $previous = null
     ) {
         parent::__construct($message, $code, $previous);
 
         $this->response = $response;
     }
 
-    public function getResponse(): ResponseInterface
+    /**
+     * @return \BnplPartners\Factoring004\Transport\ResponseInterface
+     */
+    public function getResponse()
     {
         return $this->response;
     }

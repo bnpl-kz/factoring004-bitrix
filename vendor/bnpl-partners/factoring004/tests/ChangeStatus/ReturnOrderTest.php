@@ -1,58 +1,71 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ReturnOrderTest extends TestCase
+class ReturnOrderTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
-        $expected = new ReturnOrder('1', ReturnStatus::RETURN(), 6000);
+        $expected = new ReturnOrder('1', ReturnStatus::RE_TURN(), 6000);
         $actual = ReturnOrder::createFromArray([
             'orderId' => '1',
-            'status' => ReturnStatus::RETURN()->getValue(),
+            'status' => ReturnStatus::RE_TURN()->getValue(),
             'amount' => 6000,
         ]);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetStatus(): void
+    /**
+     * @return void
+     */
+    public function testGetStatus()
     {
-        $order = new ReturnOrder('1', ReturnStatus::RETURN(), 6000);
-        $this->assertEquals(ReturnStatus::RETURN(), $order->getStatus());
+        $order = new ReturnOrder('1', ReturnStatus::RE_TURN(), 6000);
+        $this->assertEquals(ReturnStatus::RE_TURN(), $order->getStatus());
 
         $order = new ReturnOrder('1', ReturnStatus::PARTRETURN(), 6000);
         $this->assertEquals(ReturnStatus::PARTRETURN(), $order->getStatus());
     }
 
-    public function testGetOrderId(): void
+    /**
+     * @return void
+     */
+    public function testGetOrderId()
     {
-        $order = new ReturnOrder('1', ReturnStatus::RETURN(), 6000);
+        $order = new ReturnOrder('1', ReturnStatus::RE_TURN(), 6000);
         $this->assertEquals('1', $order->getOrderId());
 
-        $order = new ReturnOrder('100', ReturnStatus::RETURN(), 6000);
+        $order = new ReturnOrder('100', ReturnStatus::RE_TURN(), 6000);
         $this->assertEquals('100', $order->getOrderId());
     }
 
-    public function testGetAmount(): void
+    /**
+     * @return void
+     */
+    public function testGetAmount()
     {
-        $order = new ReturnOrder('1', ReturnStatus::RETURN(), 6000);
+        $order = new ReturnOrder('1', ReturnStatus::RE_TURN(), 6000);
         $this->assertEquals(6000, $order->getAmount());
 
-        $order = new ReturnOrder('100', ReturnStatus::RETURN(), 10_000);
-        $this->assertEquals(10_000, $order->getAmount());
+        $order = new ReturnOrder('100', ReturnStatus::RE_TURN(), 10000);
+        $this->assertEquals(10000, $order->getAmount());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
-        $order = new ReturnOrder('1', ReturnStatus::RETURN(), 6000);
+        $order = new ReturnOrder('1', ReturnStatus::RE_TURN(), 6000);
         $expected = [
             'orderId' => '1',
-            'status' => ReturnStatus::RETURN()->getValue(),
+            'status' => ReturnStatus::RE_TURN()->getValue(),
             'amount' => 6000,
         ];
 

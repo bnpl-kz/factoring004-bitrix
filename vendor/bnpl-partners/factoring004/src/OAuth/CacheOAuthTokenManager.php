@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\OAuth;
 
 use Psr\SimpleCache\CacheInterface;
@@ -22,14 +20,20 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
      */
     private $cacheKey;
 
-    public function __construct(OAuthTokenManagerInterface $tokenManager, CacheInterface $cache, string $cacheKey)
+    /**
+     * @param string $cacheKey
+     */
+    public function __construct(OAuthTokenManagerInterface $tokenManager, CacheInterface $cache, $cacheKey)
     {
         $this->tokenManager = $tokenManager;
         $this->cache = $cache;
         $this->cacheKey = $cacheKey;
     }
 
-    public function getAccessToken(): OAuthToken
+    /**
+     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
+     */
+    public function getAccessToken()
     {
         return $this->retrieveAccessToken();
     }
@@ -46,8 +50,9 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
      * @psalm-suppress InvalidCatch
+     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
      */
-    private function retrieveAccessToken(): OAuthToken
+    private function retrieveAccessToken()
     {
         try {
             $tokenData = $this->cache->get($this->cacheKey);

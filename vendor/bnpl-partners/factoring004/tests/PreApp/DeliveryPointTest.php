@@ -1,21 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class DeliveryPointTest extends TestCase
+class DeliveryPointTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new DeliveryPoint();
         $actual = DeliveryPoint::createFromArray([]);
         $this->assertEquals($expected, $actual);
 
-        $expected = (new DeliveryPoint())
-            ->setFlat('10')
+        $expected = (new DeliveryPoint())->setFlat('10')
             ->setCity('Almaty');
 
         $actual = DeliveryPoint::createFromArray([
@@ -26,7 +26,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testFlat(): void
+    /**
+     * @return void
+     */
+    public function testFlat()
     {
         $deliveryPoint = new DeliveryPoint();
         $this->assertEmpty($deliveryPoint->getFlat());
@@ -40,7 +43,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals('10a', $deliveryPoint->getFlat());
     }
 
-    public function testHouse(): void
+    /**
+     * @return void
+     */
+    public function testHouse()
     {
         $deliveryPoint = new DeliveryPoint();
         $this->assertEmpty($deliveryPoint->getHouse());
@@ -54,7 +60,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals('10/15', $deliveryPoint->getHouse());
     }
 
-    public function testDistrict(): void
+    /**
+     * @return void
+     */
+    public function testDistrict()
     {
         $deliveryPoint = new DeliveryPoint();
         $this->assertEmpty($deliveryPoint->getDistrict());
@@ -68,7 +77,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals('10 district', $deliveryPoint->getDistrict());
     }
 
-    public function testRegion(): void
+    /**
+     * @return void
+     */
+    public function testRegion()
     {
         $deliveryPoint = new DeliveryPoint();
         $this->assertEmpty($deliveryPoint->getRegion());
@@ -82,7 +94,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals('Almaty region', $deliveryPoint->getRegion());
     }
 
-    public function testCity(): void
+    /**
+     * @return void
+     */
+    public function testCity()
     {
         $deliveryPoint = new DeliveryPoint();
         $this->assertEmpty($deliveryPoint->getCity());
@@ -96,7 +111,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals('Karaganda', $deliveryPoint->getCity());
     }
 
-    public function testStreet(): void
+    /**
+     * @return void
+     */
+    public function testStreet()
     {
         $deliveryPoint = new DeliveryPoint();
         $this->assertEmpty($deliveryPoint->getStreet());
@@ -110,7 +128,10 @@ class DeliveryPointTest extends TestCase
         $this->assertEquals('Green street', $deliveryPoint->getStreet());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $attributes = ['street' => '', 'house' => '', 'region' => '', 'city' => '', 'district' => '', 'flat' => ''];
         $deliveryPoint = new DeliveryPoint();

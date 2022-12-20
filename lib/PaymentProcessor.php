@@ -2,7 +2,6 @@
 
 namespace Bnpl\Payment;
 
-use Bitrix\Main\Engine\Response\Json;
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\HttpResponse;
 use Bitrix\Sale\Order;
@@ -51,12 +50,6 @@ class PaymentProcessor
         $preApp = $this->api->preApps->preApp($this->createPreAppMessage($order, $this->extractServerHost($request)));
 
         $this->orderManager->syncOrder($order->getId(), $preApp->getPreAppId());
-
-        if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
-            return (new Json([
-                'redirectLink' => $preApp->getRedirectLink()
-            ]));
-        }
 
         return (new HttpResponse())
             ->setStatus(302)

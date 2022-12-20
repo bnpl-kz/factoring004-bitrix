@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ErrorResponseTest extends TestCase
+class ErrorResponseTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new ErrorResponse('code', 'error', 'message');
         $actual = ErrorResponse::createFromArray([
@@ -28,7 +29,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetError(): void
+    /**
+     * @return void
+     */
+    public function testGetError()
     {
         $response = new ErrorResponse('code', 'error', 'message');
         $this->assertEquals('error', $response->getError());
@@ -37,7 +41,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('test', $response->getError());
     }
 
-    public function testGetMessage(): void
+    /**
+     * @return void
+     */
+    public function testGetMessage()
     {
         $response = new ErrorResponse('code', 'error', 'message');
         $this->assertEquals('message', $response->getMessage());
@@ -46,7 +53,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('test', $response->getMessage());
     }
 
-    public function testGetCode(): void
+    /**
+     * @return void
+     */
+    public function testGetCode()
     {
         $response = new ErrorResponse('code', 'error', 'message');
         $this->assertEquals('code', $response->getCode());
@@ -55,7 +65,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('test', $response->getCode());
     }
 
-    public function testGetMerchantOrderId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantOrderId()
     {
         $response = new ErrorResponse('code', 'error', 'message');
         $this->assertEmpty($response->getMerchantOrderId());
@@ -64,7 +77,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('100', $response->getMerchantOrderId());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $response = new ErrorResponse('code', 'error', 'message');
         $expected = [
@@ -85,7 +101,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals($expected, $response->toArray());
     }
 
-    public function testJsonSerialize(): void
+    /**
+     * @return void
+     */
+    public function testJsonSerialize()
     {
         $response = new ErrorResponse('code', 'error', 'message');
         $expected = [

@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class DeliveryOrderTest extends TestCase
+class DeliveryOrderTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000);
         $actual = DeliveryOrder::createFromArray([
@@ -20,13 +21,19 @@ class DeliveryOrderTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetStatus(): void
+    /**
+     * @return void
+     */
+    public function testGetStatus()
     {
         $order = new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000);
         $this->assertEquals(DeliveryStatus::DELIVERY(), $order->getStatus());
     }
 
-    public function testGetOrderId(): void
+    /**
+     * @return void
+     */
+    public function testGetOrderId()
     {
         $order = new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000);
         $this->assertEquals('1', $order->getOrderId());
@@ -35,13 +42,19 @@ class DeliveryOrderTest extends TestCase
         $this->assertEquals('100', $order->getOrderId());
     }
 
-    public function getTestAmount(): void
+    /**
+     * @return void
+     */
+    public function getTestAmount()
     {
         $order = new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000);
         $this->assertEquals(6000, $order->getAmount());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $order = new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000);
         $expected = [

@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use MyCLabs\Enum\Enum;
+use BnplPartners\Factoring004\AbstractEnum;
 
 /**
  * @method static static RETURN()
@@ -12,8 +10,17 @@ use MyCLabs\Enum\Enum;
  *
  * @psalm-immutable
  */
-final class ReturnStatus extends Enum
+final class ReturnStatus extends AbstractEnum
 {
-    const RETURN = 'return';
+    const RE_TURN = 'return';
     const PARTRETURN = 'part_return';
+
+    public static function __callStatic($name, $arguments)
+    {
+        if ($name === "RETURN") {
+            $name = "RE_TURN";
+        }
+
+        return parent::__callStatic($name, $arguments);
+    }
 }

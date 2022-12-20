@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -13,13 +11,16 @@ class DtoOtp implements JsonSerializable, ArrayInterface
      * @var string
      */
     private $msg;
-
     /**
      * @var bool
      */
     private $error;
 
-    public function __construct(string $msg, bool $error = false)
+    /**
+     * @param string $msg
+     * @param bool $error
+     */
+    public function __construct($msg, $error = false)
     {
         $this->msg = $msg;
         $this->error = $error;
@@ -28,10 +29,11 @@ class DtoOtp implements JsonSerializable, ArrayInterface
     /**
      * @param array<string, string> $changeStatus
      * @psalm-param array{msg: string, error?: bool|string} $changeStatus
+     * @return \BnplPartners\Factoring004\Otp\DtoOtp
      */
-    public static function createFromArray($changeStatus): DtoOtp
+    public static function createFromArray(array $changeStatus)
     {
-        $error = $changeStatus['error'] ?? false;
+        $error = isset($changeStatus['error']) ? $changeStatus['error'] : false;
 
         if (is_string($error)) {
             $error = !($error === 'false');
@@ -40,20 +42,27 @@ class DtoOtp implements JsonSerializable, ArrayInterface
         return new self($changeStatus['msg'], $error);
     }
 
-    public function getMsg(): string
+    /**
+     * @return string
+     */
+    public function getMsg()
     {
         return $this->msg;
     }
 
-    public function isError(): bool
+    /**
+     * @return bool
+     */
+    public function isError()
     {
         return $this->error;
     }
 
     /**
      * @psalm-return array{msg: string, error: bool}
+     * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'msg' => $this->getMsg(),
@@ -64,7 +73,7 @@ class DtoOtp implements JsonSerializable, ArrayInterface
     /**
      * @return array<string, mixed>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

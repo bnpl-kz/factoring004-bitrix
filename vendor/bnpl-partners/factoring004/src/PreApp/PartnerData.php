@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -24,7 +22,6 @@ class PartnerData implements ArrayInterface
      * @var string
      */
     private $pointCode;
-
     /**
      * @var string|null
      */
@@ -35,13 +32,16 @@ class PartnerData implements ArrayInterface
     private $partnerWebsite;
 
     /**
-     * @param string|null $partnerEmail
-     * @param string|null $partnerWebsite
+     * @param string $partnerName
+     * @param string $partnerCode
+     * @param string $pointCode
+     * @param string $partnerEmail
+     * @param string $partnerWebsite
      */
     public function __construct(
-        string $partnerName,
-        string $partnerCode,
-        string $pointCode,
+        $partnerName,
+        $partnerCode,
+        $pointCode,
         $partnerEmail = null,
         $partnerWebsite = null
     ) {
@@ -53,18 +53,19 @@ class PartnerData implements ArrayInterface
     }
 
     /**
-     * @param array<string, string> $partnerData
-     * @psalm-param array{
-           partnerName: string,
-           partnerCode: string,
-           pointCode: string,
-           partnerEmail?: string|null,
-           partnerWebsite?: string|null,
-      } $partnerData
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function createFromArray($partnerData): PartnerData
+    * @param array<string, string> $partnerData
+    * @psalm-param array{
+          partnerName: string,
+          partnerCode: string,
+          pointCode: string,
+          partnerEmail?: string|null,
+          partnerWebsite?: string|null,
+     } $partnerData
+    *
+    * @throws \InvalidArgumentException
+     * @return \BnplPartners\Factoring004\PreApp\PartnerData
+    */
+    public static function createFromArray(array $partnerData)
     {
         if (empty($partnerData['partnerName'])) {
             throw new InvalidArgumentException("Key 'partnerName' is required");
@@ -78,26 +79,29 @@ class PartnerData implements ArrayInterface
             throw new InvalidArgumentException("Key 'pointCode' is required");
         }
 
-        return new self(
-            $partnerData['partnerName'],
-            $partnerData['partnerCode'],
-            $partnerData['pointCode'],
-            $partnerData['partnerEmail'] ?? null,
-            $partnerData['partnerWebsite'] ?? null
-        );
+        return new self($partnerData['partnerName'], $partnerData['partnerCode'], $partnerData['pointCode'], isset($partnerData['partnerEmail']) ? $partnerData['partnerEmail'] : null, isset($partnerData['partnerWebsite']) ? $partnerData['partnerWebsite'] : null);
     }
 
-    public function getPartnerName(): string
+    /**
+     * @return string
+     */
+    public function getPartnerName()
     {
         return $this->partnerName;
     }
 
-    public function getPartnerCode(): string
+    /**
+     * @return string
+     */
+    public function getPartnerCode()
     {
         return $this->partnerCode;
     }
 
-    public function getPointCode(): string
+    /**
+     * @return string
+     */
+    public function getPointCode()
     {
         return $this->pointCode;
     }
@@ -128,7 +132,7 @@ class PartnerData implements ArrayInterface
          partnerWebsite?: string,
        }
      */
-    public function toArray(): array
+    public function toArray()
     {
         $data = [
             'partnerName' => $this->getPartnerName(),

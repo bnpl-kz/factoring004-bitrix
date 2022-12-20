@@ -2,6 +2,7 @@
 
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Order Manager](#order-manager)
 - [Usage](#usage)
     * [Create api instance](#create-api-instance)
     * [Authentication](#authentication)
@@ -15,14 +16,128 @@
 
 ## Requirements
 
-- PHP >=7.4
+- PHP >=5.6
 - JSON extension
-- PSR-17, PSR-18 implementations
+- PSR-17, PSR-18 implementations (optional and PHP >=7.x only)
 
 ## Installation
 
 ```bash
 composer require bnpl-partners/factoring004
+```
+
+## Order Manager
+
+This class is high level api for order management
+
+### Create an instance
+
+```php
+use BnplPartners\Factoring004\Order\OrderManager;
+use BnplPartners\Factoring004\Auth\BearerTokenAuth;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$manager = OrderManager::create('http://api-domain.com', new BearerTokenAuth('Access Token'));
+```
+
+### PreApp endpoint
+
+See [PreApp](#preapp)
+
+```php
+$response = $manager->preApp(...)
+```
+
+### Delivery endpoints
+
+#### Send OTP
+
+```php
+$response = $manager->delivery($merchantId, $orderId, $amount)->sendOtp();
+var_dump($response->getMessage());
+```
+
+#### Check OTP
+
+```php
+$response = $manager->delivery($merchantId, $orderId, $amount)->checkOtp($otp);
+var_dump($response->getMessage());
+```
+
+#### Without OTP
+
+```php
+$response = $manager->delivery($merchantId, $orderId, $amount)->confirmWithoutOtp();
+var_dump($response->getMessage());
+```
+
+### Full return endpoints
+
+#### Send OTP
+
+```php
+$response = $manager->fullRefund($merchantId, $orderId)->sendOtp();
+var_dump($response->getMessage());
+```
+
+#### Check OTP
+
+```php
+$response = $manager->fullRefund($merchantId, $orderId)->checkOtp($otp);
+var_dump($response->getMessage());
+```
+
+#### Without OTP
+
+```php
+$response = $manager->fullRefund($merchantId, $orderId)->confirmWithoutOtp();
+var_dump($response->getMessage());
+```
+
+### Partial return endpoints
+
+#### Send OTP
+
+```php
+$response = $manager->partialRefund($merchantId, $orderId, $amount)->sendOtp();
+var_dump($response->getMessage());
+```
+
+#### Check OTP
+
+```php
+$response = $manager->partialRefund($merchantId, $orderId, $amount)->checkOtp($otp);
+var_dump($response->getMessage());
+```
+
+#### Without OTP
+
+```php
+$response = $manager->partialRefund($merchantId, $orderId, $amount)->confirmWithoutOtp();
+var_dump($response->getMessage());
+```
+
+### Cancel endpoint
+
+```php
+$response = $manager->cancel($merchantId, $orderId);
+var_dump($response->getMessage());
+```
+
+### Error handling
+
+All methods can throw an exception like [there](#error-handling)
+
+```php
+use BnplPartners\Factoring004\Exception\PackageException;
+
+try {
+    $response = $manager->delivery($merchantId, $orderId, $amount)->sendOtp();
+    var_dump($response->getMessage());
+} catch (PackageException $e) {
+    var_dump($e);
+}
 ```
 
 ## Usage

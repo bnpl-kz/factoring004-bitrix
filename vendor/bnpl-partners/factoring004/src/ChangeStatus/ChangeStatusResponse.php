@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -43,38 +41,45 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
      *
      * @return \BnplPartners\Factoring004\ChangeStatus\ChangeStatusResponse
      */
-    public static function createFromArray($responses): ChangeStatusResponse
+    public static function createFromArray(array $responses)
     {
         return new self(array_map(
             function (array $response) {
                 return SuccessResponse::createFromArray($response);
             },
-            $responses['successfulResponses'] ?? $responses['SuccessfulResponses'] ?? []
+            isset($responses['successfulResponses']) ? $responses['successfulResponses'] : (isset($responses['SuccessfulResponses']) ? $responses['SuccessfulResponses'] : [])
         ), array_map(
             function (array $response) {
                 return ErrorResponse::createFromArray($response);
             },
-            $responses['errorResponses'] ?? $responses['ErrorResponses'] ?? []
+            isset($responses['errorResponses']) ? $responses['errorResponses'] : (isset($responses['ErrorResponses']) ? $responses['ErrorResponses'] : [])
         ));
     }
 
-    public function getSuccessfulResponses(): array
+    /**
+     * @return mixed[]
+     */
+    public function getSuccessfulResponses()
     {
         return $this->successfulResponses;
     }
 
-    public function getErrorResponses(): array
+    /**
+     * @return mixed[]
+     */
+    public function getErrorResponses()
     {
         return $this->errorResponses;
     }
 
     /**
-     * @psalm-return array{
-         SuccessfulResponses: array{error: string, msg: string}[],
-         ErrorResponses: array{code: string, error: string, message: string}[],
-     }
-     */
-    public function toArray(): array
+    * @psalm-return array{
+        SuccessfulResponses: array{error: string, msg: string}[],
+        ErrorResponses: array{code: string, error: string, message: string}[],
+    }
+     * @return mixed[]
+    */
+    public function toArray()
     {
         return [
             'SuccessfulResponses' => array_map(function (SuccessResponse $response) {
@@ -89,7 +94,7 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
     /**
      * @return array<string, array<string, mixed>[]>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

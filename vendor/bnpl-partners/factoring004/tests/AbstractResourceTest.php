@@ -1,29 +1,25 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004;
 
 use BnplPartners\Factoring004\Exception\AuthenticationException;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
 use BnplPartners\Factoring004\Exception\UnexpectedResponseException;
 use BnplPartners\Factoring004\Response\ErrorResponse;
-use BnplPartners\Factoring004\Transport\PsrTransport;
+use BnplPartners\Factoring004\Transport\GuzzleTransport;
 use BnplPartners\Factoring004\Transport\Response as TransportResponse;
-use BnplPartners\Factoring004\Transport\TransportInterface;
-use GuzzleHttp\Psr7\HttpFactory;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 
-abstract class AbstractResourceTest extends TestCase
+abstract class AbstractResourceTest extends AbstractTestCase
 {
-    protected const BASE_URI = 'http://example.com';
+    const BASE_URI = 'http://example.com';
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithMethodNotAllowedError(): void
+    public function testWithMethodNotAllowedError()
     {
         $data = [
             'code' => '405',
@@ -33,7 +29,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(405, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -47,8 +43,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithMethodNotAllowedFault(): void
+    public function testWithMethodNotAllowedFault()
     {
         $data = [
             'fault' => [
@@ -60,7 +57,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(405, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -74,8 +71,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithMissingCredentialsError(): void
+    public function testWithMissingCredentialsError()
     {
         $data = [
             'code' => '900902',
@@ -84,7 +82,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(401, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -98,8 +96,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithMissingCredentialsFault(): void
+    public function testWithMissingCredentialsFault()
     {
         $data = [
             'fault' => [
@@ -110,7 +109,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(401, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -124,8 +123,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithInvalidCredentialsError(): void
+    public function testWithInvalidCredentialsError()
     {
         $data = [
             'code' => '900901',
@@ -134,7 +134,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(401, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -148,8 +148,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithInvalidCredentialsFault(): void
+    public function testWithInvalidCredentialsFault()
     {
         $data = [
             'fault' => [
@@ -160,7 +161,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(401, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -174,8 +175,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithAccessTokenNotAllowError(): void
+    public function testWithAccessTokenNotAllowError()
     {
         $data = [
             'code' => '900910',
@@ -184,7 +186,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(401, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -198,8 +200,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithAccessTokenNotAllowFault(): void
+    public function testWithAccessTokenNotAllowFault()
     {
         $data = [
             'fault' => [
@@ -210,7 +213,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(401, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -224,8 +227,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithForbiddenError(): void
+    public function testWithForbiddenError()
     {
         $data = [
             'code' => '900908',
@@ -234,7 +238,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(403, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -248,8 +252,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithForbiddenFault(): void
+    public function testWithForbiddenFault()
     {
         $data = [
             'fault' => [
@@ -260,7 +265,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(403, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -274,8 +279,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithUnexpectedSchemaError(): void
+    public function testWithUnexpectedSchemaError()
     {
         $data = [
             'error' => [
@@ -285,7 +291,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(400, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -299,8 +305,9 @@ abstract class AbstractResourceTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testWithUnexpectedSchemaFault(): void
+    public function testWithUnexpectedSchemaFault()
     {
         $data = [
             'fault' => [
@@ -310,7 +317,7 @@ abstract class AbstractResourceTest extends TestCase
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(400, ['Content-Type' => 'application/json'], json_encode($data)));
 
         try {
@@ -332,13 +339,15 @@ abstract class AbstractResourceTest extends TestCase
      *           [400, {}, "BnplPartners\\Factoring004\\Exception\\UnexpectedResponseException"]
      *           [500, {"message": "Error"}, "BnplPartners\\Factoring004\\Exception\\EndpointUnavailableException"]
      *           [500, {}, "BnplPartners\\Factoring004\\Exception\\EndpointUnavailableException"]
+     * @return void
+     * @param int $status
      */
-    public function testWithUnexpectedError(int $status, array $data, string $exceptionClass): void
+    public function testWithUnexpectedError($status, array $data, $exceptionClass)
     {
         $client = $this->createStub(ClientInterface::class);
         $response = new Response($status, ['Content-Type' => 'application/json'], json_encode($data));
 
-        $client->method('sendRequest')->willReturn($response);
+        $client->method('send')->willReturn($response);
 
         try {
             $this->callResourceMethod($client);
@@ -356,16 +365,15 @@ abstract class AbstractResourceTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
+     * @return void
      */
-    abstract protected function callResourceMethod(ClientInterface $client): void;
+    abstract protected function callResourceMethod(ClientInterface $client);
 
-    protected function createTransport(ClientInterface $client): TransportInterface
+    /**
+     * @return \BnplPartners\Factoring004\Transport\TransportInterface
+     */
+    protected function createTransport(ClientInterface $client)
     {
-        return new PsrTransport(
-            new HttpFactory(),
-            new HttpFactory(),
-            new HttpFactory(),
-            $client,
-        );
+        return new GuzzleTransport($client);
     }
 }

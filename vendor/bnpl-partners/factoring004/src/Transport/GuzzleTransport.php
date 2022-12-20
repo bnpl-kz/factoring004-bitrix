@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Transport;
 
 use BnplPartners\Factoring004\Exception\NetworkException;
@@ -29,42 +27,44 @@ class GuzzleTransport extends AbstractTransport
     /**
      * @param \GuzzleHttp\ClientInterface|null $client
      */
-    public function __construct($client = null)
+    public function __construct(ClientInterface $client = null)
     {
         parent::__construct();
 
-        $this->client = $client ?? new Client();
+        $this->client = isset($client) ? $client : new Client();
     }
 
     /**
      * @param string $method
-     * @param \Psr\Http\Message\UriInterface $uri
+     * @return \Psr\Http\Message\RequestInterface
      */
-    protected function createRequest($method, $uri): RequestInterface
+    protected function createRequest($method, UriInterface $uri)
     {
         return new Request($method, $uri);
     }
 
     /**
      * @param string $content
+     * @return \Psr\Http\Message\StreamInterface
      */
-    protected function createStream($content): StreamInterface
+    protected function createStream($content)
     {
         return Utils::streamFor($content);
     }
 
     /**
      * @param string $uri
+     * @return \Psr\Http\Message\UriInterface
      */
-    protected function createUri($uri): UriInterface
+    protected function createUri($uri)
     {
         return new Uri($uri);
     }
 
     /**
-     * @param \Psr\Http\Message\RequestInterface $request
+     * @return PsrResponseInterface
      */
-    protected function sendRequest($request): PsrResponseInterface
+    protected function sendRequest(RequestInterface $request)
     {
         try {
             return $this->client->send($request);
