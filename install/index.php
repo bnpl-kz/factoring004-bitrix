@@ -3,7 +3,6 @@
 use Bitrix\Main\EventManager;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
-use Bitrix\Main\Entity\Base;
 use Bitrix\Main\IO\File;
 use Bnpl\Payment\PaymentScheduleAsset;
 
@@ -16,8 +15,6 @@ class bnpl_payment extends CModule
     var $MODULE_DESCRIPTION;
     var $PARTNER_NAME;
     var $PARTNER_URI;
-
-    private $ORM_ENTITY = array(\Bnpl\Payment\OrdersTable::class, \Bnpl\Payment\PreappsTable::class);
 
     /**
      * bnpl_payment constructor.
@@ -36,16 +33,13 @@ class bnpl_payment extends CModule
         $this->PARTNER_URI = "https://alfabank.kz/";
     }
 
-
     public function DoInstall()
     {
         RegisterModule($this->MODULE_ID);
-        $this->InstallDB();
         $this->InstallFiles();
         $this->installEvents();
         return true;
     }
-
 
     public function InstallFiles()
     {
@@ -126,17 +120,6 @@ class bnpl_payment extends CModule
         File::putFileContents($logo_dir . 'bnplpayment.png', File::getFileContents($source . "/sale_payment/bnplpayment/bnplpayment.png"));
     }
 
-    public function InstallDB()
-    {
-        if (self::IncludeModule($this->MODULE_ID)) {
-            foreach ($this->ORM_ENTITY as $entity) {
-                if (!Application::getConnection()->isTableExists(Base::getInstance($entity)->getDBTableName())) {
-                    Base::getInstance($entity)->createDbTable();
-                }
-            }
-        }
-    }
-
     public function installEvents() {
         EventManager::getInstance()->registerEventHandler(
             'sale',
@@ -149,7 +132,6 @@ class bnpl_payment extends CModule
 
     public function DoUninstall()
     {
-        $this->UnInstallDB();
         $this->UnInstallFiles();
         $this->uninstallEvents();
         UnRegisterModule($this->MODULE_ID);
@@ -170,18 +152,6 @@ class bnpl_payment extends CModule
        DeleteDirFilesEx('/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS);
        DeleteDirFilesEx('/bitrix/tmp/factoring004');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment_error.php');
-    }
-
-    public function UnInstallDB()
-    {
-        if (self::IncludeModule($this->MODULE_ID)) {
-            foreach ($this->ORM_ENTITY as $entity) {
-                if (Application::getConnection()->isTableExists(Base::getInstance($entity)->getDBTableName())) {
-                    Application::getConnection()
-                        ->dropTable(Base::getInstance($entity)->getDBTableName());
-                }
-            }
-        }
     }
 
     public function uninstallEvents() {

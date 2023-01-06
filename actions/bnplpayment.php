@@ -20,7 +20,6 @@ use Bitrix\Main\Engine\Response\Json;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PaymentProcessor;
-use Bnpl\Payment\PreAppOrderManager;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
@@ -48,7 +47,7 @@ $transport->setLogger($logger);
 $api = Api::create($apiHost, new BearerTokenAuth($preAppToken), $transport);
 
 $request = Application::getInstance()->getContext()->getRequest();
-$processor = new PaymentProcessor($api, new PreAppOrderManager());
+$processor = new PaymentProcessor($api);
 
 try {
     $response = $processor->preApp($request);

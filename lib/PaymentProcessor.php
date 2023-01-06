@@ -16,15 +16,9 @@ class PaymentProcessor
      */
     private $api;
 
-    /**
-     * @var \Bnpl\Payment\PreAppOrderManager
-     */
-    private $orderManager;
-
-    public function __construct(Api $api, PreAppOrderManager $orderManager)
+    public function __construct(Api $api)
     {
         $this->api = $api;
-        $this->orderManager = $orderManager;
     }
 
     /**
@@ -49,8 +43,6 @@ class PaymentProcessor
         }
 
         $preApp = $this->api->preApps->preApp($this->createPreAppMessage($order, $this->extractServerHost($request)));
-
-        $this->orderManager->syncOrder($order->getId(), $preApp->getPreAppId());
 
         if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
             return (new Json([
