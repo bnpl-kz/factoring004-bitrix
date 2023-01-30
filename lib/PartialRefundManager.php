@@ -10,27 +10,8 @@ use Bitrix\Sale\Payment;
 use Exception;
 use InvalidArgumentException;
 
-class PartialRefundManager
+class PartialRefundManager extends AbstractManger
 {
-    /**
-     * @var \Bitrix\Sale\Order
-     */
-    private $order;
-
-    /**
-     * @var array<string, int>
-     */
-    private $items;
-
-    /**
-     * @param array<string, int> $items
-     */
-    public function __construct(Order $order, array $items)
-    {
-        $this->order = $order;
-        $this->items = $items;
-    }
-
     /**
      * @param array<string, int> $items
      */

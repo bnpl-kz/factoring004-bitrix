@@ -43,14 +43,21 @@ $transport->setLogger($logger);
 $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $transport);
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
-$orderId = $request->get('order_id');
+
+$data = json_decode($request->getInput(), true);
+$orderId = $data['order_id'];
+$deliveryItems = $data['items'] ?? [];
+$otp = $data['otp'];
 
 // get order paid sum
 $order = \Bitrix\Sale\Order::load($orderId);
 
 
 try {
-    $api->otp->checkOtp(new CheckOtp($partnerCode, $orderId, $request->get('otp'), (int) ceil($order->getSumPaid())));
+
+    $deliveryManager = \Bnpl\Payment\DeliveryManager::create($order, $deliveryItems);
+
+    $api->otp->checkOtp(new CheckOtp($partnerCode, $orderId, $otp, $deliveryManager->calculateAmount()));
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
 } catch (Exception $e) {
