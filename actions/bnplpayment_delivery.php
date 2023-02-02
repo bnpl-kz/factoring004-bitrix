@@ -10,6 +10,7 @@ use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
+use Bnpl\Payment\DeliveryManager;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\ChangeStatus\DeliveryOrder;
@@ -46,14 +47,22 @@ $transport->setLogger($logger);
 $api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $transport);
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
-$orderId = $request->get('order_id');
+
+$data = json_decode($request->getInput(), true);
+
+$orderId = $data['order_id'];
+
+$deliveryItems = $data['items'] ?? [];
+
 $ids = Config::getDeliveryIds();
 
-// get order paid sum
 $order = \Bitrix\Sale\Order::load($orderId);
-$paidSum = (int) ceil($order->getSumPaid());
 
 try {
+
+    $deliveryManager = DeliveryManager::create($order, $deliveryItems);
+    $paidSum = $deliveryManager->calculateAmount();
+
     if (array_intersect($ids, $order->getDeliveryIdList())) {
         // should send OTP
         $api->otp->sendOtp(new SendOtp($partnerCode, $orderId, $paidSum));
