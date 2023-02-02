@@ -48,8 +48,8 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -147,8 +147,12 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         'BnplPartners\\Factoring004\\Transport\\Response' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Transport/Response.php',
         'BnplPartners\\Factoring004\\Transport\\ResponseInterface' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Transport/ResponseInterface.php',
         'BnplPartners\\Factoring004\\Transport\\TransportInterface' => __DIR__ . '/..' . '/bnpl-partners/factoring004/src/Transport/TransportInterface.php',
+        'Bnpl\\Payment\\AbstractManager' => __DIR__ . '/../..' . '/lib/AbstractManager.php',
         'Bnpl\\Payment\\Config' => __DIR__ . '/../..' . '/lib/Config.php',
         'Bnpl\\Payment\\DebugLoggerFactory' => __DIR__ . '/../..' . '/lib/DebugLoggerFactory.php',
+        'Bnpl\\Payment\\DeliveryAmountException' => __DIR__ . '/../..' . '/lib/DeliveryAmountException.php',
+        'Bnpl\\Payment\\DeliveryManager' => __DIR__ . '/../..' . '/lib/DeliveryManager.php',
+        'Bnpl\\Payment\\DeliveryManagerException' => __DIR__ . '/../..' . '/lib/DeliveryManagerException.php',
         'Bnpl\\Payment\\EmptyBasketItemsException' => __DIR__ . '/../..' . '/lib/EmptyBasketItemsException.php',
         'Bnpl\\Payment\\PartialRefundManager' => __DIR__ . '/../..' . '/lib/PartialRefundManager.php',
         'Bnpl\\Payment\\PartialRefundManagerException' => __DIR__ . '/../..' . '/lib/PartialRefundManagerException.php',
