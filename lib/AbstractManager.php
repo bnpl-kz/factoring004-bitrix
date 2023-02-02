@@ -4,7 +4,7 @@ namespace Bnpl\Payment;
 
 use Bitrix\Sale\Order;
 
-abstract class AbstractManger
+abstract class AbstractManager
 {
     /**
      * @var \Bitrix\Sale\Order

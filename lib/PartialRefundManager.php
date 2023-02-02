@@ -10,7 +10,7 @@ use Bitrix\Sale\Payment;
 use Exception;
 use InvalidArgumentException;
 
-class PartialRefundManager extends AbstractManger
+class PartialRefundManager extends AbstractManager
 {
     /**
      * @param array<string, int> $items

@@ -5,7 +5,7 @@ namespace Bnpl\Payment;
 use Bitrix\Main\ArgumentException;
 use Bitrix\Sale\Order;
 
-class DeliveryManager extends AbstractManger
+class DeliveryManager extends AbstractManager
 {
 
     public static function create(Order $order, array $items) : DeliveryManager
