@@ -42,4 +42,30 @@ class DeliveryManager extends AbstractManager
 
         return (int) ceil($amount);
     }
+
+    public function updateOrder()
+    {
+        $basket = $this->order->getBasket();
+
+        /** @var \Bitrix\Sale\BasketItem $basketItem */
+        foreach ($basket->getBasketItems() as $i => $basketItem) {
+            $deliveryQuantity = $this->items[(string) $basketItem->getId()] ?? 0;
+
+            if ($deliveryQuantity > 0) {
+                $basketItem->setFieldNoDemand('QUANTITY', $deliveryQuantity);
+            } else {
+                $basket->deleteItem($i);
+            }
+        }
+
+        $payment = $this->findOrderPayment();
+        $payment->setPaid('N');
+        $payment->delete();
+
+        $newPayment = $this->order->getPaymentCollection()->createItem($payment->getPaySystem());
+        $newPayment->setField('SUM', $this->order->getPrice());
+        $newPayment->setPaid('Y');
+
+        $this->order->save();
+    }
 }
