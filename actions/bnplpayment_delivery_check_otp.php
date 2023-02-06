@@ -60,6 +60,7 @@ try {
     $api->otp->checkOtp(new CheckOtp($partnerCode, $orderId, $otp, $deliveryManager->calculateAmount()));
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
+    $deliveryManager->updateOrder();
 } catch (Exception $e) {
     if ($e instanceof ErrorResponseException) {
         $errorResponse = $e->getErrorResponse();

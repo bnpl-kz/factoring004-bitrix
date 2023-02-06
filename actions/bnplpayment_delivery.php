@@ -75,6 +75,7 @@ try {
 
         if ($result->getSuccessfulResponses()) {
             $response->setContent(json_encode(['otp' => false, 'success' => true]));
+            $deliveryManager->updateOrder();
         } else {
             $response->setContent(json_encode(['otp' => false, 'success' => false]));
         }
