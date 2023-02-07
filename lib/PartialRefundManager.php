@@ -92,18 +92,4 @@ class PartialRefundManager extends AbstractManager
             throw new PartialRefundManagerException('Could not partial refund', 0, $e);
         }
     }
-
-    private function findOrderPayment(): Payment
-    {
-        /** @var \Bitrix\Sale\Payment $payment */
-        foreach ($this->order->getPaymentCollection() as $payment) {
-            $paySystemService = $payment->getPaySystem();
-
-            if ($paySystemService->getField('CODE') === 'factoring004') {
-                return $payment;
-            }
-        }
-
-        throw new InvalidArgumentException('Payment by code factoring004 is not found');
-    }
 }
