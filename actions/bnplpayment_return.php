@@ -100,14 +100,14 @@ try {
         if ($returnItems) {
             $amountAR = PartialRefundManager::create($order, $returnItems)->calculateAmount();
         } else {
-            $amountAR = (int) ceil($order->getSumPaid() - $amount);
+            $amountAR = $amount > 0 ? (int) ceil($order->getSumPaid() - $amount) : 0;
         }
 
         $api->otp->sendOtpReturn(new SendOtpReturn($amountAR, $partnerCode, $orderId));
         $response->setContent(json_encode(['otp' => true, 'success' => true]));
     } else {
         // Delivery without OTP
-        $amountAR = (int) ceil($amountAR = $order->getSumPaid() - $amount);
+        $amountAR = $amount > 0 ? (int) ceil($amountAR = $order->getSumPaid() - $amount) : 0;
 
         if ($returnItems) {
             $connection->startTransaction();

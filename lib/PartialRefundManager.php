@@ -35,8 +35,7 @@ class PartialRefundManager extends AbstractManager
                     throw new PartialRefundManagerException("Basket item by id {$itemId} is not found");
                 }
 
-                $quantity = $remainingQuantity === 1 ? 1 : ($basketItem->getQuantity() - $remainingQuantity);
-                $amount += $basketItem->getPrice() * $quantity;
+                $amount += $basketItem->getPrice() * $remainingQuantity;
             } catch (ArgumentException $e) {
                 throw new PartialRefundManagerException('Could not calculate refund amount', 0, $e);
             }
@@ -46,7 +45,7 @@ class PartialRefundManager extends AbstractManager
             throw new EmptyBasketItemsException('You are trying to refund all items. Please use full refund instead.');
         }
 
-        return (int) ceil($amount);
+        return (int) ceil($this->order->getPrice() - $amount);
     }
 
     /**
@@ -67,7 +66,7 @@ class PartialRefundManager extends AbstractManager
                 }
 
                 if ($basketItem->getQuantity() - $remainingQuantity > 0) {
-                    $basketItem->setFieldNoDemand('QUANTITY', $remainingQuantity);
+                    $basketItem->setFieldNoDemand('QUANTITY', $basketItem->getQuantity() - $remainingQuantity);
                 } else {
                     $basket->deleteItem($i);
                 }
