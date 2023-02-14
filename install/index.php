@@ -57,20 +57,6 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_return.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_return.php',
-            true,
-            true
-        );
-
-        CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_return_check_otp.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_return_check_otp.php',
-            true,
-            true
-        );
-
-        CopyDirFiles(
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/template/admin_header.php',
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/admin_header.php',
             true,
@@ -113,8 +99,6 @@ class bnpl_payment extends CModule
     {
        DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpayment');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_return.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_return_check_otp.php');
        DeleteDirFilesEx('/bitrix/php_interface/admin_header.php');
        DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
        DeleteDirFilesEx('/bitrix/tmp/factoring004');
