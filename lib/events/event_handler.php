@@ -6,7 +6,6 @@ use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Page\Asset;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
-use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Order;
 use CCurrencyLang;
 use CJSCore;
@@ -49,10 +48,6 @@ class EventHandler
         }
 
         static::addScheduleOrDisablePaymentMethod();
-
-        if (Config::get('BNPL_PAYMENT_FILE')) {
-            static::addJS();
-        }
     }
 
     private static function getPaymentSystemIndex(array $paymentSystems)
@@ -94,107 +89,6 @@ class EventHandler
         }
 
         return true;
-    }
-
-    private static function addJS()
-    {
-        $paymentId = static::getPaySystemId();
-        if ($paymentId === null) {
-            return false;
-        }
-
-        $agreementLink = static::getAgreementLink();
-        $agreementText = Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT');
-        $agreementTextLink =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_LINK');
-        $agreementTextError =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
-        $agreementTextButton =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON');
-
-        Asset::getInstance()->addString(
-            <<<JS
-                <script>
-                    $(document).ready(function() {
-                        toggleAgreementCheckbox()
-                        if ($('#bnpl_payment').length) toggleSubmitButton($('#bnpl_payment'))
-                        
-                        $(document).on('click',function(e) {
-                            if (e.target.id == 'bnpl_payment' || e.target.htmlFor == 'bnpl_payment') return
-                            toggleAgreementCheckbox()
-                        })
-                        
-                        $(document).on('change','#bnpl_payment',function(e) {
-                            toggleSubmitButton(e.target)
-                        })
-                        
-                        function drawCheckbox() {
-                            removeElem()
-                            addElem()
-                        }
-                        
-                        function removeCheckbox() {
-                             removeElem()
-                        }
-                        
-                        function toggleAgreementCheckbox()
-                        {
-                            let payValue = $('input[name="PAY_SYSTEM_ID"]:checked:enabled').val();
-                            if (payValue == '$paymentId') {
-                                if ($('#bnpl-payment-offer-block').length) return
-                                drawCheckbox()
-                                toggleSubmitButton($('#bnpl_payment'))
-                            } else {
-                                removeCheckbox()
-                                toggleSubmitButton(null)
-                            }
-                        }
-                        
-                        function toggleSubmitButton(elem) {
-                            if (!elem || elem.checked) {
-                                $('#bnpl-form-button').remove()
-                                $('a[data-save-button]').prop('style','margin: 10px 0')
-                                $('#bnpl-error').remove()
-                            } else {
-                                $('a[data-save-button]').prop('style','display: none !important')
-                                if (!$('#bnpl-form-button').length) {
-                                    $('#bnpl-payment-offer-block').after("<button disabled class='btn btn-primary btn-lg mt-2 mb-2' id='bnpl-form-button' type='button'>$agreementTextButton</button>")
-                                }
-                                if (!$('#bnpl-error').length) {
-                                    $('#bnpl-payment-offer-block').after('<p id="bnpl-error" class="text-danger">$agreementTextError</p>')
-                                }
-                            }
-                        }
-                        
-                        function addElem() {
-                            $('.checkbox').after("<div id='bnpl-payment-offer-block' class='mt-2 bnpl-payment-offer-block'><label class='form-check-label' for='bnpl_payment'><input class='mr-1' name='bnpl-payment-offer' id='bnpl_payment' type='checkbox'/>$agreementText <a href='$agreementLink' target='_blank'>$agreementTextLink</a></label></div>")
-                        }
-                        
-                        function removeElem() {
-                            $('#bnpl-payment-offer-block').remove()
-                        }
-                        
-                    })
-                </script>
-JS
-        );
-    }
-
-
-    private static function getPaySystemId()
-    {
-        return PaySystemActionTable::getRow(array(
-            'filter'=>array('CODE'=>'factoring004')
-        ))['ID'];
-    }
-
-    private static function getAgreementLink()
-    {
-        $id = Config::get('BNPL_PAYMENT_FILE');
-        if (!$id) {
-            return '';
-        }
-        global $DB;
-        $dbOption = $DB->Query("SELECT SUBDIR, FILE_NAME FROM b_file WHERE ID=$id");
-        $result = $dbOption->Fetch();
-        return '/upload/'.$result['SUBDIR'].'/'.$result['FILE_NAME'];
     }
 
     private static function addScheduleOrDisablePaymentMethod()

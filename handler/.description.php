@@ -61,16 +61,6 @@ $data = array(
             'GROUP' => 'MERCHANT PARAMETERS',
         ),
 
-        'BNPL_PAYMENT_FILE' => array(
-            'NAME' => Loc::getMessage('BNPL_PAYMENT_FILE_NAME'),
-            'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_FILE_DESCRIPTION'),
-            'SORT' => 1200,
-            'GROUP' => 'CLIENT PARAMETERS',
-            'INPUT'   => array(
-                'TYPE' => 'FILE',
-            ),
-        ),
-
         'BNPL_PAYMENT_CLIENT_ROUTE' => array(
             'NAME' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE'),
             'SORT' => 1250,
