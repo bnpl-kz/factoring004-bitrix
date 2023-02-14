@@ -17,6 +17,6 @@
   },
   "autoload": {
     "classmap": ["lib"],
-    "exclude-from-classmap": ["lib/events", "lib/exceptions", "lib/facades", "lib/orm"]
+    "exclude-from-classmap": ["lib/events"]
   }
 }
