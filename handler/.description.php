@@ -74,7 +74,7 @@ $data = array(
             ),
             'DEFAULT' => array(
                 'PROVIDER_KEY' => 'INPUT',
-                'PROVIDER_VALUE' => 'redirect'
+                'PROVIDER_VALUE' => 'modal'
             )
         ),
     )
