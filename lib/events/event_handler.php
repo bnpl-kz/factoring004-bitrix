@@ -3,18 +3,11 @@
 namespace Bnpl\Payment;
 
 use Bitrix\Main\HttpRequest;
-use Bitrix\Main\Localization\Loc;
-use Bitrix\Main\Page\Asset;
 use Bitrix\Sale\Internals\BusinessValuePersonDomainTable;
 use Bitrix\Sale\Order;
-use CCurrencyLang;
-use CJSCore;
-use CUtil;
 
 class EventHandler
 {
-    const MIN_SUM = 6000;
-    const MAX_SUM = 200000;
     const REQUIRED_OPTIONS = [
         'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN',
         'BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN',
@@ -44,10 +37,7 @@ class EventHandler
 
         if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
-            return;
         }
-
-        static::addScheduleOrDisablePaymentMethod();
     }
 
     private static function getPaymentSystemIndex(array $paymentSystems)
@@ -89,93 +79,5 @@ class EventHandler
         }
 
         return true;
-    }
-
-    private static function addScheduleOrDisablePaymentMethod()
-    {
-        $paySystemId = Config::getPaySystemId();
-
-        CJSCore::Init(['currency']);
-
-        $currency = ['CURRENCY' => 'KZT', 'FORMAT' => CCurrencyLang::GetFormatDescription('KZT')];
-        $currenciesJs = CUtil::PhpToJSObject([$currency], false, true, true);
-
-        $minAmount = static::MIN_SUM;
-        $maxAmount = static::MAX_SUM;
-        $minAmountMessage = Loc::getMessage('BNPL_PAYMENT_MIN_AMOUNT_CONDITION');
-        $maxAmountMessage = Loc::getMessage('BNPL_PAYMENT_MAX_AMOUNT_CONDITION');
-
-        Asset::getInstance()->addCss('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
-        Asset::getInstance()->addString('<script src="/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS . '" defer></script>');
-        Asset::getInstance()->addString(
-            <<<JS
-                <script>
-                    BX.Currency.setCurrencies($currenciesJs);
-                
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const editActivePaySystemBlock = BX.Sale.OrderAjaxComponent.editActivePaySystemBlock;
-                        
-                        BX.Sale.OrderAjaxComponent.editActivePaySystemBlock = function (activeNodeMode) {
-                          editActivePaySystemBlock.call(this, activeNodeMode);
-                      
-                          if (!activeNodeMode) return;
-                          
-                          const input = document.getElementById('ID_PAY_SYSTEM_ID_' + $paySystemId);
-                          
-                          if (!input.checked) return;
-                          
-                          const totalAmountSelector = '#bx-soa-total .bx-soa-cart-total-line-total .bx-soa-cart-d';
-                          const totalAmountElem = document.querySelector(totalAmountSelector);
-                          const totalAmount = Math.ceil(parseFloat(totalAmountElem.textContent.replace(/\s+/g, '')));
-                          const container = this.paySystemBlockNode.querySelector('.bx-soa-section-content .bx-soa-pp');
-                          
-                          if (totalAmount < $minAmount || totalAmount > $maxAmount) {
-                            disablePaymentMethod(container, input, totalAmount);
-                            return;
-                          }
-                          
-                          let elem = document.getElementById('factoring004-schedule');
-                          
-                          if (!elem) {
-                            const schedule = new Factoring004.PaymentSchedule({
-                              elemId: 'factoring004-schedule',
-                              totalAmount,
-                            });
-                          
-                            elem = document.createElement('div');
-                            elem.id = 'factoring004-schedule';
-                            
-                            schedule.renderTo(elem);
-                          }
-                        
-                          container.insertAdjacentElement('afterend', elem);
-                        };
-                        
-                        function disablePaymentMethod (container, input, totalAmount) {
-                            input.checked = false;
-                            input.disabled = true;
-                              
-                            let template;
-                            let amount;
-                            let value;
-                            
-                            if (totalAmount < $minAmount) {
-                              template = '$minAmountMessage';
-                              amount = BX.Currency.currencyFormat($minAmount, 'KZT', true);
-                              value = BX.Currency.currencyFormat($minAmount - totalAmount, 'KZT', true);
-                            } else {
-                              template = '$maxAmountMessage';
-                              amount = BX.Currency.currencyFormat($maxAmount, 'KZT', true);
-                              value = BX.Currency.currencyFormat(totalAmount - $maxAmount, 'KZT', true);
-                            }
-                            
-                            const msg = template.replace('{amount}', amount).replace('{value}', value);
-                            
-                            container.insertAdjacentHTML('afterend', `<div style="color: red; margin: 1rem 0">\${msg}</div>`);
-                        }
-                    });
-                </script>
-JS
-        );
     }
 }

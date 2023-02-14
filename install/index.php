@@ -4,9 +4,6 @@ use Bitrix\Main\EventManager;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\IO\File;
-use Bnpl\Payment\PaymentScheduleAsset;
-
-require_once __DIR__ . '/../vendor/autoload.php';
 
 class bnpl_payment extends CModule
 {
@@ -95,20 +92,6 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/schedule/' . PaymentScheduleAsset::FILE_CSS,
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS,
-            true,
-            true
-        );
-
-        CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/schedule/' . PaymentScheduleAsset::FILE_JS,
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS,
-            true,
-            true
-        );
-
-        CopyDirFiles(
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_error.php',
             $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_error.php',
             true,
@@ -150,8 +133,6 @@ class bnpl_payment extends CModule
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_return_check_otp.php');
        DeleteDirFilesEx('/bitrix/php_interface/admin_header.php');
        DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
-       DeleteDirFilesEx('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
-       DeleteDirFilesEx('/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS);
        DeleteDirFilesEx('/bitrix/tmp/factoring004');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment_error.php');
     }

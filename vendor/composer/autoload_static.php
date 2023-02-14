@@ -48,8 +48,8 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -153,7 +153,6 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         'Bnpl\\Payment\\PartialRefundManager' => __DIR__ . '/../..' . '/lib/PartialRefundManager.php',
         'Bnpl\\Payment\\PartialRefundManagerException' => __DIR__ . '/../..' . '/lib/PartialRefundManagerException.php',
         'Bnpl\\Payment\\PaymentProcessor' => __DIR__ . '/../..' . '/lib/PaymentProcessor.php',
-        'Bnpl\\Payment\\PaymentScheduleAsset' => __DIR__ . '/../..' . '/lib/PaymentScheduleAsset.php',
         'Bnpl\\Payment\\SimpleDebugLogger' => __DIR__ . '/../..' . '/lib/SimpleDebugLogger.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'GuzzleHttp\\BodySummarizer' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/BodySummarizer.php',
