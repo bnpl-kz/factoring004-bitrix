@@ -6,16 +6,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
-global $DB;
-$delivery = array();
-$dbOption = $DB->Query("SELECT ID, NAME FROM b_sale_delivery_srv", true);
-if ($dbOption) {
-    while ($row = $dbOption->Fetch())
-    {
-        $delivery[$row['ID']] = $row['NAME'];
-    }
-}
-
 
 $isAvailable = true;
 
@@ -99,20 +89,5 @@ $data = array(
         ),
     )
 );
-
-foreach ($delivery as $key => $item) {
-    $data['CODES']['BNPL_PAYMENT_DELIVERY_'.$key] = array(
-            'NAME' => $item,
-            'SORT' => 1300,
-            'GROUP' => 'DELIVERY PARAMETERS',
-            'INPUT' => array(
-                'TYPE' => 'ENUM',
-                'OPTIONS' => array(
-                    'N'=>Loc::getMessage('BNPL_PAYMENT_DELIVERY_NO'),
-                    'Y'=>Loc::getMessage('BNPL_PAYMENT_DELIVERY_YES')
-                ),
-            ),
-        );
-}
 
 ?>
