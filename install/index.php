@@ -6,6 +6,8 @@ use Bitrix\Main\Application;
 use Bitrix\Main\IO\File;
 use Bnpl\Payment\PaymentScheduleAsset;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 class bnpl_payment extends CModule
 {
     var $MODULE_ID = 'bnpl.payment';
