@@ -8,6 +8,8 @@ use Bitrix\Sale\Order;
 
 class EventHandler
 {
+    const MIN_SUM = 6000;
+    const MAX_SUM = 200000;
     const REQUIRED_OPTIONS = [
         'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN',
         'BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN',
@@ -36,6 +38,10 @@ class EventHandler
         }
 
         if (!static::isIndividualPersonType($arUserResult['PERSON_TYPE_ID'])) {
+            static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
+        }
+
+        if ($order->getPrice() < static::MIN_SUM || $order->getPrice() > static::MAX_SUM) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
         }
     }
