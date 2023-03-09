@@ -85,6 +85,14 @@ class bnpl_payment extends CModule
             '\Bnpl\Payment\EventHandler',
             'hidePaySystem'
         );
+
+        EventManager::getInstance()->registerEventHandler(
+            'main',
+            'OnAdminTabControlBegin',
+            $this->MODULE_ID,
+            '\Bnpl\Payment\PushAdminScripts',
+            'push'
+        );
     }
 
     public function DoUninstall()
@@ -112,6 +120,14 @@ class bnpl_payment extends CModule
             $this->MODULE_ID,
             '\Bnpl\Payment\EventHandler',
             'hidePaySystem'
+        );
+
+        EventManager::getInstance()->unRegisterEventHandler(
+            'main',
+            'OnAdminTabControlBegin',
+            $this->MODULE_ID,
+            '\Bnpl\Payment\PushAdminScripts',
+            'push'
         );
     }
 }
