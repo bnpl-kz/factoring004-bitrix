@@ -72,6 +72,4 @@ if (strpos($_SERVER['REQUEST_URI'], 'admin/sale_order_view.php') !== false) {
         // do nothing
         return;
     }
-} elseif (strpos($_SERVER['REQUEST_URI'], 'admin/sale_pay_system_edit.php') !== false) {
-    require_once __DIR__ . '/set_values_default.php';
 }
