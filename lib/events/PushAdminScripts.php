@@ -15,6 +15,9 @@ class PushAdminScripts
         '/bitrix/admin/sale_order_view.php' => [
             __DIR__ . '/../../template/pre_sale_order_view.php',
         ],
+        '/bitrix/admin/sale_order_shipment_edit.php' => [
+            __DIR__ . '/../../template/pre_sale_order_shipment_edit.php',
+        ],
     ];
 
     public static function push(CAdminTabControl $form): void
