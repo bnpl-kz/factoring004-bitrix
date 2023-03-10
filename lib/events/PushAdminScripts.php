@@ -12,6 +12,9 @@ class PushAdminScripts
         '/bitrix/admin/sale_pay_system_edit.php' => [
             __DIR__ . '/../../template/set_values_default.php',
         ],
+        '/bitrix/admin/sale_order_view.php' => [
+            __DIR__ . '/../../template/pre_sale_order_view.php',
+        ],
     ];
 
     public static function push(CAdminTabControl $form): void
