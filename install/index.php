@@ -57,13 +57,6 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/template/admin_header.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/php_interface/admin_header.php',
-            true,
-            true
-        );
-
-        CopyDirFiles(
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_error.php',
             $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_error.php',
             true,
@@ -107,7 +100,6 @@ class bnpl_payment extends CModule
     {
        DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpayment');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment.php');
-       DeleteDirFilesEx('/bitrix/php_interface/admin_header.php');
        DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
        DeleteDirFilesEx('/bitrix/tmp/factoring004');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment_error.php');
