@@ -17,6 +17,7 @@ if (!check_bitrix_sessid()) {
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Engine\Response\Json;
+use Bnpl\Payment\BitrixSimpleCache;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PaymentProcessor;
@@ -24,6 +25,8 @@ use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
 use BnplPartners\Factoring004\Exception\ValidationException;
+use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
+use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
 use BnplPartners\Factoring004\Transport\GuzzleTransport;
 
 define("STOP_STATISTICS", true);
@@ -39,12 +42,19 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 }
 
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$preAppToken = Config::get('BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN');
+$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
 
+$cache = new BitrixSimpleCache(Application::getInstance()->getCache());
 $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
-$api = Api::create($apiHost, new BearerTokenAuth($preAppToken), $transport);
+
+$tokenManager = new OAuthTokenManager($apiHost . '/users/api/v1', $oAuthLogin, $oAuthPassword, $transport);
+$tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
+$token = $tokenManager->getAccessToken()->getAccess();
+
+$api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 
 $request = Application::getInstance()->getContext()->getRequest();
 $processor = new PaymentProcessor($api);
