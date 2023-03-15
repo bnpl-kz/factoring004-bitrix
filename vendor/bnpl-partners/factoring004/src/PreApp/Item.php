@@ -1,49 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\ArrayInterface;
 
 class Item implements ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $itemId;
-    /**
-     * @var string
-     */
-    private $itemName;
-    /**
-     * @var string|null
-     */
-    private $itemCategory;
-    /**
-     * @var int
-     */
-    private $itemQuantity;
-    /**
-     * @var int
-     */
-    private $itemPrice;
-    /**
-     * @var int
-     */
-    private $itemSum;
+    private string $itemId;
+    private string $itemName;
+    private ?string $itemCategory = null;
+    private int $itemQuantity;
+    private int $itemPrice;
+    private int $itemSum;
 
-    /**
-     * @param string $itemId
-     * @param string $itemName
-     * @param int $itemQuantity
-     * @param int $itemPrice
-     * @param int $itemSum
-     */
     public function __construct(
-        $itemId,
-        $itemName,
-        $itemQuantity,
-        $itemPrice,
-        $itemSum
+        string $itemId,
+        string $itemName,
+        int $itemQuantity,
+        int $itemPrice,
+        int $itemSum
     ) {
         $this->itemId = $itemId;
         $this->itemName = $itemName;
@@ -65,9 +42,15 @@ class Item implements ArrayInterface
      *
      * @return \BnplPartners\Factoring004\PreApp\Item
      */
-    public static function createFromArray(array $item)
+    public static function createFromArray(array $item): Item
     {
-        $self = new self($item['itemId'], $item['itemName'], $item['itemQuantity'], $item['itemPrice'], $item['itemSum']);
+        $self = new self(
+            $item['itemId'],
+            $item['itemName'],
+            $item['itemQuantity'],
+            $item['itemPrice'],
+            $item['itemSum'],
+        );
 
         if (isset($item['itemCategory'])) {
             $self->setItemCategory($item['itemCategory']);
@@ -76,76 +59,53 @@ class Item implements ArrayInterface
         return $self;
     }
 
-    /**
-     * @return string
-     */
-    public function getItemId()
+    public function getItemId(): string
     {
         return $this->itemId;
     }
 
-    /**
-     * @return string
-     */
-    public function getItemName()
+    public function getItemName(): string
     {
         return $this->itemName;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getItemCategory()
+    public function getItemCategory(): ?string
     {
         return $this->itemCategory;
     }
 
-    /**
-     * @return int
-     */
-    public function getItemQuantity()
+    public function getItemQuantity(): int
     {
         return $this->itemQuantity;
     }
 
-    /**
-     * @return int
-     */
-    public function getItemPrice()
+    public function getItemPrice(): int
     {
         return $this->itemPrice;
     }
 
-    /**
-     * @return int
-     */
-    public function getItemSum()
+    public function getItemSum(): int
     {
         return $this->itemSum;
     }
 
-    /**
-     * @param string $itemCategory
-     * @return \BnplPartners\Factoring004\PreApp\Item
-     */
-    public function setItemCategory($itemCategory)
+    public function setItemCategory(string $itemCategory): Item
     {
         $this->itemCategory = $itemCategory;
         return $this;
     }
 
     /**
-    * @psalm-return array{
-          itemId: string,
-          itemName: string,
-          itemCategory?: string,
-          itemQuantity: int,
-          itemPrice: int,
-          itemSum: int,
-    * }
-     * @return mixed[]
-    */
-    public function toArray()
+     * @psalm-return array{
+           itemId: string,
+           itemName: string,
+           itemCategory?: string,
+           itemQuantity: int,
+           itemPrice: int,
+           itemSum: int,
+     * }
+     */
+    public function toArray(): array
     {
         $data = [
             'itemId' => $this->getItemId(),

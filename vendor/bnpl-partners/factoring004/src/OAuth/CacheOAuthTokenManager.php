@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
 use Psr\SimpleCache\CacheInterface;
@@ -7,52 +9,27 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class CacheOAuthTokenManager implements OAuthTokenManagerInterface
 {
-    /**
-     * @var \BnplPartners\Factoring004\OAuth\OAuthTokenManagerInterface
-     */
-    private $tokenManager;
-    /**
-     * @var \Psr\SimpleCache\CacheInterface
-     */
-    private $cache;
-    /**
-     * @var string
-     */
-    private $cacheKey;
+    private OAuthTokenManagerInterface $tokenManager;
+    private CacheInterface $cache;
+    private string $cacheKey;
+    private OAuthTokenRefreshPolicy $refreshPolicy;
 
-    /**
-     * @param string $cacheKey
-     */
-    public function __construct(OAuthTokenManagerInterface $tokenManager, CacheInterface $cache, $cacheKey)
-    {
+    public function __construct(
+        OAuthTokenManagerInterface $tokenManager,
+        CacheInterface $cache,
+        string $cacheKey,
+        OAuthTokenRefreshPolicy $refreshPolicy = null
+    ) {
         $this->tokenManager = $tokenManager;
         $this->cache = $cache;
         $this->cacheKey = $cacheKey;
+        $this->refreshPolicy = $refreshPolicy ?? OAuthTokenRefreshPolicy::ALWAYS_RETRIEVE();
     }
 
     /**
-     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
-     */
-    public function getAccessToken()
-    {
-        return $this->retrieveAccessToken();
-    }
-
-    /**
-     * @return void
-     */
-    public function revokeToken()
-    {
-        $this->clearCache();
-        $this->tokenManager->revokeToken();
-    }
-
-    /**
-     * @throws \BnplPartners\Factoring004\Exception\OAuthException
      * @psalm-suppress InvalidCatch
-     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
      */
-    private function retrieveAccessToken()
+    public function getAccessToken(): OAuthToken
     {
         try {
             $tokenData = $this->cache->get($this->cacheKey);
@@ -60,29 +37,66 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
             return $this->tokenManager->getAccessToken();
         }
 
-        if ($tokenData) {
-            return OAuthToken::createFromArray($tokenData);
+        if (!$tokenData) {
+            $token = $this->tokenManager->getAccessToken();
+            $this->storeToken($token);
+
+            return $token;
+        }
+
+        $token = OAuthToken::createFromArray($tokenData);
+
+        if ($token->getAccessExpiresAt() > time()) {
+            return $token;
+        }
+
+        if ($token->getRefreshExpiresAt() > time() && $this->refreshPolicy->equals(
+                OAuthTokenRefreshPolicy::ALWAYS_REFRESH()
+            )) {
+            return $this->refreshToken($token->getRefresh());
         }
 
         $token = $this->tokenManager->getAccessToken();
 
-        try {
-            $this->cache->set($this->cacheKey, $token->toArray(), $token->getExpiresIn());
-        } catch (InvalidArgumentException $e) {
-            // do nothing
-        }
+        $this->storeToken($token);
 
         return $token;
     }
 
+    public function refreshToken(string $refreshToken): OAuthToken
+    {
+        $token = $this->tokenManager->refreshToken($refreshToken);
+
+        $this->storeToken($token);
+
+        return $token;
+    }
+
+    public function revokeToken(): void
+    {
+        $this->clearCache();
+        $this->tokenManager->revokeToken();
+    }
+
     /**
      * @psalm-suppress InvalidCatch
-     * @return void
      */
-    private function clearCache()
+    public function clearCache(): void
     {
         try {
             $this->cache->delete($this->cacheKey);
+        } catch (InvalidArgumentException $e) {
+            // do nothing
+        }
+    }
+
+    /**
+     * @psalm-suppress InvalidCatch
+     */
+    private function storeToken(OAuthToken $token): void
+    {
+        try {
+            $this->cache->set($this->cacheKey, $token->toArray(), $token->getRefreshExpiresAt());
         } catch (InvalidArgumentException $e) {
             // do nothing
         }

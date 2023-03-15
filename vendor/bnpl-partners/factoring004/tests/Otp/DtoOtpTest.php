@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Otp;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class DtoOtpTest extends AbstractTestCase
+class DtoOtpTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $expected = new DtoOtp('test');
         $actual = DtoOtp::createFromArray(['msg' => 'test']);
@@ -28,10 +27,7 @@ class DtoOtpTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetMsg()
+    public function testGetMsg(): void
     {
         $otp = new DtoOtp('test');
         $this->assertEquals('test', $otp->getMsg());
@@ -40,10 +36,7 @@ class DtoOtpTest extends AbstractTestCase
         $this->assertEquals('message', $otp->getMsg());
     }
 
-    /**
-     * @return void
-     */
-    public function testIsError()
+    public function testIsError(): void
     {
         $otp = new DtoOtp('test');
         $this->assertFalse($otp->isError());
@@ -52,10 +45,7 @@ class DtoOtpTest extends AbstractTestCase
         $this->assertTrue($otp->isError());
     }
 
-    /**
-     * @return void
-     */
-    public function testToArray()
+    public function testToArray(): void
     {
         $otp = new DtoOtp('test');
         $this->assertEquals(['msg' => 'test', 'error' => false], $otp->toArray());
@@ -64,10 +54,7 @@ class DtoOtpTest extends AbstractTestCase
         $this->assertEquals(['msg' => 'message', 'error' => true], $otp->toArray());
     }
 
-    /**
-     * @return void
-     */
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $otp = new DtoOtp('test');
         $this->assertJsonStringEqualsJsonString('{"msg":"test","error":false}', json_encode($otp));

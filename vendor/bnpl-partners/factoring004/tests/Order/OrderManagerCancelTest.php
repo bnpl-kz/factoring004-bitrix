@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\Api;
@@ -21,20 +23,16 @@ use BnplPartners\Factoring004\Exception\TransportException;
 use BnplPartners\Factoring004\Exception\UnexpectedResponseException;
 use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class OrderManagerCancelTest extends AbstractTestCase
+class OrderManagerCancelTest extends TestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider ordersProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param string $message
      */
-    public function testCancel($merchantId, $orderId, $message)
+    public function testCancel(string $merchantId, string $orderId, string $message): void
     {
         $orders = [
             new MerchantsOrders($merchantId, [new CancelOrder($orderId, CancelStatus::CANCEL())]),
@@ -63,20 +61,14 @@ class OrderManagerCancelTest extends AbstractTestCase
      * @testWith ["1", "1", "1", "error", "message"]
      *           ["2", "10", "100", "test", "an error occurred"]
      *           ["3", "100", "200", "failed", "order cancellation error"]
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param string $code
-     * @param string $error
-     * @param string $message
      */
     public function testCancelWithError(
-        $merchantId,
-        $orderId,
-        $code,
-        $error,
-        $message
-    ) {
+        string $merchantId,
+        string $orderId,
+        string $code,
+        string $error,
+        string $message
+    ): void {
         $orders = [
             new MerchantsOrders($merchantId, [new CancelOrder($orderId, CancelStatus::CANCEL())]),
         ];
@@ -108,11 +100,8 @@ class OrderManagerCancelTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
      */
-    public function testCancelThrowsException($merchantId, $orderId, PackageException $exception)
+    public function testCancelThrowsException(string $merchantId, string $orderId, PackageException $exception): void
     {
         $orders = [
             new MerchantsOrders($merchantId, [new CancelOrder($orderId, CancelStatus::CANCEL())]),
@@ -136,10 +125,7 @@ class OrderManagerCancelTest extends AbstractTestCase
         $manager->cancel($merchantId, $orderId);
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function ordersProvider()
+    public function ordersProvider(): array
     {
         return [
             ['1', '1', 'Test'],
@@ -148,10 +134,7 @@ class OrderManagerCancelTest extends AbstractTestCase
         ];
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function exceptionsProvider()
+    public function exceptionsProvider(): array
     {
         $exceptions = [
             new NetworkException(),

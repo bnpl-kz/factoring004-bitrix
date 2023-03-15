@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -10,40 +12,18 @@ use InvalidArgumentException;
  */
 class PartnerData implements ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $partnerName;
-    /**
-     * @var string
-     */
-    private $partnerCode;
-    /**
-     * @var string
-     */
-    private $pointCode;
-    /**
-     * @var string|null
-     */
-    private $partnerEmail;
-    /**
-     * @var string|null
-     */
-    private $partnerWebsite;
+    private string $partnerName;
+    private string $partnerCode;
+    private string $pointCode;
+    private ?string $partnerEmail;
+    private ?string $partnerWebsite;
 
-    /**
-     * @param string $partnerName
-     * @param string $partnerCode
-     * @param string $pointCode
-     * @param string $partnerEmail
-     * @param string $partnerWebsite
-     */
     public function __construct(
-        $partnerName,
-        $partnerCode,
-        $pointCode,
-        $partnerEmail = null,
-        $partnerWebsite = null
+        string $partnerName,
+        string $partnerCode,
+        string $pointCode,
+        ?string $partnerEmail = null,
+        ?string $partnerWebsite = null
     ) {
         $this->partnerName = $partnerName;
         $this->partnerCode = $partnerCode;
@@ -53,19 +33,18 @@ class PartnerData implements ArrayInterface
     }
 
     /**
-    * @param array<string, string> $partnerData
-    * @psalm-param array{
-          partnerName: string,
-          partnerCode: string,
-          pointCode: string,
-          partnerEmail?: string|null,
-          partnerWebsite?: string|null,
-     } $partnerData
-    *
-    * @throws \InvalidArgumentException
-     * @return \BnplPartners\Factoring004\PreApp\PartnerData
-    */
-    public static function createFromArray(array $partnerData)
+     * @param array<string, string> $partnerData
+     * @psalm-param array{
+           partnerName: string,
+           partnerCode: string,
+           pointCode: string,
+           partnerEmail?: string|null,
+           partnerWebsite?: string|null,
+      } $partnerData
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function createFromArray(array $partnerData): PartnerData
     {
         if (empty($partnerData['partnerName'])) {
             throw new InvalidArgumentException("Key 'partnerName' is required");
@@ -79,45 +58,36 @@ class PartnerData implements ArrayInterface
             throw new InvalidArgumentException("Key 'pointCode' is required");
         }
 
-        return new self($partnerData['partnerName'], $partnerData['partnerCode'], $partnerData['pointCode'], isset($partnerData['partnerEmail']) ? $partnerData['partnerEmail'] : null, isset($partnerData['partnerWebsite']) ? $partnerData['partnerWebsite'] : null);
+        return new self(
+            $partnerData['partnerName'],
+            $partnerData['partnerCode'],
+            $partnerData['pointCode'],
+            $partnerData['partnerEmail'] ?? null,
+            $partnerData['partnerWebsite'] ?? null,
+        );
     }
 
-    /**
-     * @return string
-     */
-    public function getPartnerName()
+    public function getPartnerName(): string
     {
         return $this->partnerName;
     }
 
-    /**
-     * @return string
-     */
-    public function getPartnerCode()
+    public function getPartnerCode(): string
     {
         return $this->partnerCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getPointCode()
+    public function getPointCode(): string
     {
         return $this->pointCode;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPartnerEmail()
+    public function getPartnerEmail(): ?string
     {
         return $this->partnerEmail;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPartnerWebsite()
+    public function getPartnerWebsite(): ?string
     {
         return $this->partnerWebsite;
     }
@@ -132,7 +102,7 @@ class PartnerData implements ArrayInterface
          partnerWebsite?: string,
        }
      */
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'partnerName' => $this->getPartnerName(),

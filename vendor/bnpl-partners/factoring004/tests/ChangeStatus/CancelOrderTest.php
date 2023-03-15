@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class CancelOrderTest extends AbstractTestCase
+class CancelOrderTest extends TestCase
 {
     public function testCreateFromArray()
     {

@@ -1,23 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class DeliveryStatusTest extends AbstractTestCase
+class DeliveryStatusTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testDELIVERY()
+    public function testDELIVERY(): void
     {
         $this->assertEquals(DeliveryStatus::DELIVERY(), DeliveryStatus::from('delivered'));
     }
 
-    /**
-     * @return void
-     */
-    public function testDELIVERED()
+    public function testDELIVERED(): void
     {
         $this->assertEquals(DeliveryStatus::DELIVERED(), DeliveryStatus::from('delivered'));
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004;
 
 use BnplPartners\Factoring004\ChangeStatus\ChangeStatusResource;
@@ -8,16 +10,13 @@ use BnplPartners\Factoring004\PreApp\PreAppResource;
 use BnplPartners\Factoring004\Transport\TransportInterface;
 use InvalidArgumentException;
 use OutOfBoundsException;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class ApiTest extends AbstractTestCase
+class ApiTest extends TestCase
 {
-    const BASE_URI = 'http://example.com';
+    private const BASE_URI = 'http://example.com';
 
-    /**
-     * @return void
-     */
-    public function testCreate()
+    public function testCreate(): void
     {
         $transport = $this->createStub(TransportInterface::class);
 
@@ -27,10 +26,7 @@ class ApiTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateWithDefaultClient()
+    public function testCreateWithDefaultClient(): void
     {
         $expected = new Api(static::BASE_URI);
         $actual = Api::create(static::BASE_URI);
@@ -48,20 +44,15 @@ class ApiTest extends AbstractTestCase
      *           ["https://"]
      *           ["example"]
      *           ["/path"]
-     * @return void
-     * @param string $baseUri
      */
-    public function testCreateWithEmptyBaseUri($baseUri)
+    public function testCreateWithEmptyBaseUri(string $baseUri): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Api($baseUri);
     }
 
-    /**
-     * @return void
-     */
-    public function testPreApps()
+    public function testPreApps(): void
     {
         $api = new Api(static::BASE_URI);
 
@@ -69,10 +60,7 @@ class ApiTest extends AbstractTestCase
         $this->assertSame($api->preApps, $api->preApps);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetUnexpectedProperty()
+    public function testGetUnexpectedProperty(): void
     {
         $api = new Api(static::BASE_URI);
 
@@ -81,10 +69,7 @@ class ApiTest extends AbstractTestCase
         $this->assertNull($api->test);
     }
 
-    /**
-     * @return void
-     */
-    public function testOtp()
+    public function testOtp(): void
     {
         $api = new Api(static::BASE_URI);
 
@@ -92,10 +77,7 @@ class ApiTest extends AbstractTestCase
         $this->assertSame($api->otp, $api->otp);
     }
 
-    /**
-     * @return void
-     */
-    public function testChangeStatus()
+    public function testChangeStatus(): void
     {
         $api = new Api(static::BASE_URI);
 
