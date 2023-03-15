@@ -39,12 +39,16 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 }
 
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$preAppToken = Config::get('BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN');
+$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
 
 $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
-$api = Api::create($apiHost, new BearerTokenAuth($preAppToken), $transport);
+
+$token = \Bnpl\Payment\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
+
+$api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 
 $request = Application::getInstance()->getContext()->getRequest();
 $processor = new PaymentProcessor($api);
