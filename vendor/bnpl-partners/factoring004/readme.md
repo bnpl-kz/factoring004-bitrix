@@ -1,15 +1,23 @@
 # Factoring004 SDK
 
 - [Requirements](#requirements)
+- [Version compatibility](#version-compatibility)
 - [Installation](#installation)
-- [Order Manager](#order-manager)
+- [Authentication](#authentication)
 - [Usage](#usage)
+  * [PreApp endpoint](#preapp-endpoint)
+  * [Delivery endpoints](#delivery-endpoints)
+  * [Full return endpoints](#full-return-endpoints)
+  * [Partial return endpoints](#partial-return-endpoints)
+  * [Error handling](#error-handling)
+- [Advanced usage](#advanced-usage)
     * [Create api instance](#create-api-instance)
-    * [Authentication](#authentication)
-    * [Call endpoints](#call-endpoints)
+    * [PreApp endpoint](#preapp-endpoint-1)
+    * [Delivery endpoints](#delivery-endpoints-1)
+    * [Return endpoints](#refund-endpoints)
     * [Error handling](#error-handling)
     * [Exception Hierarchy](#exception-hierarchy)
-- [Advanced usage](#advanced-usage)
+- [Customization](#customization)
     * [PSR HTTP clients](#psr-http-clients)
     * [Transport layer](#transport-layer)
     * [Resources](#resources)
@@ -20,15 +28,116 @@
 - JSON extension
 - PSR-17, PSR-18 implementations (optional and PHP >=7.x only)
 
+## Version compatibility
+
+| Package version | PHP version   | Note                                                          |
+|-----------------|---------------|---------------------------------------------------------------|
+| 3.x             | \>= 7.4       | Latest version. Supported.                                    |
+| 2.x             | \>= 5.6 < 7.4 | Legacy version. Supported.                                    |
+| 1.x             | \>= 5.6 < 7.4 | Legacy version. Unsupported. <br/>Please upgrade to 2.x.      |
+| 0.x             | \>= 7.4       | Unstable and unsupported version. <br/>Please upgrade to 3.x. |
+
 ## Installation
 
 ```bash
 composer require bnpl-partners/factoring004
 ```
 
-## Order Manager
+## Authentication
 
-This class is high level api for order management
+Create an instance of ``BnplPartners\Factoring004\OAuth\OAuthTokenManager``.
+
+```php
+use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
+
+$tokenManager = new OAuthTokenManager('https://dev.bnpl.kz/api/users/v1', 'username', 'password');
+```
+
+### Generate access token
+
+```php
+$token = $tokenManager->getAccessToken();
+```
+
+### Refresh access token
+
+```php
+$newToken = $tokenManager->refreshToken($oldToken->getRefresh());
+```
+
+### Cache access token
+
+```php
+use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
+use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
+
+$cache = ... // PSR-16 Cache
+$tokenManager = new OAuthTokenManager('https://dev.bnpl.kz/api/users/v1', 'username', 'password');
+$cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key');
+
+$token = $cacheTokenManager->getAccessToken();
+```
+
+### Cached Token Refresh Policy
+
+There are two policies to refresh a cached token.
+
+#### Always Retrieve
+
+This is default behaviour. In this case any expired tokens always will refresh.
+If you need to refresh token instead of retrieve, you will have to call ``CacheOAuthTokenManager::refreshToken()`` method.
+
+```php
+use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
+use BnplPartners\Factoring004\OAuth\OAuthTokenRefreshPolicy;
+
+$cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key', OAuthTokenRefreshPolicy::ALWAYS_RETRIEVE());
+
+$token = $cacheTokenManager->getAccessToken();
+```
+
+#### Always Refresh
+
+Expired tokens always will refresh.
+You won't need to refresh it manually by ``CacheOAuthTokenManager::refreshToken()`` method.
+
+```php
+use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
+use BnplPartners\Factoring004\OAuth\OAuthTokenRefreshPolicy;
+
+$cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key', OAuthTokenRefreshPolicy::ALWAYS_REFRESH());
+
+$token = $cacheTokenManager->getAccessToken();
+```
+
+### Clear cached tokens
+
+If you need to clear cache, you will clear cache manually.
+
+```php
+$cacheTokenManager->clearCache();
+```
+
+If you get an authentication error, you will clear cache manually.
+
+```php
+use BnplPartners\Factoring004\Exception\AuthenticationException;
+use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
+use BnplPartners\Factoring004\Order\OrderManager;
+
+$cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key');
+$orderManager = OrderManager::create('https://dev.bnpl.kz/api', new BearerTokenAuth($cacheTokenManager->getAccessToken()));
+
+try {
+    $orderManager->preApp(...);
+} catch (AuthenticationException $e) {
+    $cacheTokenManager->clearCache();
+}
+```
+
+## Usage
+
+We recommend to use the class ``BnplPartners\Factoring004\Order\OrderManager`` to call our endpoints.
 
 ### Create an instance
 
@@ -38,15 +147,35 @@ use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$manager = OrderManager::create('http://api-domain.com', new BearerTokenAuth('Access Token'));
+$manager = OrderManager::create('https://dev.bnpl.kz/api', new BearerTokenAuth('Access Token'));
 ```
 
 ### PreApp endpoint
 
-See [PreApp](#preapp)
-
 ```php
-$response = $manager->preApp(...)
+$response = $manager->preApp([
+    'partnerData' => [
+        'partnerName' => 'test',
+        'partnerCode' => 'test',
+        'pointCode' => 'test',
+    ],
+    'billNumber' => '1',
+    'billAmount' => 6000,
+    'itemsQuantity' => 1,
+    'successRedirect' => 'http://your-store.com/success',
+    'postLink' => 'http://your-store.com/internal',
+    'items' => [
+        [
+            'itemId' => '1',
+            'itemName' => 'test',
+            'itemQuantity' => 1,
+            'itemPrice' => 6000,
+            'itemSum' => 6000,
+        ],
+    ],
+]);
+
+var_dump($response->getRedirectLink());
 ```
 
 ### Delivery endpoints
@@ -127,20 +256,21 @@ var_dump($response->getMessage());
 
 ### Error handling
 
-All methods can throw an exception like [there](#error-handling)
+All methods can throw an instance of ``BnplPartners\Factoring004\Exception\PackageException``.
 
 ```php
 use BnplPartners\Factoring004\Exception\PackageException;
 
 try {
     $response = $manager->delivery($merchantId, $orderId, $amount)->sendOtp();
-    var_dump($response->getMessage());
 } catch (PackageException $e) {
     var_dump($e);
 }
 ```
 
-## Usage
+## Advanced Usage
+
+These classes are low level API, described in the section.
 
 ### Create api instance
 
@@ -150,40 +280,10 @@ use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$api = Api::create('http://api-domain.com', new BearerTokenAuth('Access Token'));
+$api = Api::create('https://dev.bnpl.kz/api', new BearerTokenAuth('Access Token'));
 ```
 
-### Authentication
-
-#### Generate access token
-
-```php
-use BnplPartners\Factoring004\Api;
-use BnplPartners\Factoring004\Auth\BearerTokenAuth;
-use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
-
-$tokenManager = new OAuthTokenManager($transport, 'http://api-domain.com', 'consumer key', 'consumer secret');
-$token = $tokenManager->getAccessToken();
-
-$api = Api::create($transport, 'http://api-domain.com', new BearerTokenAuth($token->getAccessToken()));
-```
-
-#### Cache access token
-
-```php
-use BnplPartners\Factoring004\Auth\BearerTokenAuth;
-use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
-use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
-
-$tokenManager = new OAuthTokenManager($transport, 'http://api-domain.com', 'consumer key', 'consumer secret');
-
-$cache = ... // PSR-16 Cache
-$tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key');
-```
-
-### Call endpoints
-
-#### PreApp
+### PreApp endpoint
 
 Create preApp
 
@@ -193,13 +293,13 @@ use BnplPartners\Factoring004\PreApp\PreAppMessage;
 use BnplPartners\Factoring004\PreApp\PartnerData;
 
 $message = new PreAppMessage(
-    new PartnerData('test', 'test', 'test', 'test@example.com', 'http://example.com'),
+    new PartnerData('test', 'test', 'test'),
     '1',
     6000,
     1,
     'http://your-store.com/success',
     'http://your-store.com/internal',
-    [new Item('1', 'test', '1', 1, 6000, 8000)],
+    [new Item('1', 'test', 1, 6000, 6000)],
 );
 
 // Or
@@ -208,8 +308,6 @@ $message = PreAppMessage::createFromArray([
         'partnerName' => 'test',
         'partnerCode' => 'test',
         'pointCode' => 'test',
-        'partnerEmail' => 'test@example.com',
-        'partnerWebsite' => 'http://example.com',
     ],
     'billNumber' => '1',
     'billAmount' => 6000,
@@ -220,10 +318,9 @@ $message = PreAppMessage::createFromArray([
         [
             'itemId' => '1',
             'itemName' => 'test',
-            'itemCategory' => '1',
             'itemQuantity' => 1,
             'itemPrice' => 6000,
-            'itemSum' => 8000,
+            'itemSum' => 6000,
         ],
     ],
 ]);
@@ -235,9 +332,9 @@ var_dump($response->getStatus(), $response->getPreAppId(), $response->getRedirec
 var_dump($response->toArray(), json_encode($response));
 ```
 
-#### OTP
+### Delivery endpoints
 
-Send OTP
+#### Send OTP
 
 ```php
 use BnplPartners\Factoring004\Otp\SendOtp;
@@ -254,7 +351,7 @@ var_dump($response->getMsg());
 var_dump($response->toArray(), json_encode($response));
 ```
 
-Check OTP
+#### Check OTP
 
 ```php
 use BnplPartners\Factoring004\Otp\CheckOtp;
@@ -271,7 +368,36 @@ var_dump($response->getMsg());
 var_dump($response->toArray(), json_encode($response));
 ```
 
-Send OTP Return
+#### Without OTP
+
+```php
+use BnplPartners\Factoring004\ChangeStatus\DeliveryOrder;
+use BnplPartners\Factoring004\ChangeStatus\DeliveryStatus;
+use BnplPartners\Factoring004\ChangeStatus\ErrorResponse;
+use BnplPartners\Factoring004\ChangeStatus\MerchantsOrders;
+use BnplPartners\Factoring004\ChangeStatus\SuccessResponse;
+
+$orders = new MerchantsOrders('1', [new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000)]);
+
+// or
+$orders = MerchantsOrders::createFromArray([
+    'merchantId' => '1',
+    'orders' => [
+        ['orderId' => '1', 'status' => 'delivered', 'amount' => 6000],
+    ],
+]);
+
+// send request and receive response
+$response = $api->changeStatus->changeStatusJson($orders);
+
+var_dump(array_map(fn(SuccessResponse $response) => $response->getMsg(), $response->getSuccessfulResponses()));
+var_dump(array_map(fn(ErrorResponse $response) => $response->getMessage(), $response->getErrorResponses()));
+var_dump($response->toArray(), json_encode($response));
+```
+
+### Refund endpoints
+
+#### Send OTP Return
 
 ```php
 use BnplPartners\Factoring004\Otp\SendOtpReturn;
@@ -288,7 +414,7 @@ var_dump($response->getMsg());
 var_dump($response->toArray(), json_encode($response));
 ```
 
-Check OTP Return
+#### Check OTP Return
 
 ```php
 use BnplPartners\Factoring004\Otp\CheckOtpReturn;
@@ -305,36 +431,7 @@ var_dump($response->getMsg());
 var_dump($response->toArray(), json_encode($response));
 ```
 
-#### Delivery & Return
-
-Delivery
-
-```php
-use BnplPartners\Factoring004\ChangeStatus\DeliveryOrder;
-use BnplPartners\Factoring004\ChangeStatus\DeliveryStatus;
-use BnplPartners\Factoring004\ChangeStatus\ErrorResponse;
-use BnplPartners\Factoring004\ChangeStatus\MerchantsOrders;
-use BnplPartners\Factoring004\ChangeStatus\SuccessResponse;
-
-$orders = new MerchantsOrders('1', [new DeliveryOrder('1', DeliveryStatus::DELIVERY(), 6000)]);
-
-// or
-$orders = MerchantsOrders::createFromArray([
-    'merchantId' => '1',
-    'orders' => [
-        ['orderId' => '1', 'status' => 'delivery', 'amount' => 6000],
-    ],
-]);
-
-// send request and receive response
-$response = $api->changeStatus->changeStatusJson($orders);
-
-var_dump(array_map(fn(SuccessResponse $response) => $response->getMsg(), $response->getSuccessfulResponses()));
-var_dump(array_map(fn(ErrorResponse $response) => $response->getMessage(), $response->getErrorResponses()));
-var_dump($response->toArray(), json_encode($response));
-```
-
-Return
+#### Without OTP
 
 ```php
 use BnplPartners\Factoring004\ChangeStatus\ErrorResponse;
@@ -361,7 +458,7 @@ var_dump(array_map(fn(ErrorResponse $response) => $response->getMessage(), $resp
 var_dump($response->toArray(), json_encode($response));
 ```
 
-Cancel
+### Cancel
 
 ```php
 use BnplPartners\Factoring004\ChangeStatus\ErrorResponse;
@@ -390,7 +487,6 @@ var_dump($response->toArray(), json_encode($response));
 
 ```
 
-
 ### Error handling
 
 Whenever api returns an error client will throw an instance of ``BnplPartners\Factoring004\Exception\ApiException``.
@@ -401,6 +497,7 @@ use BnplPartners\Factoring004\Exception\AuthenticationException;
 use BnplPartners\Factoring004\Exception\EndpointUnavailableException;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
 use BnplPartners\Factoring004\Exception\NetworkException;
+use BnplPartners\Factoring004\Exception\PackageException;
 use BnplPartners\Factoring004\Exception\TransportException;
 use BnplPartners\Factoring004\Exception\UnexpectedResponseException;
 use BnplPartners\Factoring004\Exception\ValidationException;
@@ -429,6 +526,8 @@ try {
     // network issues, connection refused, etc
 } catch (TransportException $e) {
     // to catch all transport layer exceptions
+} catch (PackageException $e) {
+    // to catch all the package exceptions
 }
 ```
 
@@ -445,7 +544,7 @@ try {
     * ``NetworkException``
     * ``DataSerializationException``
 
-## Advanced usage
+## Customization
 
 ### PSR HTTP clients
 
@@ -531,7 +630,7 @@ You can create your own transport. Just implement ``BnplPartners\Factoring004\Tr
 #### Send requests
 
 ```php
-$response = $transport->post('/bnpl-partners/1.0/preapp', ['partnerData' => [...]], ['Content-Type' => 'application/json']);
+$response = $transport->post('/bnpl/v3/preapp', ['partnerData' => [...]], ['Content-Type' => 'application/json']);
 
 var_dump($response->getStatusCode()); // HTTP response status code
 var_dump($response->getHeaders()); // HTTP response headers
@@ -551,10 +650,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 ...
 
-$preApp = new PreAppResource($transport, 'http://api-domain.com', new BearerTokenAuth('Access Token'));
+$preApp = new PreAppResource($transport, 'https://dev.bnpl.kz/api', new BearerTokenAuth('Access Token'));
 $response = $preApp->preApp(...);
 
-$otp = new OtpResource($transport, 'http://api-domain.com', new BearerTokenAuth('Access Token'));
+$otp = new OtpResource($transport, 'https://dev.bnpl.kz/api', new BearerTokenAuth('Access Token'));
 $response = $otp->sendOtp(...);
 ```
 

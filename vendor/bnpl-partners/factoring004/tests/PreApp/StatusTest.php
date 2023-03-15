@@ -1,23 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\PreApp;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class StatusTest extends AbstractTestCase
+class StatusTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testRECEIVED()
+    public function testRECEIVED(): void
     {
         $this->assertEquals(Status::RECEIVED(), Status::from('received'));
     }
 
-    /**
-     * @return void
-     */
-    public function testERROR()
+    public function testERROR(): void
     {
         $this->assertEquals(Status::ERROR(), Status::from('error'));
     }

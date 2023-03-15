@@ -1,49 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\ArrayInterface;
 
 class DeliveryPoint implements ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $region = '';
-    /**
-     * @var string
-     */
-    private $city = '';
-    /**
-     * @var string
-     */
-    private $district = '';
-    /**
-     * @var string
-     */
-    private $street = '';
-    /**
-     * @var string
-     */
-    private $house = '';
-    /**
-     * @var string
-     */
-    private $flat = '';
+    private string $region = '';
+    private string $city = '';
+    private string $district = '';
+    private string $street = '';
+    private string $house = '';
+    private string $flat = '';
 
     /**
-    * @param array<string, string> $deliveryPoint
-    * @psalm-param array{
-          region?: string,
-          city?: string,
-          district?: string,
-          street?: string,
-          house?: string,
-          flat?: string
-      } $deliveryPoint
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-    */
-    public static function createFromArray(array $deliveryPoint)
+     * @param array<string, string> $deliveryPoint
+     * @psalm-param array{
+           region?: string,
+           city?: string,
+           district?: string,
+           street?: string,
+           house?: string,
+           flat?: string
+       } $deliveryPoint
+     */
+    public static function createFromArray(array $deliveryPoint): DeliveryPoint
     {
         $self = new self();
 
@@ -58,110 +41,68 @@ class DeliveryPoint implements ArrayInterface
         return $self;
     }
 
-    /**
-     * @param string $region
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-     */
-    public function setRegion($region)
+    public function setRegion(string $region): DeliveryPoint
     {
         $this->region = $region;
         return $this;
     }
 
-    /**
-     * @param string $city
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-     */
-    public function setCity($city)
+    public function setCity(string $city): DeliveryPoint
     {
         $this->city = $city;
         return $this;
     }
 
-    /**
-     * @param string $district
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-     */
-    public function setDistrict($district)
+    public function setDistrict(string $district): DeliveryPoint
     {
         $this->district = $district;
         return $this;
     }
 
-    /**
-     * @param string $street
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-     */
-    public function setStreet($street)
+    public function setStreet(string $street): DeliveryPoint
     {
         $this->street = $street;
         return $this;
     }
 
-    /**
-     * @param string $house
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-     */
-    public function setHouse($house)
+    public function setHouse(string $house): DeliveryPoint
     {
         $this->house = $house;
         return $this;
     }
 
-    /**
-     * @param string $flat
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint
-     */
-    public function setFlat($flat)
+    public function setFlat(string $flat): DeliveryPoint
     {
         $this->flat = $flat;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getRegion()
+    public function getRegion(): string
     {
         return $this->region;
     }
 
-    /**
-     * @return string
-     */
-    public function getCity()
+    public function getCity(): string
     {
         return $this->city;
     }
 
-    /**
-     * @return string
-     */
-    public function getDistrict()
+    public function getDistrict(): string
     {
         return $this->district;
     }
 
-    /**
-     * @return string
-     */
-    public function getStreet()
+    public function getStreet(): string
     {
         return $this->street;
     }
 
-    /**
-     * @return string
-     */
-    public function getHouse()
+    public function getHouse(): string
     {
         return $this->house;
     }
 
-    /**
-     * @return string
-     */
-    public function getFlat()
+    public function getFlat(): string
     {
         return $this->flat;
     }
@@ -177,7 +118,7 @@ class DeliveryPoint implements ArrayInterface
           flat: string
        }
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'region' => $this->getRegion(),

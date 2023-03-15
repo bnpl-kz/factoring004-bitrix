@@ -1,26 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
 use BnplPartners\Factoring004\Exception\OAuthException;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class CacheOAuthTokenManagerTest extends AbstractTestCase
+class CacheOAuthTokenManagerTest extends TestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessTokenWithCacheMiss()
+    public function testGetAccessTokenWithCacheMiss(): void
     {
         $cacheKey = 'key';
         $token = OAuthToken::createFromArray([
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
         ]);
 
         $manager = $this->createMock(OAuthTokenManagerInterface::class);
@@ -37,7 +38,7 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
         $cache->expects($this->once())
             ->method('set')
-            ->with($cacheKey, $token->toArray(), $token->getExpiresIn())
+            ->with($cacheKey, $token->toArray(), $token->getRefreshExpiresAt())
             ->willReturn(true);
 
         $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
@@ -47,16 +48,15 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessTokenWithCache()
+    public function testGetAccessTokenWithCache(): void
     {
         $cacheKey = 'key';
         $token = OAuthToken::createFromArray([
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => time() + 60,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => time() + 3600,
         ]);
 
         $manager = $this->createMock(OAuthTokenManagerInterface::class);
@@ -77,16 +77,15 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessTokenWhenCacheGetMethodIsFailed()
+    public function testGetAccessTokenWhenCacheGetMethodIsFailed(): void
     {
         $cacheKey = 'key';
         $token = OAuthToken::createFromArray([
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
         ]);
 
         $manager = $this->createMock(OAuthTokenManagerInterface::class);
@@ -101,7 +100,7 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
         $cache->expects($this->once())
             ->method('get')
             ->with($cacheKey, $this->anything())
-            ->willThrowException(new Anonymous__cf9f00b301d16ec217fa09f5f6653050__0());
+            ->willThrowException(new class() extends \InvalidArgumentException implements InvalidArgumentException {});
 
         $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
 
@@ -110,16 +109,15 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessTokenWhenCacheSetMethodIsFailed()
+    public function testGetAccessTokenWhenCacheSetMethodIsFailed(): void
     {
         $cacheKey = 'key';
         $token = OAuthToken::createFromArray([
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
         ]);
 
         $manager = $this->createMock(OAuthTokenManagerInterface::class);
@@ -131,8 +129,8 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
         $cache = $this->createMock(CacheInterface::class);
         $cache->expects($this->once())
             ->method('set')
-            ->with($cacheKey, $token->toArray(), $token->getExpiresIn())
-            ->willThrowException(new Anonymous__cf9f00b301d16ec217fa09f5f6653050__1());
+            ->with($cacheKey, $token->toArray(), $token->getRefreshExpiresAt())
+            ->willThrowException(new class() extends \InvalidArgumentException implements InvalidArgumentException {});
 
         $cache->expects($this->once())
             ->method('get')
@@ -146,9 +144,228 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testRevokeToken()
+    public function testGetAccessTokenWithAlwaysRefreshPolicy(): void
+    {
+        $cacheKey = 'key';
+        $token = OAuthToken::createFromArray([
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => time() - 60,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => time() + 3600,
+        ]);
+
+        $newToken = OAuthToken::createFromArray([
+            'access' => 'dGVzdDE=',
+            'accessExpiresAt' => time() + 60,
+            'refresh' => 'dGVzdDI=',
+            'refreshExpiresAt' => time() + 3600,
+        ]);
+
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+        $manager->expects($this->never())->method('getAccessToken');
+        $manager->expects($this->once())
+            ->method('refreshToken')
+            ->with($token->getRefresh())
+            ->willReturn($newToken);
+
+        $cache = $this->createMock(CacheInterface::class);
+
+        $cache->expects($this->once())
+            ->method('get')
+            ->with($cacheKey, $this->anything())
+            ->willReturn($token->toArray());
+
+        $cache->expects($this->once())
+            ->method('set')
+            ->with($cacheKey, $newToken->toArray(), $newToken->getRefreshExpiresAt())
+            ->willReturn(true);
+
+        $cacheManager = new CacheOAuthTokenManager(
+            $manager,
+            $cache,
+            $cacheKey,
+            OAuthTokenRefreshPolicy::ALWAYS_REFRESH(),
+        );
+
+        $this->assertSame($newToken, $cacheManager->getAccessToken());
+    }
+
+    /**
+     * @throws \BnplPartners\Factoring004\Exception\OAuthException
+     */
+    public function testGetAccessTokenWithAlwaysRefreshPolicyWhenRefreshTokenExpired(): void
+    {
+        $cacheKey = 'key';
+        $token = OAuthToken::createFromArray([
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => time() - 120,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => time() - 60,
+        ]);
+
+        $newToken = OAuthToken::createFromArray([
+            'access' => 'dGVzdDE=',
+            'accessExpiresAt' => time() + 60,
+            'refresh' => 'dGVzdDI=',
+            'refreshExpiresAt' => time() + 3600,
+        ]);
+
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+        $manager->expects($this->never())->method('refreshToken');
+        $manager->expects($this->once())
+            ->method('getAccessToken')
+            ->willReturn($newToken);
+
+        $cache = $this->createMock(CacheInterface::class);
+
+        $cache->expects($this->once())
+            ->method('get')
+            ->with($cacheKey, $this->anything())
+            ->willReturn($token->toArray());
+
+        $cache->expects($this->once())
+            ->method('set')
+            ->with($cacheKey, $newToken->toArray(), $newToken->getRefreshExpiresAt())
+            ->willReturn(true);
+
+        $cacheManager = new CacheOAuthTokenManager(
+            $manager,
+            $cache,
+            $cacheKey,
+            OAuthTokenRefreshPolicy::ALWAYS_REFRESH(),
+        );
+
+        $this->assertSame($newToken, $cacheManager->getAccessToken());
+    }
+
+    /**
+     * @throws \BnplPartners\Factoring004\Exception\OAuthException
+     */
+    public function testGetAccessTokenWithAlwaysRetrievePolicy(): void
+    {
+        $cacheKey = 'key';
+        $token = OAuthToken::createFromArray([
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => time() - 60,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => time() + 3600,
+        ]);
+
+        $newToken = OAuthToken::createFromArray([
+            'access' => 'dGVzdDE=',
+            'accessExpiresAt' => time() + 60,
+            'refresh' => 'dGVzdDI=',
+            'refreshExpiresAt' => time() + 3600,
+        ]);
+
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+        $manager->expects($this->never())->method('refreshToken');
+        $manager->expects($this->once())
+            ->method('getAccessToken')
+            ->willReturn($newToken);
+
+        $cache = $this->createMock(CacheInterface::class);
+
+        $cache->expects($this->once())
+            ->method('get')
+            ->with($cacheKey, $this->anything())
+            ->willReturn($token->toArray());
+
+        $cache->expects($this->once())
+            ->method('set')
+            ->with($cacheKey, $newToken->toArray(), $newToken->getRefreshExpiresAt())
+            ->willReturn(true);
+
+        $cacheManager = new CacheOAuthTokenManager(
+            $manager,
+            $cache,
+            $cacheKey,
+            OAuthTokenRefreshPolicy::ALWAYS_RETRIEVE(),
+        );
+
+        $this->assertSame($newToken, $cacheManager->getAccessToken());
+    }
+
+    public function testRefreshToken(): void
+    {
+        $cacheKey = 'key';
+        $token = OAuthToken::createFromArray([
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
+        ]);
+
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('refreshToken')
+            ->with($token->getAccess())
+            ->willReturn($token);
+
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects($this->once())
+            ->method('set')
+            ->with($cacheKey, $token->toArray(), $token->getRefreshExpiresAt())
+            ->willReturn(true);
+
+        $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
+
+        $this->assertSame($token, $cacheManager->refreshToken($token->getAccess()));
+    }
+
+    public function testRefreshTokenIsFailed(): void
+    {
+        $cacheKey = 'key';
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('refreshToken')
+            ->withAnyParameters()
+            ->willThrowException(new OAuthException('Test'));
+
+        $cache = $this->createStub(CacheInterface::class);
+        $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
+
+        $this->expectException(OAuthException::class);
+        $this->expectExceptionMessage('Test');
+
+        $cacheManager->refreshToken('test');
+    }
+
+    /**
+     * @throws \BnplPartners\Factoring004\Exception\OAuthException
+     */
+    public function testRefreshTokenWhenCacheIsFailed(): void
+    {
+        $cacheKey = 'key';
+        $token = OAuthToken::createFromArray([
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
+        ]);
+
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('refreshToken')
+            ->withAnyParameters()
+            ->willReturn($token);
+
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects($this->once())
+            ->method('set')
+            ->withAnyParameters()
+            ->willThrowException(new class() extends \InvalidArgumentException implements InvalidArgumentException {});
+
+        $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
+
+        $this->assertEquals($token, $cacheManager->refreshToken('test'));
+    }
+
+    /**
+     * @throws \BnplPartners\Factoring004\Exception\OAuthException
+     */
+    public function testRevokeToken(): void
     {
         $cacheKey = 'key';
 
@@ -167,9 +384,8 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testRevokeTokenIsFailed()
+    public function testRevokeTokenIsFailed(): void
     {
         $cacheKey = 'key';
 
@@ -194,9 +410,8 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testRevokeTokenWhenCacheIsFailed()
+    public function testRevokeTokenWhenCacheIsFailed(): void
     {
         $cacheKey = 'key';
 
@@ -207,19 +422,25 @@ class CacheOAuthTokenManagerTest extends AbstractTestCase
         $cache->expects($this->once())
             ->method('delete')
             ->with($cacheKey)
-            ->willThrowException(new Anonymous__cf9f00b301d16ec217fa09f5f6653050__2());
+            ->willThrowException(new class() extends \InvalidArgumentException implements InvalidArgumentException {});
 
         $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
         $cacheManager->revokeToken();
     }
-}
-class Anonymous__cf9f00b301d16ec217fa09f5f6653050__0 extends \InvalidArgumentException implements InvalidArgumentException
-{
-}
-class Anonymous__cf9f00b301d16ec217fa09f5f6653050__1 extends \InvalidArgumentException implements InvalidArgumentException
-{
-}
-class Anonymous__cf9f00b301d16ec217fa09f5f6653050__2 extends \InvalidArgumentException implements InvalidArgumentException
-{
+
+    public function testClearCache(): void
+    {
+        $cacheKey = 'key';
+        $manager = $this->createMock(OAuthTokenManagerInterface::class);
+
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects($this->once())
+            ->method('delete')
+            ->with($cacheKey)
+            ->willReturn(true);
+
+        $cacheManager = new CacheOAuthTokenManager($manager, $cache, $cacheKey);
+        $cacheManager->clearCache();
+    }
 }
 

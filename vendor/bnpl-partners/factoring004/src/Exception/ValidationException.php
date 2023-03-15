@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Exception;
 
 use BnplPartners\Factoring004\Response\ValidationErrorResponse;
@@ -7,25 +9,16 @@ use Throwable;
 
 class ValidationException extends ApiException
 {
-    /**
-     * @var \BnplPartners\Factoring004\Response\ValidationErrorResponse
-     */
-    protected $response;
+    protected ValidationErrorResponse $response;
 
-    /**
-     * @param \Throwable $previous
-     */
-    public function __construct(ValidationErrorResponse $response, $previous = null)
+    public function __construct(ValidationErrorResponse $response, Throwable $previous = null)
     {
         parent::__construct($response->getMessage(), $response->getCode(), $previous);
 
         $this->response = $response;
     }
 
-    /**
-     * @return \BnplPartners\Factoring004\Response\ValidationErrorResponse
-     */
-    public function getResponse()
+    public function getResponse(): ValidationErrorResponse
     {
         return $this->response;
     }

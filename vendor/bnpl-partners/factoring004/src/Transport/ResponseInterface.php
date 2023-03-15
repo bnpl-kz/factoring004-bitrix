@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Transport;
 
 /**
@@ -9,18 +11,15 @@ namespace BnplPartners\Factoring004\Transport;
  */
 interface ResponseInterface
 {
-    /**
-     * @return int
-     */
-    public function getStatusCode();
+    public function getStatusCode(): int;
 
     /**
      * @return array<string, string>
      */
-    public function getHeaders();
+    public function getHeaders(): array;
 
     /**
      * @return array<array-key, T>
      */
-    public function getBody();
+    public function getBody(): array;
 }

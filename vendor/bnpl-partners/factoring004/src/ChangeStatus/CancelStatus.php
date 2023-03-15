@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use BnplPartners\Factoring004\AbstractEnum;
+use MyCLabs\Enum\Enum;
 
 /**
  * @method static static CANCEL()
  *
  * @psalm-immutable
  */
-final class CancelStatus extends AbstractEnum
+final class CancelStatus extends Enum
 {
-    const CANCEL = 'canceled';
+    private const CANCEL = 'canceled';
 }

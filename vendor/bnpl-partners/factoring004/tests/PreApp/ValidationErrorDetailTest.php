@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\PreApp;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class ValidationErrorDetailTest extends AbstractTestCase
+class ValidationErrorDetailTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $expected = new ValidationErrorDetail('something went wrong', 'expiresAt');
         $actual = ValidationErrorDetail::createFromArray(['error' => 'something went wrong', 'field' => 'expiresAt']);
@@ -17,10 +16,7 @@ class ValidationErrorDetailTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateMany()
+    public function testCreateMany(): void
     {
         $actual = ValidationErrorDetail::createMany([
             ['error' => 'something went wrong', 'field' => 'expiresAt'],
@@ -35,10 +31,7 @@ class ValidationErrorDetailTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetField()
+    public function testGetField(): void
     {
         $detail = new ValidationErrorDetail('something went wrong', 'expiresAt');
         $this->assertEquals('expiresAt', $detail->getField());
@@ -47,10 +40,7 @@ class ValidationErrorDetailTest extends AbstractTestCase
         $this->assertEquals('deliveryDate', $detail->getField());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetError()
+    public function testGetError(): void
     {
         $detail = new ValidationErrorDetail('something went wrong', 'expiresAt');
         $this->assertEquals('something went wrong', $detail->getError());
@@ -59,10 +49,7 @@ class ValidationErrorDetailTest extends AbstractTestCase
         $this->assertEquals('an error occurred', $detail->getError());
     }
 
-    /**
-     * @return void
-     */
-    public function testToArray()
+    public function testToArray(): void
     {
         $detail = new ValidationErrorDetail('something went wrong', 'expiresAt');
         $this->assertEquals(['error' => 'something went wrong', 'field' => 'expiresAt'], $detail->toArray());
