@@ -13,14 +13,14 @@ $data = array(
     'NAME' => Loc::getMessage('BNPL_PAYMENT_NAME'),
     'IS_AVAILABLE' => $isAvailable,
     'CODES' => array(
-        'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN' => array(
-            'NAME' => 'OAuth Preapp Token',
+        'BNPL_PAYMENT_API_OAUTH_LOGIN' => array(
+            'NAME' => 'OAuth Login',
             'SORT' => 100,
             'GROUP' => 'CREDENTIALS',
         ),
 
-        'BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN' => array(
-            'NAME' => 'OAuth Accounting Service Token',
+        'BNPL_PAYMENT_API_OAUTH_PASSWORD' => array(
+            'NAME' => 'OAuth Password',
             'SORT' => 200,
             'GROUP' => 'CREDENTIALS',
         ),
