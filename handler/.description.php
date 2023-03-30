@@ -59,18 +59,6 @@ $data = array(
             'GROUP' => 'MERCHANT PARAMETERS',
         ),
 
-        'BNPL_PAYMENT_PARTNER_EMAIL' => array(
-            'NAME' => 'Partner Email',
-            'SORT' => 700,
-            'GROUP' => 'MERCHANT PARAMETERS',
-        ),
-
-        'BNPL_PAYMENT_PARTNER_WEBSITE' => array(
-            'NAME' => 'Partner Website',
-            'SORT' => 800,
-            'GROUP' => 'MERCHANT PARAMETERS',
-        ),
-
         'BNPL_PAYMENT_FILE' => array(
             'NAME' => Loc::getMessage('BNPL_PAYMENT_FILE_NAME'),
             'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_FILE_DESCRIPTION'),
