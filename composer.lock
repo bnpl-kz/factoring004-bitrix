@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bnpl-kz/factoring004.git",
-                "reference": "9377aabc5b360271aa79c7173fd8711d0bf7d06c"
+                "reference": "cd1ace1193abe46ad18711115c0ec0e5b910f91c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bnpl-kz/factoring004/zipball/9377aabc5b360271aa79c7173fd8711d0bf7d06c",
-                "reference": "9377aabc5b360271aa79c7173fd8711d0bf7d06c",
+                "url": "https://api.github.com/repos/bnpl-kz/factoring004/zipball/cd1ace1193abe46ad18711115c0ec0e5b910f91c",
+                "reference": "cd1ace1193abe46ad18711115c0ec0e5b910f91c",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
                 "issues": "https://github.com/bnpl-kz/factoring004/issues",
                 "source": "https://github.com/bnpl-kz/factoring004/tree/3.0.0"
             },
-            "time": "2023-03-10T11:38:43+00:00"
+            "time": "2023-04-04T06:00:02+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

@@ -21,7 +21,7 @@ class SendOtpResourceTest extends AbstractResourceTest
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('POST', '/accounting/v1/private/sendOtp', $otp->toArray(), [])
+            ->with('POST', '/accounting/v1/sendOtp', $otp->toArray(), [])
             ->willReturn(new Response(200, [], ['msg' => 'OK']));
 
         $resource = new OtpResource($transport, static::BASE_URI);

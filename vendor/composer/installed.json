@@ -7,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bnpl-kz/factoring004.git",
-                "reference": "9377aabc5b360271aa79c7173fd8711d0bf7d06c"
+                "reference": "cd1ace1193abe46ad18711115c0ec0e5b910f91c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bnpl-kz/factoring004/zipball/9377aabc5b360271aa79c7173fd8711d0bf7d06c",
-                "reference": "9377aabc5b360271aa79c7173fd8711d0bf7d06c",
+                "url": "https://api.github.com/repos/bnpl-kz/factoring004/zipball/cd1ace1193abe46ad18711115c0ec0e5b910f91c",
+                "reference": "cd1ace1193abe46ad18711115c0ec0e5b910f91c",
                 "shasum": ""
             },
             "require": {
@@ -30,7 +30,7 @@
                 "rector/rector": "^0.12.16",
                 "vimeo/psalm": "^4.15"
             },
-            "time": "2023-03-10T11:38:43+00:00",
+            "time": "2023-04-04T06:00:02+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -850,6 +850,6 @@
             "install-path": "../symfony/deprecation-contracts"
         }
     ],
-    "dev": false,
+    "dev": true,
     "dev-package-names": []
 }
