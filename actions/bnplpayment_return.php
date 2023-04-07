@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
 use Bitrix\Sale\Order;
+use Bitrix\Main\Application;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PartialRefundManager;

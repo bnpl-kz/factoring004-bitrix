@@ -10,6 +10,7 @@ use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
 use Bnpl\Payment\Config;
 use Bitrix\Sale\Order;
+use Bitrix\Main\Application;
 use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PartialRefundManager;
 use Bnpl\Payment\PartialRefundManagerException;
