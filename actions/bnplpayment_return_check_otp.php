@@ -76,7 +76,7 @@ if (strpos($request->getHeader('Content-Type'), 'json') !== false) {
 
 try {
     $order = Order::load($orderId);
-    $amountAR = (int) ceil($order->getSumPaid() - $amount);
+    $amountAR = $amount > 0 ? (int) ceil($order->getSumPaid() - $amount) : 0;
 
     if ($returnItems) {
         $manager = PartialRefundManager::create($order, $returnItems);
