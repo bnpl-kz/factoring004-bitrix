@@ -95,6 +95,7 @@ class PaymentProcessor
         $paymentCollection = $order->getPropertyCollection();
         $phone = $paymentCollection->getPhone();
         $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
+        $cityValue = $city->getValue();
         $itemsQuantity = array_map(function ($item) {
             return (int) $item->getField('QUANTITY');
         }, $order->getBasket()->getBasketItems());
@@ -114,7 +115,7 @@ class PaymentProcessor
             'postLink' => $serverHost . $this->resolvePostLink(),
             'phoneNumber' => $phone ? $this->formatPhone($phone->getValue()) : null,
             'deliveryPoint' => [
-                'city' => $city ? $city->getValue() : '',
+                'city' => !empty($cityValue) ? $cityValue : '',
             ],
             'items' => array_map(function ($item) {
                 return [
