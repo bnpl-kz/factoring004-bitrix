@@ -2,37 +2,35 @@
 
 declare(strict_types=1);
 
-use Rector\Core\Configuration\Option;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Config\RectorConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    // get parameters
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
-        __DIR__ . '/src',
+return static function (RectorConfig $config): void {
+    $paths = glob(__DIR__ . '/vendor/rector/rector/rules/DowngradePhp7*/Rector/*/*.php');
+
+    $config->skip([
+        __DIR__ . '/rector',
     ]);
 
-    // get services (needed for register a single rule)
-    $services = $containerConfigurator->services();
+    $include = [
+        BnplPartners\Factoring004RectorRules\DowngradeScalarTypeDeclarationRector::class,
+        BnplPartners\Factoring004RectorRules\DowngradeNullableTypeDeclarationRector::class,
+    ];
 
-    $paths = glob(__DIR__ . '/vendor/rector/rector/rules/DowngradePhp7*/Rector/*/*.php');
-    $paths = array_filter($paths, fn($path) => strpos($path, 'DowngradePhp70') === false);
+    $exclude = [
+        Rector\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector::class,
+        Rector\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector::class,
+        Rector\DowngradePhp70\Rector\String_\DowngradeGeneratedScalarTypesRector::class,
+        Rector\DowngradePhp71\Rector\FunctionLike\DowngradeNullableTypeDeclarationRector::class,
+    ];
 
-    $serviceClasses = [];
+    $rules = array_map(function ($path) {
+        return 'Rector' . str_replace('/', '\\', substr($path, strlen(__DIR__ . '/vendor/rector/rector/rules'), -4));
+    }, $paths);
+    $rules = array_merge($rules, $include);
 
-    foreach ($paths as $path) {
-        $tokens = token_get_all(file_get_contents($path));
-
-        foreach ($tokens as $token) {
-            if ($token[0] === 265) {
-                $serviceClasses[] = $token[1] . '\\' . basename($path, '.php');
-                break;
-            }
+    foreach ($rules as $rule) {
+        if (!in_array($rule, $exclude, true)) {
+            $config->rule($rule);
         }
-    }
-
-    // register rules
-    foreach (array_unique($serviceClasses) as $serviceClass) {
-        $services->set($serviceClass);
     }
 };

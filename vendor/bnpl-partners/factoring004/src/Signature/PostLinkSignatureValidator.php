@@ -11,19 +11,16 @@ use BnplPartners\Factoring004\Exception\InvalidSignatureException;
  */
 class PostLinkSignatureValidator
 {
-    /**
-     * @var \BnplPartners\Factoring004\Signature\PostLinkSignatureCalculator
-     */
-    private $calculator;
+    private PostLinkSignatureCalculator $calculator;
 
-    public function __construct(string $secretKey, PostLinkSignatureCalculator $calculator = null)
+    public function __construct(string $secretKey, ?PostLinkSignatureCalculator $calculator = null)
     {
         $this->calculator = $calculator ?? PostLinkSignatureCalculator::create($secretKey);
     }
 
     public static function create(
         string $secretKey,
-        PostLinkSignatureCalculator $calculator = null
+        ?PostLinkSignatureCalculator $calculator = null
     ): PostLinkSignatureValidator {
         return new self($secretKey, $calculator);
     }
@@ -34,11 +31,9 @@ class PostLinkSignatureValidator
      * @param array<string, mixed> $data
      * @psalm-param array{status: string, billNumber: string, preappId: string, scoring?: int} $data
      *
-     * @return void
-     *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
      */
-    public function validate(array $data, string $knownHash)
+    public function validate(array $data, string $knownHash): void
     {
         $hash = $this->calculator->calculate($data);
 
@@ -53,11 +48,9 @@ class PostLinkSignatureValidator
      * @param array<string, mixed> $data
      * @psalm-param array{status: string, billNumber: string, preappId: string, signature?: string, scoring?: int} $data
      *
-     * @return void
-     *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
      */
-    public function validateData(array $data, string $signatureKeyName = 'signature')
+    public function validateData(array $data, string $signatureKeyName = 'signature'): void
     {
         if (empty($data[$signatureKeyName])) {
             throw new InvalidSignatureException('Known signature not found');

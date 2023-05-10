@@ -9,10 +9,7 @@ use Throwable;
 
 class ValidationException extends ApiException
 {
-    /**
-     * @var \BnplPartners\Factoring004\Response\ValidationErrorResponse
-     */
-    protected $response;
+    protected ValidationErrorResponse $response;
 
     public function __construct(ValidationErrorResponse $response, Throwable $previous = null)
     {

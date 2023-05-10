@@ -7,7 +7,7 @@ namespace BnplPartners\Factoring004\ChangeStatus;
 use BnplPartners\Factoring004\AbstractResourceTest;
 use BnplPartners\Factoring004\Transport\Response;
 use BnplPartners\Factoring004\Transport\TransportInterface;
-use Psr\Http\Client\ClientInterface;
+use GuzzleHttp\ClientInterface;
 
 class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 {
@@ -24,7 +24,7 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('PUT', '/accountingservice/1.0/changeStatus/json', [$orders->toArray()], [])
+            ->with('PUT', '/accounting/v1/changeStatus/json', [$orders->toArray()], [])
             ->willReturn(new Response(200, [], [
                 'SuccessfulResponses' => [['error' => '', 'msg' => 'message']],
                 'ErrorResponses' => [],
@@ -53,7 +53,7 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('PUT', '/accountingservice/1.0/changeStatus/json', [$orders->toArray()], [])
+            ->with('PUT', '/accounting/v1/changeStatus/json', [$orders->toArray()], [])
             ->willReturn(new Response(200, [], [
                 'SuccessfulResponses' => [],
                 'ErrorResponses' => [['code' => 'code', 'error' => 'error', 'message' => 'message']],
@@ -82,7 +82,7 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('PUT', '/accountingservice/1.0/changeStatus/json', [$orders->toArray()], [])
+            ->with('PUT', '/accounting/v1/changeStatus/json', [$orders->toArray()], [])
             ->willReturn(new Response(200, [], [
                 'SuccessfulResponses' => [['error' => '', 'msg' => 'message']],
                 'ErrorResponses' => [['code' => 'code', 'error' => 'error', 'message' => 'message']],

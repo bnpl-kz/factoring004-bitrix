@@ -12,22 +12,10 @@ use JsonSerializable;
  */
 class ErrorResponse implements JsonSerializable, ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $code;
-    /**
-     * @var string
-     */
-    private $error;
-    /**
-     * @var string
-     */
-    private $message;
-    /**
-     * @var string
-     */
-    private $merchantOrderId;
+    private string $code;
+    private string $error;
+    private string $message;
+    private string $merchantOrderId;
 
     public function __construct(string $code, string $error, string $message, string $merchantOrderId = '')
     {
@@ -41,7 +29,7 @@ class ErrorResponse implements JsonSerializable, ArrayInterface
      * @param array<string, string> $response
      * @psalm-param array{code: string, error: string, message: string, merchantOrderId?: string} $response
      */
-    public static function createFromArray($response): ErrorResponse
+    public static function createFromArray(array $response): ErrorResponse
     {
         return new self($response['code'], $response['error'], $response['message'], $response['merchantOrderId'] ?? '');
     }

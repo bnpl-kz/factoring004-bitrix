@@ -16,10 +16,10 @@ if (!check_bitrix_sessid()) {
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
+use Bitrix\Main\Engine\Response\Json;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use Bnpl\Payment\PaymentProcessor;
-use Bnpl\Payment\PreAppOrderManager;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
@@ -39,15 +39,19 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 }
 
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$preAppToken = Config::get('BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN');
+$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
 
 $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
-$api = Api::create($apiHost, new BearerTokenAuth($preAppToken), $transport);
+
+$token = \Bnpl\Payment\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
+
+$api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 
 $request = Application::getInstance()->getContext()->getRequest();
-$processor = new PaymentProcessor($api, new PreAppOrderManager());
+$processor = new PaymentProcessor($api);
 
 try {
     $response = $processor->preApp($request);
@@ -76,7 +80,13 @@ try {
         $error = $isDebug ? $e->getMessage() : 'An error occurred. Please try again.';
     }
 
-    $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpayment_error.php');
+    if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
+        $response = (new Json([
+            'redirectErrorPage' => '/personal/order/payment/bnplpayment_error.php'
+        ]));
+    } else {
+        $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpayment_error.php');
+    }
 }
 
 $response->send();

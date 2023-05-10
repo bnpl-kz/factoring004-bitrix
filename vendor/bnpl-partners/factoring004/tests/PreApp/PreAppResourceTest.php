@@ -8,8 +8,8 @@ use BnplPartners\Factoring004\AbstractResourceTest;
 use BnplPartners\Factoring004\Exception\ValidationException;
 use BnplPartners\Factoring004\Response\PreAppResponse;
 use BnplPartners\Factoring004\Response\ValidationErrorResponse;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use Psr\Http\Client\ClientInterface;
 
 class PreAppResourceTest extends AbstractResourceTest
 {
@@ -25,7 +25,7 @@ class PreAppResourceTest extends AbstractResourceTest
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(200, [], json_encode(compact('data'))));
 
         $preApp = new PreAppResource($this->createTransport($client), static::BASE_URI);
@@ -65,7 +65,7 @@ class PreAppResourceTest extends AbstractResourceTest
         ];
 
         $client = $this->createStub(ClientInterface::class);
-        $client->method('sendRequest')
+        $client->method('send')
             ->willReturn(new Response(400, ['Content-Type' => 'application/json'], json_encode($data)));
 
         $preApp = new PreAppResource($this->createTransport($client), static::BASE_URI);

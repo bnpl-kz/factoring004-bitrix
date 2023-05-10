@@ -2,6 +2,7 @@
 
 namespace Bnpl\Payment;
 
+use Bitrix\Main\Engine\Response\Json;
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\HttpResponse;
 use Bitrix\Sale\Order;
@@ -15,15 +16,9 @@ class PaymentProcessor
      */
     private $api;
 
-    /**
-     * @var \Bnpl\Payment\PreAppOrderManager
-     */
-    private $orderManager;
-
-    public function __construct(Api $api, PreAppOrderManager $orderManager)
+    public function __construct(Api $api)
     {
         $this->api = $api;
-        $this->orderManager = $orderManager;
     }
 
     /**
@@ -49,7 +44,11 @@ class PaymentProcessor
 
         $preApp = $this->api->preApps->preApp($this->createPreAppMessage($order, $this->extractServerHost($request)));
 
-        $this->orderManager->syncOrder($order->getId(), $preApp->getPreAppId());
+        if ($request->isAjaxRequest()) {
+            return (new Json([
+                'redirectLink' => $preApp->getRedirectLink()
+            ]));
+        }
 
         return (new HttpResponse())
             ->setStatus(302)
@@ -73,6 +72,15 @@ class PaymentProcessor
     }
 
     /**
+     * @param string $phone
+     * @return string
+     */
+    private function formatPhone($phone)
+    {
+        return str_replace(['(',')','-','+',' '], '', $phone);
+    }
+
+    /**
      * @param string $serverHost
      *
      * @return \BnplPartners\Factoring004\PreApp\PreAppMessage
@@ -87,6 +95,7 @@ class PaymentProcessor
         $paymentCollection = $order->getPropertyCollection();
         $phone = $paymentCollection->getPhone();
         $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
+        $cityValue = $city->getValue();
         $itemsQuantity = array_map(function ($item) {
             return (int) $item->getField('QUANTITY');
         }, $order->getBasket()->getBasketItems());
@@ -104,9 +113,9 @@ class PaymentProcessor
             'itemsQuantity' => array_sum($itemsQuantity),
             'successRedirect' => $serverHost,
             'postLink' => $serverHost . $this->resolvePostLink(),
-            'phoneNumber' => $phone ? $phone->getValue() : null,
+            'phoneNumber' => $phone ? $this->formatPhone($phone->getValue()) : null,
             'deliveryPoint' => [
-                'city' => $city ? $city->getValue() : '',
+                'city' => !empty($cityValue) ? $cityValue : '',
             ],
             'items' => array_map(function ($item) {
                 return [

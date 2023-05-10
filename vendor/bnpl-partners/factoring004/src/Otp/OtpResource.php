@@ -14,6 +14,35 @@ use BnplPartners\Factoring004\Transport\ResponseInterface;
 
 class OtpResource extends AbstractResource
 {
+    private string $checkOtpPath = '/accounting/v1/checkOtp';
+    private string $sendOtpPath = '/accounting/v1/sendOtp';
+    private string $checkOtpReturnPath = '/accounting/v1/checkOtpReturn';
+    private string $sendOtpReturnPath = '/accounting/v1/sendOtpReturn';
+
+    public function setCheckOtpPath(string $checkOtpPath): OtpResource
+    {
+        $this->checkOtpPath = $checkOtpPath;
+        return $this;
+    }
+
+    public function setSendOtpPath(string $sendOtpPath): OtpResource
+    {
+        $this->sendOtpPath = $sendOtpPath;
+        return $this;
+    }
+
+    public function setCheckOtpReturnPath(string $checkOtpReturnPath): OtpResource
+    {
+        $this->checkOtpReturnPath = $checkOtpReturnPath;
+        return $this;
+    }
+
+    public function setSendOtpReturnPath(string $sendOtpReturnPath): OtpResource
+    {
+        $this->sendOtpReturnPath = $sendOtpReturnPath;
+        return  $this;
+    }
+
     /**
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
      * @throws \BnplPartners\Factoring004\Exception\EndpointUnavailableException
@@ -21,11 +50,10 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
-     * @param \BnplPartners\Factoring004\Otp\CheckOtp $otp
      */
-    public function checkOtp($otp): DtoOtp
+    public function checkOtp(CheckOtp $otp): DtoOtp
     {
-        $response = $this->postRequest('/accountingservice/1.0/checkOtp', $otp->toArray());
+        $response = $this->postRequest($this->checkOtpPath, $otp->toArray());
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return DtoOtp::createFromArray($response->getBody());
@@ -43,11 +71,10 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
-     * @param \BnplPartners\Factoring004\Otp\SendOtp $otp
      */
-    public function sendOtp($otp): DtoOtp
+    public function sendOtp(SendOtp $otp): DtoOtp
     {
-        $response = $this->postRequest('/accountingservice/1.0/sendOtp', $otp->toArray());
+        $response = $this->postRequest($this->sendOtpPath, $otp->toArray());
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return DtoOtp::createFromArray($response->getBody());
@@ -65,11 +92,10 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
-     * @param \BnplPartners\Factoring004\Otp\CheckOtpReturn $otp
      */
-    public function checkOtpReturn($otp): DtoOtp
+    public function checkOtpReturn(CheckOtpReturn $otp): DtoOtp
     {
-        $response = $this->postRequest('/accountingservice/1.0/checkOtpReturn', $otp->toArray());
+        $response = $this->postRequest($this->checkOtpReturnPath, $otp->toArray());
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return DtoOtp::createFromArray($response->getBody());
@@ -87,11 +113,10 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
-     * @param \BnplPartners\Factoring004\Otp\SendOtpReturn $otp
      */
-    public function sendOtpReturn($otp): DtoOtp
+    public function sendOtpReturn(SendOtpReturn $otp): DtoOtp
     {
-        $response = $this->postRequest('/accountingservice/1.0/sendOtpReturn', $otp->toArray());
+        $response = $this->postRequest($this->sendOtpReturnPath, $otp->toArray());
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return DtoOtp::createFromArray($response->getBody());
@@ -106,9 +131,8 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
      * @throws \BnplPartners\Factoring004\Exception\ErrorResponseException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
-     * @return void
      */
-    private function handleClientError(ResponseInterface $response)
+    private function handleClientError(ResponseInterface $response): void
     {
         if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 500) {
             $data = $response->getBody();
@@ -125,10 +149,8 @@ class OtpResource extends AbstractResource
                 throw new UnexpectedResponseException($response, $data['message'] ?? 'Unexpected response schema');
             }
 
-            $code = (int) $data['code'];
-
-            if (in_array($code, static::AUTH_ERROR_CODES, true)) {
-                throw new AuthenticationException($data['description'] ?? '', $data['message'] ?? '', $code);
+            if ($response->getStatusCode() === 401) {
+                throw new AuthenticationException('', $data['message'] ?? '', $data['code']);
             }
 
             /** @psalm-suppress ArgumentTypeCoercion */

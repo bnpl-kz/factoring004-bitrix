@@ -7,7 +7,7 @@ namespace BnplPartners\Factoring004\Otp;
 use BnplPartners\Factoring004\AbstractResourceTest;
 use BnplPartners\Factoring004\Transport\Response;
 use BnplPartners\Factoring004\Transport\TransportInterface;
-use Psr\Http\Client\ClientInterface;
+use GuzzleHttp\ClientInterface;
 
 class SendOtpReturnResourceTest extends AbstractResourceTest
 {
@@ -23,7 +23,7 @@ class SendOtpReturnResourceTest extends AbstractResourceTest
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('POST', '/accountingservice/1.0/sendOtpReturn', $otp->toArray(), [])
+            ->with('POST', '/accounting/v1/sendOtpReturn', $otp->toArray(), [])
             ->willReturn(new Response(200, [], ['msg' => 'OK']));
 
         $resource = new OtpResource($transport, static::BASE_URI);

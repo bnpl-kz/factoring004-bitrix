@@ -8,10 +8,7 @@ use Throwable;
 
 class AuthenticationException extends ApiException
 {
-    /**
-     * @var string
-     */
-    protected $description;
+    protected string $description;
 
     public function __construct(string $description, string $message = '', int $code = 0, Throwable $previous = null)
     {

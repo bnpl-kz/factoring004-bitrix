@@ -9,14 +9,11 @@ namespace BnplPartners\Factoring004\Signature;
  */
 class PostLinkSignatureCalculator
 {
-    const FIELD_SEPARATOR = ':';
-    const HASH_ALGO = 'sha512';
-    const FIELDS = ['status', 'preappId', 'billNumber'];
+    private const FIELD_SEPARATOR = ':';
+    private const HASH_ALGO = 'sha512';
+    private const FIELDS = ['status', 'preappId', 'billNumber'];
 
-    /**
-     * @var string
-     */
-    private $secretKey;
+    private string $secretKey;
 
     public function __construct(string $secretKey)
     {

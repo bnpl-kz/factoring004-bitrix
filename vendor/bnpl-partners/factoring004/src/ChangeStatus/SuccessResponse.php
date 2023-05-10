@@ -12,18 +12,9 @@ use JsonSerializable;
  */
 class SuccessResponse implements JsonSerializable, ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $error;
-    /**
-     * @var string
-     */
-    private $msg;
-    /**
-     * @var string
-     */
-    private $merchantOrderId;
+    private string $error;
+    private string $msg;
+    private string $merchantOrderId;
 
     public function __construct(string $error, string $msg, string $merchantOrderId = '')
     {
@@ -38,7 +29,7 @@ class SuccessResponse implements JsonSerializable, ArrayInterface
      *
      * @return \BnplPartners\Factoring004\ChangeStatus\SuccessResponse
      */
-    public static function createFromArray($response): SuccessResponse
+    public static function createFromArray(array $response): SuccessResponse
     {
         return new self($response['error'], $response['msg'], $response['merchantOrderId'] ?? '');
     }

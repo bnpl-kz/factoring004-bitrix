@@ -8,10 +8,7 @@ use Psr\Http\Message\RequestInterface;
 
 class NoAuth implements AuthenticationInterface
 {
-    /**
-     * @param \Psr\Http\Message\RequestInterface $request
-     */
-    public function apply($request): RequestInterface
+    public function apply(RequestInterface $request): RequestInterface
     {
         return $request;
     }

@@ -14,6 +14,6 @@ use MyCLabs\Enum\Enum;
  */
 final class ReturnStatus extends Enum
 {
-    const RETURN = 'return';
-    const PARTRETURN = 'part_return';
+    private const RETURN = 'return';
+    private const PARTRETURN = 'part_return';
 }

@@ -10,61 +10,61 @@ class OAuthTokenTest extends TestCase
 {
     public function testCreateFromArray(): void
     {
-        $expected = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
+        $expected = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $actual = OAuthToken::createFromArray([
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
         ]);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetAccessToken(): void
+    public function testGetAccess(): void
     {
-        $token = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
-        $this->assertEquals('dGVzdA==', $token->getAccessToken());
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
+        $this->assertEquals('dGVzdA==', $token->getAccess());
 
-        $token = new OAuthToken('dG9rZW4=', 'default', 'Bearer', 3600);
-        $this->assertEquals('dG9rZW4=', $token->getAccessToken());
+        $token = new OAuthToken('dG9rZW4=', 300, 'dGVzdDE=', 3600);
+        $this->assertEquals('dG9rZW4=', $token->getAccess());
     }
 
-    public function testGetScope(): void
+    public function testAccessExpiresAt(): void
     {
-        $token = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
-        $this->assertEquals('default', $token->getScope());
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
+        $this->assertEquals(300, $token->getAccessExpiresAt());
 
-        $token = new OAuthToken('dG9rZW4=', 'test', 'Bearer', 3600);
-        $this->assertEquals('test', $token->getScope());
+        $token = new OAuthToken('dGVzdA==', 600, 'dGVzdDE=', 3600);
+        $this->assertEquals(600, $token->getAccessExpiresAt());
     }
 
-    public function testGetTokenType(): void
+    public function testGetRefresh(): void
     {
-        $token = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
-        $this->assertEquals('Bearer', $token->getTokenType());
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
+        $this->assertEquals('dGVzdDE=', $token->getRefresh());
 
-        $token = new OAuthToken('dG9rZW4=', 'test', 'Basic', 3600);
-        $this->assertEquals('Basic', $token->getTokenType());
+        $token = new OAuthToken('dGVzdA==', 300, 'dG9rZW4=', 3600);
+        $this->assertEquals('dG9rZW4=', $token->getRefresh());
     }
 
-    public function testGetExpiresIn(): void
+    public function testGetRefreshExpiresAt(): void
     {
-        $token = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
-        $this->assertEquals(3600, $token->getExpiresIn());
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
+        $this->assertEquals(3600, $token->getRefreshExpiresAt());
 
-        $token = new OAuthToken('dG9rZW4=', 'test', 'Basic', 300);
-        $this->assertEquals(300, $token->getExpiresIn());
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 7200);
+        $this->assertEquals(7200, $token->getRefreshExpiresAt());
     }
 
     public function testToArray(): void
     {
-        $token = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $expected = [
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
         ];
 
         $this->assertEquals($expected, $token->toArray());
@@ -72,12 +72,12 @@ class OAuthTokenTest extends TestCase
 
     public function testJsonSerialize(): void
     {
-        $token = new OAuthToken('dGVzdA==', 'default', 'Bearer', 3600);
+        $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $expected = [
-            'access_token' => 'dGVzdA==',
-            'scope' => 'default',
-            'expires_in' => 3600,
-            'token_type' => 'Bearer',
+            'access' => 'dGVzdA==',
+            'accessExpiresAt' => 300,
+            'refresh' => 'dGVzdDE=',
+            'refreshExpiresAt' => 3600,
         ];
 
         $this->assertJsonStringEqualsJsonString(json_encode($expected), json_encode($token));

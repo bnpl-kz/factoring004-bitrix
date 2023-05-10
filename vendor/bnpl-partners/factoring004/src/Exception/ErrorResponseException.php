@@ -9,10 +9,7 @@ use Throwable;
 
 class ErrorResponseException extends ApiException
 {
-    /**
-     * @var \BnplPartners\Factoring004\Response\ErrorResponse
-     */
-    private $errorResponse;
+    private ErrorResponse $errorResponse;
 
     public function __construct(ErrorResponse $errorResponse, Throwable $previous = null)
     {

@@ -12,32 +12,19 @@ use InvalidArgumentException;
 
 abstract class AbstractResource
 {
-    const AUTH_ERROR_CODES = [900901, 900902, 900910];
-    const DEFAULT_HEADERS = [
+    protected const DEFAULT_HEADERS = [
         'Accept' => 'application/json',
         'Content-Type' => 'application/json',
     ];
 
-    /**
-     * @var \BnplPartners\Factoring004\Transport\TransportInterface
-     */
-    protected $transport;
-    /**
-     * @var string
-     */
-    protected $baseUri;
-    /**
-     * @var \BnplPartners\Factoring004\Auth\AuthenticationInterface
-     */
-    protected $authentication;
+    protected TransportInterface $transport;
+    protected string $baseUri;
+    protected AuthenticationInterface $authentication;
 
-    /**
-     * @param \BnplPartners\Factoring004\Auth\AuthenticationInterface|null $authentication
-     */
     public function __construct(
         TransportInterface $transport,
         string $baseUri,
-        $authentication = null
+        ?AuthenticationInterface $authentication = null
     ) {
         if (!filter_var($baseUri, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('Base URI cannot be empty');
@@ -59,7 +46,7 @@ abstract class AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      */
-    protected function postRequest($path, $data = [], $headers = []): ResponseInterface
+    protected function postRequest(string $path, array $data = [], array $headers = []): ResponseInterface
     {
         return $this->request('POST', $path, $data, $headers);
     }
@@ -76,7 +63,7 @@ abstract class AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      */
-    protected function request($method, $path, $data = [], $headers = []): ResponseInterface
+    protected function request(string $method, string $path, array $data = [], array $headers = []): ResponseInterface
     {
         $this->transport->setBaseUri($this->baseUri);
         $this->transport->setAuthentication($this->authentication);

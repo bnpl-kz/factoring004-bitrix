@@ -17,6 +17,14 @@ use BnplPartners\Factoring004\Transport\ResponseInterface;
 
 class PreAppResource extends AbstractResource
 {
+    private string $preappPath = '/bnpl/v3/preapp';
+
+    public function setPreappPath(string $preappPath): PreAppResource
+    {
+        $this->preappPath = $preappPath;
+        return $this;
+    }
+
     /**
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
      * @throws \BnplPartners\Factoring004\Exception\EndpointUnavailableException
@@ -26,11 +34,10 @@ class PreAppResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
      * @throws \BnplPartners\Factoring004\Exception\ValidationException
      * @throws \BnplPartners\Factoring004\Exception\ApiException
-     * @param \BnplPartners\Factoring004\PreApp\PreAppMessage $data
      */
-    public function preApp($data): PreAppResponse
+    public function preApp(PreAppMessage $data): PreAppResponse
     {
-        $response = $this->postRequest('/bnpl-partners/1.0/preapp', $data->toArray());
+        $response = $this->postRequest($this->preappPath, $data->toArray());
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return PreAppResponse::createFromArray($response->getBody()['data']);
@@ -48,9 +55,8 @@ class PreAppResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\ErrorResponseException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
      * @throws \BnplPartners\Factoring004\Exception\ValidationException
-     * @return void
      */
-    private function handleClientError(ResponseInterface $response)
+    private function handleClientError(ResponseInterface $response): void
     {
         $data = $response->getBody();
 
@@ -70,10 +76,8 @@ class PreAppResource extends AbstractResource
             throw new UnexpectedResponseException($response, $data['message'] ?? 'Unexpected response schema');
         }
 
-        $code = (int) $data['code'];
-
-        if (in_array($code, static::AUTH_ERROR_CODES, true)) {
-            throw new AuthenticationException($data['description'] ?? '', $data['message'] ?? '', $code);
+        if ($response->getStatusCode() === 401) {
+            throw new AuthenticationException('', $data['message'] ?? '', $data['code']);
         }
 
         /** @psalm-suppress ArgumentTypeCoercion */

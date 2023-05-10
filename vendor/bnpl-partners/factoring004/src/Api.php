@@ -19,27 +19,14 @@ use OutOfBoundsException;
  */
 class Api
 {
-    /**
-     * @var \BnplPartners\Factoring004\PreApp\PreAppResource
-     */
-    private $preApps;
-    /**
-     * @var \BnplPartners\Factoring004\Otp\OtpResource
-     */
-    private $otp;
-    /**
-     * @var \BnplPartners\Factoring004\ChangeStatus\ChangeStatusResource
-     */
-    private $changeStatus;
+    private PreAppResource $preApps;
+    private OtpResource $otp;
+    private ChangeStatusResource $changeStatus;
 
-    /**
-     * @param \BnplPartners\Factoring004\Auth\AuthenticationInterface|null $authentication
-     * @param \BnplPartners\Factoring004\Transport\TransportInterface|null $transport
-     */
     public function __construct(
         string $baseUri,
-        $authentication = null,
-        $transport = null
+        ?AuthenticationInterface $authentication = null,
+        ?TransportInterface $transport = null
     ) {
         $transport = $transport ?? new GuzzleTransport();
 
@@ -48,15 +35,10 @@ class Api
         $this->changeStatus = new ChangeStatusResource($transport, $baseUri, $authentication);
     }
 
-    /**
-     * @param \BnplPartners\Factoring004\Auth\AuthenticationInterface|null $authentication
-     * @param \BnplPartners\Factoring004\Transport\TransportInterface|null $transport
-     * @param string $baseUri
-     */
     public static function create(
-        $baseUri,
-        $authentication = null,
-        $transport = null
+        string $baseUri,
+        ?AuthenticationInterface $authentication = null,
+        ?TransportInterface $transport = null
     ): Api {
         return new self($baseUri, $authentication, $transport);
     }

@@ -13,20 +13,17 @@ use Psr\Http\Message\ResponseInterface as PsrResponse;
  */
 class Response implements ResponseInterface
 {
-    /**
-     * @var int
-     */
-    private $statusCode;
+    private int $statusCode;
 
     /**
      * @var array<string, string>
      */
-    private $headers;
+    private array $headers;
 
     /**
      * @var array<array-key, T>
      */
-    private $body;
+    private array $body;
 
     /**
      * @param array<string, string> $headers
@@ -41,9 +38,8 @@ class Response implements ResponseInterface
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
-     * @param PsrResponse $response
      */
-    public static function createFromPsrResponse($response): Response
+    public static function createFromPsrResponse(PsrResponse $response): Response
     {
         $content = (string) $response->getBody();
         $data = [];
@@ -56,9 +52,11 @@ class Response implements ResponseInterface
             }
         }
 
-        return new self($response->getStatusCode(), array_map(function (array $values) {
-            return implode(', ', $values);
-        }, $response->getHeaders()), $data);
+        return new self(
+            $response->getStatusCode(),
+            array_map(fn(array $values) => implode(', ', $values), $response->getHeaders()),
+            $data,
+        );
     }
 
     public function getStatusCode(): int

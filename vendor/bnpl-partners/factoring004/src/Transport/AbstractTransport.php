@@ -18,22 +18,16 @@ abstract class AbstractTransport implements TransportInterface
 {
     use LoggerAwareTrait;
 
-    const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'OPTIONS', 'DELETE'];
-    const DEFAULT_CONTENT_TYPE = 'application/json';
-    const LOGGER_PREFIX = 'bnpl-partners/factoring004';
+    protected const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'OPTIONS', 'DELETE'];
+    protected const DEFAULT_CONTENT_TYPE = 'application/json';
+    public const LOGGER_PREFIX = 'bnpl-partners/factoring004';
 
     /**
      * @var array<string, string>
      */
-    protected $headers = [];
-    /**
-     * @var \Psr\Http\Message\UriInterface|null
-     */
-    protected $baseUri;
-    /**
-     * @var \BnplPartners\Factoring004\Auth\AuthenticationInterface
-     */
-    protected $authentication;
+    protected array $headers = [];
+    protected ?UriInterface $baseUri = null;
+    protected AuthenticationInterface $authentication;
 
     public function __construct()
     {
@@ -41,60 +35,35 @@ abstract class AbstractTransport implements TransportInterface
         $this->setLogger(new NullLogger());
     }
 
-    /**
-     * @param string $uri
-     */
-    public function setBaseUri($uri): TransportInterface
+    public function setBaseUri(string $uri): TransportInterface
     {
         $this->baseUri = $this->createUri($uri);
         return $this;
     }
 
-    /**
-     * @param mixed[] $headers
-     */
-    public function setHeaders($headers): TransportInterface
+    public function setHeaders(array $headers): TransportInterface
     {
         $this->headers = $headers;
         return $this;
     }
 
-    /**
-     * @param \BnplPartners\Factoring004\Auth\AuthenticationInterface $authentication
-     */
-    public function setAuthentication($authentication): TransportInterface
+    public function setAuthentication(AuthenticationInterface $authentication): TransportInterface
     {
         $this->authentication = $authentication;
         return $this;
     }
 
-    /**
-     * @param string $path
-     * @param mixed[] $query
-     * @param mixed[] $headers
-     */
-    public function get($path, $query = [], $headers = []): ResponseInterface
+    public function get(string $path, array $query = [], array $headers = []): ResponseInterface
     {
         return $this->request(__FUNCTION__, $path, $query, $headers);
     }
 
-    /**
-     * @param string $path
-     * @param mixed[] $data
-     * @param mixed[] $headers
-     */
-    public function post($path, $data = [], $headers = []): ResponseInterface
+    public function post(string $path, array $data = [], array $headers = []): ResponseInterface
     {
         return $this->request(__FUNCTION__, $path, $data, $headers);
     }
 
-    /**
-     * @param string $method
-     * @param string $path
-     * @param mixed[] $data
-     * @param mixed[] $headers
-     */
-    public function request($method, $path, $data = [], $headers = []): ResponseInterface
+    public function request(string $method, string $path, array $data = [], array $headers = []): ResponseInterface
     {
         $request = $this->prepareRequest(strtoupper($method), $path, $data, $headers);
 
@@ -126,12 +95,8 @@ abstract class AbstractTransport implements TransportInterface
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
-     * @param string $method
-     * @param string $path
-     * @param mixed[] $data
-     * @param mixed[] $headers
      */
-    protected function prepareRequest($method, $path, $data, $headers): RequestInterface
+    protected function prepareRequest(string $method, string $path, array $data, array $headers): RequestInterface
     {
         $isWithoutBody = in_array($method, static::METHODS_WITHOUT_BODY, true);
         $query = $isWithoutBody ? $data : [];
@@ -149,9 +114,8 @@ abstract class AbstractTransport implements TransportInterface
 
     /**
      * @param array<string, mixed> $query
-     * @param string $path
      */
-    protected function prepareUri($path, $query): UriInterface
+    protected function prepareUri(string $path, array $query): UriInterface
     {
         $uri = $this->baseUri ?? $this->createUri('/');
 
@@ -161,34 +125,22 @@ abstract class AbstractTransport implements TransportInterface
         return $query ? $uri->withQuery(http_build_query($query)) : $uri;
     }
 
-    /**
-     * @param string $method
-     * @param \Psr\Http\Message\UriInterface $uri
-     */
-    abstract protected function createRequest($method, $uri): RequestInterface;
+    abstract protected function createRequest(string $method, UriInterface $uri): RequestInterface;
 
-    /**
-     * @param string $content
-     */
-    abstract protected function createStream($content): StreamInterface;
+    abstract protected function createStream(string $content): StreamInterface;
 
-    /**
-     * @param string $uri
-     */
-    abstract protected function createUri($uri): UriInterface;
+    abstract protected function createUri(string $uri): UriInterface;
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
-     * @param \Psr\Http\Message\RequestInterface $request
      */
-    abstract protected function sendRequest($request): PsrResponseInterface;
+    abstract protected function sendRequest(RequestInterface $request): PsrResponseInterface;
 
     /**
      * @param array<string, string> $headers
-     * @param \Psr\Http\Message\RequestInterface $request
      */
-    protected function mergeRequestHeaders($request, $headers): RequestInterface
+    protected function mergeRequestHeaders(RequestInterface $request, array $headers): RequestInterface
     {
         $headers = array_merge($this->headers, $headers);
 
@@ -203,9 +155,8 @@ abstract class AbstractTransport implements TransportInterface
      * @param array<string, mixed> $data
      *
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
-     * @param \Psr\Http\Message\RequestInterface $request
      */
-    protected function serializeData($data, $request): string
+    protected function serializeData(array $data, RequestInterface $request): string
     {
         if (!$data) {
             return '';
@@ -232,9 +183,8 @@ abstract class AbstractTransport implements TransportInterface
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
-     * @param PsrResponseInterface $response
      */
-    protected function convertResponse($response): ResponseInterface
+    protected function convertResponse(PsrResponseInterface $response): ResponseInterface
     {
         return Response::createFromPsrResponse($response);
     }

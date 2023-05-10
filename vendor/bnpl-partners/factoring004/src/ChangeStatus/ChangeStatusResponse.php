@@ -15,12 +15,12 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
     /**
      * @var \BnplPartners\Factoring004\ChangeStatus\SuccessResponse[]
      */
-    private $successfulResponses;
+    private array $successfulResponses;
 
     /**
      * @var \BnplPartners\Factoring004\ChangeStatus\ErrorResponse[]
      */
-    private $errorResponses;
+    private array $errorResponses;
 
     /**
      * @param \BnplPartners\Factoring004\ChangeStatus\SuccessResponse[] $successfulResponses
@@ -43,19 +43,18 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
      *
      * @return \BnplPartners\Factoring004\ChangeStatus\ChangeStatusResponse
      */
-    public static function createFromArray($responses): ChangeStatusResponse
+    public static function createFromArray(array $responses): ChangeStatusResponse
     {
-        return new self(array_map(
-            function (array $response) {
-                return SuccessResponse::createFromArray($response);
-            },
-            $responses['successfulResponses'] ?? $responses['SuccessfulResponses'] ?? []
-        ), array_map(
-            function (array $response) {
-                return ErrorResponse::createFromArray($response);
-            },
-            $responses['errorResponses'] ?? $responses['ErrorResponses'] ?? []
-        ));
+        return new self(
+            array_map(
+                fn(array $response) => SuccessResponse::createFromArray($response),
+                $responses['successfulResponses'] ?? $responses['SuccessfulResponses'] ?? []
+            ),
+            array_map(
+                fn(array $response) => ErrorResponse::createFromArray($response),
+                $responses['errorResponses'] ?? $responses['ErrorResponses'] ?? []
+            ),
+        );
     }
 
     public function getSuccessfulResponses(): array
@@ -77,12 +76,14 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
     public function toArray(): array
     {
         return [
-            'SuccessfulResponses' => array_map(function (SuccessResponse $response) {
-                return $response->toArray();
-            }, $this->getSuccessfulResponses()),
-            'ErrorResponses' => array_map(function (ErrorResponse $response) {
-                return $response->toArray();
-            }, $this->getErrorResponses()),
+            'SuccessfulResponses' => array_map(
+                fn(SuccessResponse $response) => $response->toArray(),
+                $this->getSuccessfulResponses(),
+            ),
+            'ErrorResponses' => array_map(
+                fn(ErrorResponse $response) => $response->toArray(),
+                $this->getErrorResponses(),
+            ),
         ];
     }
 

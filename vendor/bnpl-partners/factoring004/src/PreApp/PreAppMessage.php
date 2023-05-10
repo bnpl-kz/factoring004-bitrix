@@ -10,55 +10,22 @@ use InvalidArgumentException;
 
 class PreAppMessage implements ArrayInterface
 {
-    /**
-     * @var \BnplPartners\Factoring004\PreApp\PartnerData
-     */
-    private $partnerData;
-    /**
-     * @var string
-     */
-    private $billNumber;
-    /**
-     * @var int
-     */
-    private $billAmount;
-    /**
-     * @var int
-     */
-    private $itemsQuantity;
-    /**
-     * @var string
-     */
-    private $successRedirect;
-    /**
-     * @var string
-     */
-    private $failRedirect = '';
-    /**
-     * @var string
-     */
-    private $postLink;
-    /**
-     * @var string
-     */
-    private $phoneNumber = '';
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $expiresAt;
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $deliveryDate;
-    /**
-     * @var \BnplPartners\Factoring004\PreApp\DeliveryPoint|null
-     */
-    private $deliveryPoint;
+    private PartnerData $partnerData;
+    private string $billNumber;
+    private int $billAmount;
+    private int $itemsQuantity;
+    private string $successRedirect;
+    private string $failRedirect = '';
+    private string $postLink;
+    private string $phoneNumber = '';
+    private ?DateTimeInterface $expiresAt = null;
+    private ?DateTimeInterface $deliveryDate = null;
+    private ?DeliveryPoint $deliveryPoint = null;
 
     /**
      * @var \BnplPartners\Factoring004\PreApp\Item[]
      */
-    private $items;
+    private array $items;
 
     /**
      * @param \BnplPartners\Factoring004\PreApp\Item[] $items
@@ -128,7 +95,7 @@ class PreAppMessage implements ArrayInterface
      *
      * @throws \InvalidArgumentException
      */
-    public static function createFromArray($data): PreAppMessage
+    public static function createFromArray(array $data): PreAppMessage
     {
         $requiredKeys = ['partnerData', 'billNumber', 'billAmount', 'itemsQuantity', 'successRedirect', 'postLink'];
 
@@ -145,9 +112,7 @@ class PreAppMessage implements ArrayInterface
             $data['itemsQuantity'],
             $data['successRedirect'],
             $data['postLink'],
-            array_map(function (array $item) {
-                return Item::createFromArray($item);
-            }, $data['items'])
+            array_map(fn(array $item) => Item::createFromArray($item), $data['items']),
         );
 
         if (isset($data['failRedirect'])) {
@@ -173,19 +138,13 @@ class PreAppMessage implements ArrayInterface
         return $object;
     }
 
-    /**
-     * @param string $failRedirect
-     */
-    public function setFailRedirect($failRedirect): PreAppMessage
+    public function setFailRedirect(string $failRedirect): PreAppMessage
     {
         $this->failRedirect = $failRedirect;
         return $this;
     }
 
-    /**
-     * @param string $phoneNumber
-     */
-    public function setPhoneNumber($phoneNumber): PreAppMessage
+    public function setPhoneNumber(string $phoneNumber): PreAppMessage
     {
         if (!preg_match('/^77\d{9}$/', $phoneNumber)) {
             throw new InvalidArgumentException('phoneNumber is invalid');
@@ -195,28 +154,19 @@ class PreAppMessage implements ArrayInterface
         return $this;
     }
 
-    /**
-     * @param \BnplPartners\Factoring004\PreApp\DeliveryPoint $deliveryPoint
-     */
-    public function setDeliveryPoint($deliveryPoint): PreAppMessage
+    public function setDeliveryPoint(DeliveryPoint $deliveryPoint): PreAppMessage
     {
         $this->deliveryPoint = $deliveryPoint;
         return $this;
     }
 
-    /**
-     * @param \DateTimeInterface $expiresAt
-     */
-    public function setExpiresAt($expiresAt): PreAppMessage
+    public function setExpiresAt(DateTimeInterface $expiresAt): PreAppMessage
     {
         $this->expiresAt = $expiresAt;
         return $this;
     }
 
-    /**
-     * @param \DateTimeInterface $deliveryDate
-     */
-    public function setDeliveryDate($deliveryDate): PreAppMessage
+    public function setDeliveryDate(DateTimeInterface $deliveryDate): PreAppMessage
     {
         $this->deliveryDate = $deliveryDate;
         return $this;
@@ -262,26 +212,17 @@ class PreAppMessage implements ArrayInterface
         return $this->phoneNumber;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getExpiresAt()
+    public function getExpiresAt(): ?DateTimeInterface
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getDeliveryDate()
+    public function getDeliveryDate(): ?DateTimeInterface
     {
         return $this->deliveryDate;
     }
 
-    /**
-     * @return \BnplPartners\Factoring004\PreApp\DeliveryPoint|null
-     */
-    public function getDeliveryPoint()
+    public function getDeliveryPoint(): ?DeliveryPoint
     {
         return $this->deliveryPoint;
     }
@@ -310,14 +251,12 @@ class PreAppMessage implements ArrayInterface
             'itemsQuantity' => $this->getItemsQuantity(),
             'successRedirect' => $this->getSuccessRedirect(),
             'postLink' => $this->getPostLink(),
-            'expiresAt' => $expiresAt === null ? null : $expiresAt->format('Y-m-d\TH:i:sO'),
-            'deliveryDate' => $deliveryDate === null ? null : $deliveryDate->format('Y-m-d\TH:i:sO'),
+            'expiresAt' => $expiresAt === null ? null : $expiresAt->format(DateTimeInterface::ISO8601),
+            'deliveryDate' => $deliveryDate === null ? null : $deliveryDate->format(DateTimeInterface::ISO8601),
             'failRedirect' => $this->getFailRedirect(),
             'phoneNumber' => $this->getPhoneNumber(),
             'deliveryPoint' => $deliveryPoint ? $deliveryPoint->toArray() : null,
-            'items' => array_map(function (Item $item) {
-                return $item->toArray();
-            }, $this->getItems()),
+            'items' => array_map(fn(Item $item) => $item->toArray(), $this->getItems()),
         ]);
     }
 }

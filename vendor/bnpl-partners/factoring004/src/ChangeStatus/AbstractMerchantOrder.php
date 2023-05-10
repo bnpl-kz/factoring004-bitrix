@@ -12,15 +12,12 @@ use MyCLabs\Enum\Enum;
  */
 abstract class AbstractMerchantOrder implements ArrayInterface
 {
-    /**
-     * @var string
-     */
-    protected $orderId;
+    protected string $orderId;
 
     /**
      * @var T
      */
-    protected $status;
+    protected Enum $status;
 
     /**
      * @param string $orderId
@@ -41,7 +38,7 @@ abstract class AbstractMerchantOrder implements ArrayInterface
      * @codeCoverageIgnore
      * @return T
      */
-    public function getStatus()
+    public function getStatus(): Enum
     {
         return $this->status;
     }

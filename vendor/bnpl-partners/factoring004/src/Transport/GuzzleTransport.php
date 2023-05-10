@@ -21,50 +21,31 @@ use Psr\Http\Message\UriInterface;
 
 class GuzzleTransport extends AbstractTransport
 {
-    /**
-     * @var \GuzzleHttp\ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @param \GuzzleHttp\ClientInterface|null $client
-     */
-    public function __construct($client = null)
+    public function __construct(?ClientInterface $client = null)
     {
         parent::__construct();
 
         $this->client = $client ?? new Client();
     }
 
-    /**
-     * @param string $method
-     * @param \Psr\Http\Message\UriInterface $uri
-     */
-    protected function createRequest($method, $uri): RequestInterface
+    protected function createRequest(string $method, UriInterface $uri): RequestInterface
     {
         return new Request($method, $uri);
     }
 
-    /**
-     * @param string $content
-     */
-    protected function createStream($content): StreamInterface
+    protected function createStream(string $content): StreamInterface
     {
         return Utils::streamFor($content);
     }
 
-    /**
-     * @param string $uri
-     */
-    protected function createUri($uri): UriInterface
+    protected function createUri(string $uri): UriInterface
     {
         return new Uri($uri);
     }
 
-    /**
-     * @param \Psr\Http\Message\RequestInterface $request
-     */
-    protected function sendRequest($request): PsrResponseInterface
+    protected function sendRequest(RequestInterface $request): PsrResponseInterface
     {
         try {
             return $this->client->send($request);

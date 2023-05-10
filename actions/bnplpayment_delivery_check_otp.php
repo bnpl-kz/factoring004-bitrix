@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
+use Bitrix\Main\Application;
 use Bnpl\Payment\Config;
 use Bnpl\Payment\DebugLoggerFactory;
 use BnplPartners\Factoring004\Api;
@@ -35,24 +36,36 @@ CModule::IncludeModule('sale');
 
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $partnerCode = Config::get('BNPL_PAYMENT_PARTNER_CODE');
-$accountingServiceToken = Config::get('BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN');
+$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
 
 $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
-$api = Api::create($apiHost, new BearerTokenAuth($accountingServiceToken), $transport);
+
+$token = \Bnpl\Payment\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
+
+$api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 $request = Context::getCurrent()->getRequest();
 $response = new \Bitrix\Main\HttpResponse();
-$orderId = $request->get('order_id');
+
+$data = json_decode($request->getInput(), true);
+$orderId = $data['order_id'];
+$deliveryItems = $data['items'] ?? [];
+$otp = $data['otp'];
 
 // get order paid sum
 $order = \Bitrix\Sale\Order::load($orderId);
 
 
 try {
-    $api->otp->checkOtp(new CheckOtp($partnerCode, $orderId, $request->get('otp'), (int) ceil($order->getSumPaid())));
+
+    $deliveryManager = \Bnpl\Payment\DeliveryManager::create($order, $deliveryItems);
+
+    $api->otp->checkOtp(new CheckOtp($partnerCode, $orderId, $otp, $deliveryManager->calculateAmount()));
     $response->setStatus(200);
     $response->setContent(json_encode(['success' => true]));
+    $deliveryManager->updateOrder();
 } catch (Exception $e) {
     if ($e instanceof ErrorResponseException) {
         $errorResponse = $e->getErrorResponse();

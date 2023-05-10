@@ -19,22 +19,10 @@ use Psr\Http\Message\UriInterface;
 
 class PsrTransport extends AbstractTransport
 {
-    /**
-     * @var \Psr\Http\Message\RequestFactoryInterface
-     */
-    private $requestFactory;
-    /**
-     * @var \Psr\Http\Message\StreamFactoryInterface
-     */
-    private $streamFactory;
-    /**
-     * @var \Psr\Http\Message\UriFactoryInterface
-     */
-    private $uriFactory;
-    /**
-     * @var \Psr\Http\Client\ClientInterface
-     */
-    private $client;
+    private RequestFactoryInterface $requestFactory;
+    private StreamFactoryInterface $streamFactory;
+    private UriFactoryInterface $uriFactory;
+    private ClientInterface $client;
 
     /**
      * @param \Psr\Http\Message\RequestFactoryInterface $requestFactory
@@ -56,35 +44,22 @@ class PsrTransport extends AbstractTransport
         $this->client = $client;
     }
 
-    /**
-     * @param string $method
-     * @param \Psr\Http\Message\UriInterface $uri
-     */
-    protected function createRequest($method, $uri): RequestInterface
+    protected function createRequest(string $method, UriInterface $uri): RequestInterface
     {
         return $this->requestFactory->createRequest($method, $uri);
     }
 
-    /**
-     * @param string $content
-     */
-    protected function createStream($content): StreamInterface
+    protected function createStream(string $content): StreamInterface
     {
         return $this->streamFactory->createStream($content);
     }
 
-    /**
-     * @param string $uri
-     */
-    protected function createUri($uri): UriInterface
+    protected function createUri(string $uri): UriInterface
     {
         return $this->uriFactory->createUri($uri);
     }
 
-    /**
-     * @param \Psr\Http\Message\RequestInterface $request
-     */
-    protected function sendRequest($request): PsrResponseInterface
+    protected function sendRequest(RequestInterface $request): PsrResponseInterface
     {
         try {
             return $this->client->sendRequest($request);

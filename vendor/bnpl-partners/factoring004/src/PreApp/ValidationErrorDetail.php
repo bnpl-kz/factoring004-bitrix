@@ -11,14 +11,8 @@ use BnplPartners\Factoring004\ArrayInterface;
  */
 class ValidationErrorDetail implements ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $error;
-    /**
-     * @var string
-     */
-    private $field;
+    private string $error;
+    private string $field;
 
     public function __construct(string $error, string $field)
     {
@@ -30,7 +24,7 @@ class ValidationErrorDetail implements ArrayInterface
      * @param array<string, string> $detail
      * @psalm-param array{error: string, field: string} $detail
      */
-    public static function createFromArray($detail): ValidationErrorDetail
+    public static function createFromArray(array $detail): ValidationErrorDetail
     {
         return new ValidationErrorDetail($detail['error'], $detail['field']);
     }
@@ -42,7 +36,7 @@ class ValidationErrorDetail implements ArrayInterface
      *
      * @return \BnplPartners\Factoring004\PreApp\ValidationErrorDetail[]
      */
-    public static function createMany($details): array
+    public static function createMany(array $details): array
     {
         return array_map([ValidationErrorDetail::class, 'createFromArray'], $details);
     }

@@ -14,39 +14,18 @@ use JsonSerializable;
  */
 class ErrorResponse implements JsonSerializable, ArrayInterface
 {
-    /**
-     * @var string
-     */
-    protected $code;
-    /**
-     * @var string
-     */
-    protected $message;
-    /**
-     * @var string|null
-     */
-    protected $description;
-    /**
-     * @var string|null
-     */
-    protected $type;
+    protected string $code;
+    protected string $message;
+    protected ?string $description;
+    protected ?string $type;
+    protected ?string $error;
 
-    /**
-     * @var string|null
-     */
-    protected $error;
-
-    /**
-     * @param string|null $description
-     * @param string|null $type
-     * @param string|null $error
-     */
     public function __construct(
         string $code,
         string $message,
-        $description = null,
-        $type = null,
-        $error = null
+        ?string $description = null,
+        ?string $type = null,
+        ?string $error = null
     ) {
         $this->code = $code;
         $this->message = $message;
@@ -59,14 +38,14 @@ class ErrorResponse implements JsonSerializable, ArrayInterface
      * @param array<string, mixed> $response
      * @psalm-param array{code: string|int, message: string, description?: string, type?: string, error?: string} $response
      */
-    public static function createFromArray($response): ErrorResponse
+    public static function createFromArray(array $response): ErrorResponse
     {
         return new self(
             (string) $response['code'],
             $response['message'],
             $response['description'] ?? null,
             $response['type'] ?? null,
-            $response['error'] ?? null
+            $response['error'] ?? null,
         );
     }
 
@@ -80,26 +59,17 @@ class ErrorResponse implements JsonSerializable, ArrayInterface
         return $this->message;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getError()
+    public function getError(): ?string
     {
         return $this->error;
     }

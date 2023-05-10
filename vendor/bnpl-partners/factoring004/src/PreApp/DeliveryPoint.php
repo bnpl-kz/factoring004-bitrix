@@ -8,30 +8,12 @@ use BnplPartners\Factoring004\ArrayInterface;
 
 class DeliveryPoint implements ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $region = '';
-    /**
-     * @var string
-     */
-    private $city = '';
-    /**
-     * @var string
-     */
-    private $district = '';
-    /**
-     * @var string
-     */
-    private $street = '';
-    /**
-     * @var string
-     */
-    private $house = '';
-    /**
-     * @var string
-     */
-    private $flat = '';
+    private string $region = '';
+    private string $city = '';
+    private string $district = '';
+    private string $street = '';
+    private string $house = '';
+    private string $flat = '';
 
     /**
      * @param array<string, string> $deliveryPoint
@@ -44,7 +26,7 @@ class DeliveryPoint implements ArrayInterface
            flat?: string
        } $deliveryPoint
      */
-    public static function createFromArray($deliveryPoint): DeliveryPoint
+    public static function createFromArray(array $deliveryPoint): DeliveryPoint
     {
         $self = new self();
 
@@ -59,55 +41,37 @@ class DeliveryPoint implements ArrayInterface
         return $self;
     }
 
-    /**
-     * @param string $region
-     */
-    public function setRegion($region): DeliveryPoint
+    public function setRegion(string $region): DeliveryPoint
     {
         $this->region = $region;
         return $this;
     }
 
-    /**
-     * @param string $city
-     */
-    public function setCity($city): DeliveryPoint
+    public function setCity(string $city): DeliveryPoint
     {
         $this->city = $city;
         return $this;
     }
 
-    /**
-     * @param string $district
-     */
-    public function setDistrict($district): DeliveryPoint
+    public function setDistrict(string $district): DeliveryPoint
     {
         $this->district = $district;
         return $this;
     }
 
-    /**
-     * @param string $street
-     */
-    public function setStreet($street): DeliveryPoint
+    public function setStreet(string $street): DeliveryPoint
     {
         $this->street = $street;
         return $this;
     }
 
-    /**
-     * @param string $house
-     */
-    public function setHouse($house): DeliveryPoint
+    public function setHouse(string $house): DeliveryPoint
     {
         $this->house = $house;
         return $this;
     }
 
-    /**
-     * @param string $flat
-     */
-    public function setFlat($flat): DeliveryPoint
+    public function setFlat(string $flat): DeliveryPoint
     {
         $this->flat = $flat;
         return $this;

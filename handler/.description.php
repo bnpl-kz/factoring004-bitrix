@@ -1,6 +1,7 @@
 <?php
 
 use Bitrix\Main\Localization\Loc;
+use Bitrix\Main\Application;
 
 if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     exit;
@@ -19,18 +20,21 @@ if ($dbOption) {
 
 $isAvailable = true;
 
+$request = Application::getInstance()->getContext()->getRequest();
+$postlinkHost = $request->getServer()->getRequestScheme() . '://' . $request->getServer()->getHttpHost();
+
 $data = array(
     'NAME' => Loc::getMessage('BNPL_PAYMENT_NAME'),
     'IS_AVAILABLE' => $isAvailable,
     'CODES' => array(
-        'BNPL_PAYMENT_API_OAUTH_PREAPP_TOKEN' => array(
-            'NAME' => 'OAuth Preapp Token',
+        'BNPL_PAYMENT_API_OAUTH_LOGIN' => array(
+            'NAME' => 'OAuth Login',
             'SORT' => 100,
             'GROUP' => 'CREDENTIALS',
         ),
 
-        'BNPL_PAYMENT_API_OAUTH_ACCOUNTING_SERVICE_TOKEN' => array(
-            'NAME' => 'OAuth Accounting Service Token',
+        'BNPL_PAYMENT_API_OAUTH_PASSWORD' => array(
+            'NAME' => 'OAuth Password',
             'SORT' => 200,
             'GROUP' => 'CREDENTIALS',
         ),
@@ -59,28 +63,42 @@ $data = array(
             'GROUP' => 'MERCHANT PARAMETERS',
         ),
 
-        'BNPL_PAYMENT_PARTNER_EMAIL' => array(
-            'NAME' => 'Partner Email',
+        'BNPL_PAYMENT_POSTLINK' => array(
+            'NAME' => 'Postlink URL',
             'SORT' => 700,
             'GROUP' => 'MERCHANT PARAMETERS',
-        ),
-
-        'BNPL_PAYMENT_PARTNER_WEBSITE' => array(
-            'NAME' => 'Partner Website',
-            'SORT' => 800,
-            'GROUP' => 'MERCHANT PARAMETERS',
+            'DEFAULT' => array(
+                'PROVIDER_KEY' => 'INPUT',
+                'PROVIDER_VALUE' => $postlinkHost . '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment'
+            )
         ),
 
         'BNPL_PAYMENT_FILE' => array(
             'NAME' => Loc::getMessage('BNPL_PAYMENT_FILE_NAME'),
             'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_FILE_DESCRIPTION'),
             'SORT' => 1200,
-            'GROUP' => 'ORDER PARAMETERS',
+            'GROUP' => 'CLIENT PARAMETERS',
             'INPUT'   => array(
                 'TYPE' => 'FILE',
             ),
         ),
 
+        'BNPL_PAYMENT_CLIENT_ROUTE' => array(
+            'NAME' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE'),
+            'SORT' => 1250,
+            'GROUP' => 'CLIENT PARAMETERS',
+            'INPUT' => array(
+                'TYPE' => 'ENUM',
+                'OPTIONS' => array(
+                    'redirect' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE_REDIRECT'),
+                    'modal' => Loc::getMessage('BNPL_PAYMENT_CLIENT_ROUTE_MODAL')
+                ),
+            ),
+            'DEFAULT' => array(
+                'PROVIDER_KEY' => 'INPUT',
+                'PROVIDER_VALUE' => 'redirect'
+            )
+        ),
     )
 );
 
