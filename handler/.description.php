@@ -1,6 +1,7 @@
 <?php
 
 use Bitrix\Main\Localization\Loc;
+use Bitrix\Main\Application;
 
 if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     exit;
@@ -18,6 +19,9 @@ if ($dbOption) {
 
 
 $isAvailable = true;
+
+$request = Application::getInstance()->getContext()->getRequest();
+$postlinkHost = $request->getServer()->getRequestScheme() . '://' . $request->getServer()->getHttpHost();
 
 $data = array(
     'NAME' => Loc::getMessage('BNPL_PAYMENT_NAME'),
@@ -57,6 +61,16 @@ $data = array(
             'NAME' => 'Point Code',
             'SORT' => 600,
             'GROUP' => 'MERCHANT PARAMETERS',
+        ),
+
+        'BNPL_PAYMENT_POSTLINK' => array(
+            'NAME' => 'Postlink URL',
+            'SORT' => 700,
+            'GROUP' => 'MERCHANT PARAMETERS',
+            'DEFAULT' => array(
+                'PROVIDER_KEY' => 'INPUT',
+                'PROVIDER_VALUE' => $postlinkHost . '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment'
+            )
         ),
 
         'BNPL_PAYMENT_FILE' => array(
