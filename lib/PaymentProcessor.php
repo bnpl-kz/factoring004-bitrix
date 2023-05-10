@@ -44,7 +44,7 @@ class PaymentProcessor
 
         $preApp = $this->api->preApps->preApp($this->createPreAppMessage($order, $this->extractServerHost($request)));
 
-        if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
+        if ($request->isAjaxRequest()) {
             return (new Json([
                 'redirectLink' => $preApp->getRedirectLink()
             ]));

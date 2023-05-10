@@ -11,12 +11,12 @@ $domain = stripos($url, 'dev') ? 'dev.bnpl.kz' : 'bnpl.kz';
 
 ?>
 
-<form id="form-bnplpayment" action="<?= $action ?>" method="post">
-    <input type="hidden" name="lang" value="<?=LANGUAGE_ID?>">
-    <?=bitrix_sessid_post()?>
-    <input type="hidden" name="order_id" value="<?= $orderId ?>">
-    <button id="button-bnplpayment" class="btn btn-primary"><?= Loc::getMessage('BNPL_PAYMENT_PAY_BUTTON') ?></button>
-</form>
+    <form id="form-bnplpayment" action="<?= $action ?>" method="post">
+        <input type="hidden" name="lang" value="<?=LANGUAGE_ID?>">
+        <?=bitrix_sessid_post()?>
+        <input type="hidden" name="order_id" value="<?= $orderId ?>">
+        <button id="button-bnplpayment" class="btn btn-primary"><?= Loc::getMessage('BNPL_PAYMENT_PAY_BUTTON') ?></button>
+    </form>
 
 <?php
 
@@ -24,46 +24,47 @@ if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
     echo "<div id='modal-bnplpayment'></div>
             <script defer src='https://$domain/widget/index_bundle.js'></script>
             <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    let bnplpaymentForm = $('#form-bnplpayment')
-                    let bnplpaymentButton = $('#button-bnplpayment');
-                    let formData = new FormData()
-                        bnplpaymentForm.submit(function (e) {
+            setTimeout((function () {
+                let bnplpaymentForm = document.getElementById('form-bnplpayment')
+                let bnplpaymentButton = document.getElementById('button-bnplpayment');
+                let sessId = document.getElementById('sessid')
+                let formData = new FormData()
+                bnplpaymentForm.addEventListener('submit', function (e) {
                           e.preventDefault();
                           formData.append('order_id', '$orderId')
-                          formData.append('sessid', $('#sessid').val())
-                          $.ajax({
-                            url: '$action',
-                            type: 'post',
-                            data: formData,
-                            processData: false,
-                            enctype: 'multipart/form-data',
-                            contentType: false,
-                            success: function (res) {
-                                if (res.redirectErrorPage) {
-                                    return window.location.replace(res.redirectErrorPage)
+                          formData.append('sessid', sessId.value)
+                          fetch('$action',{
+                              method: 'POST',
+                              headers: {
+                                  'X-Requested-With': 'XMLHttpRequest'
+                              },
+                              body: formData,
+                          })
+                          .then(response => response.json())
+                          .then((result) => {
+                                if (result.redirectErrorPage) {
+                                    return window.location.replace(result.redirectErrorPage)
                                 }
                                 const bnplKzApi = new BnplKzApi.CPO(
                                 {
                                   rootId: 'modal-bnplpayment',
                                   callbacks: {
-                                    onLoad: () => bnplpaymentButton.attr('disabled', true),
-                                    onError: () => window.location.replace(res.redirectLink),
-                                    onClosed: () => bnplpaymentButton.attr('disabled', false),
+                                    onLoad: () => bnplpaymentButton.setAttribute('disabled', true),
+                                    onError: () => window.location.replace(result.redirectLink),
+                                    onClosed: () => bnplpaymentButton.setAttribute('disabled', false),
                                     onDeclined: () => window.location.replace('/'),
                                     onEnd: () => window.location.replace('/')
                                   }
                                 });
                                 bnplKzApi.render({
-                                    redirectLink: res.redirectLink
+                                    redirectLink: result.redirectLink
                                 });
-                            },
-                            error: function () {
-                                window.location.href = window.location.replace('/')
-                            }
-                          });
+                          })
+                          .catch((err) => {
+                              window.location.href = window.location.replace('/');
+                          })
                     })
-                });
+            }))
             </script>
             ";
 }
