@@ -72,6 +72,15 @@ class PaymentProcessor
     }
 
     /**
+     * @param string $phone
+     * @return string
+     */
+    private function formatPhone($phone)
+    {
+        return str_replace(['(',')','-','+',' '], '', $phone);
+    }
+
+    /**
      * @param string $serverHost
      *
      * @return \BnplPartners\Factoring004\PreApp\PreAppMessage
@@ -103,7 +112,7 @@ class PaymentProcessor
             'itemsQuantity' => array_sum($itemsQuantity),
             'successRedirect' => $serverHost,
             'postLink' => $serverHost . $this->resolvePostLink(),
-            'phoneNumber' => $phone ? $phone->getValue() : null,
+            'phoneNumber' => $phone ? $this->formatPhone($phone->getValue()) : null,
             'deliveryPoint' => [
                 'city' => $city ? $city->getValue() : '',
             ],
