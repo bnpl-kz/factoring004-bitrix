@@ -112,7 +112,7 @@ class PaymentProcessor
             'billAmount' => (int) round($order->getPrice()),
             'itemsQuantity' => array_sum($itemsQuantity),
             'successRedirect' => $serverHost,
-            'postLink' => $serverHost . $this->resolvePostLink(),
+            'postLink' => Config::get('BNPL_PAYMENT_POSTLINK'),
             'phoneNumber' => $phone ? $this->formatPhone($phone->getValue()) : null,
             'deliveryPoint' => [
                 'city' => !empty($cityValue) ? $cityValue : '',
@@ -136,13 +136,5 @@ class PaymentProcessor
     private function extractServerHost(HttpRequest $request)
     {
         return $request->getServer()->getRequestScheme() . '://' . $request->getServer()->getHttpHost();
-    }
-
-    /**
-     * @return string
-     */
-    private function resolvePostLink()
-    {
-        return '/bitrix/tools/sale_ps_result.php?ps=bnpl.payment';
     }
 }
