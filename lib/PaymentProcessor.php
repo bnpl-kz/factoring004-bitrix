@@ -129,4 +129,12 @@ class PaymentProcessor
             }, $order->getBasket()->getBasketItems()),
         ]);
     }
+
+    /**
+     * @return string
+     */
+    private function extractServerHost(HttpRequest $request)
+    {
+        return $request->getServer()->getRequestScheme() . '://' . $request->getServer()->getHttpHost();
+    }
 }
