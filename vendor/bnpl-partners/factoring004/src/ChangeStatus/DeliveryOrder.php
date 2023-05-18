@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 /**
@@ -9,9 +7,16 @@ namespace BnplPartners\Factoring004\ChangeStatus;
  */
 class DeliveryOrder extends AbstractMerchantOrder
 {
-    private int $amount;
+    /**
+     * @var int
+     */
+    private $amount;
 
-    public function __construct(string $orderId, DeliveryStatus $status, int $amount)
+    /**
+     * @param string $orderId
+     * @param int $amount
+     */
+    public function __construct($orderId, DeliveryStatus $status, $amount)
     {
         parent::__construct($orderId, $status);
 
@@ -21,26 +26,34 @@ class DeliveryOrder extends AbstractMerchantOrder
     /**
      * @param array<string, mixed> $order
      * @psalm-param array{orderId: string, status: string, amount: int} $order
+     * @return \BnplPartners\Factoring004\ChangeStatus\DeliveryOrder
      */
-    public static function createFromArray(array $order): DeliveryOrder
+    public static function createFromArray(array $order)
     {
         return new self($order['orderId'], new DeliveryStatus($order['status']), $order['amount']);
     }
 
-    public function getAmount(): int
+    /**
+     * @return int
+     */
+    public function getAmount()
     {
         return $this->amount;
     }
 
-    public function getStatus(): DeliveryStatus
+    /**
+     * @return \BnplPartners\Factoring004\ChangeStatus\DeliveryStatus
+     */
+    public function getStatus()
     {
         return $this->status;
     }
 
     /**
      * @psalm-return array{orderId: string, status: string, amount: int}
+     * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return array_merge(parent::toArray(), [
             'amount' => $this->getAmount(),

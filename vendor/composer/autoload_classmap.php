@@ -12,5 +12,4 @@ return array(
     'Bnpl\\Payment\\PaymentProcessor' => $baseDir . '/lib/PaymentProcessor.php',
     'Bnpl\\Payment\\SimpleDebugLogger' => $baseDir . '/lib/SimpleDebugLogger.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Stringable' => $vendorDir . '/myclabs/php-enum/stubs/Stringable.php',
 );

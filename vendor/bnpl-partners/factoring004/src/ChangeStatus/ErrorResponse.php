@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -12,12 +10,30 @@ use JsonSerializable;
  */
 class ErrorResponse implements JsonSerializable, ArrayInterface
 {
-    private string $code;
-    private string $error;
-    private string $message;
-    private string $merchantOrderId;
+    /**
+     * @var string
+     */
+    private $code;
+    /**
+     * @var string
+     */
+    private $error;
+    /**
+     * @var string
+     */
+    private $message;
+    /**
+     * @var string
+     */
+    private $merchantOrderId;
 
-    public function __construct(string $code, string $error, string $message, string $merchantOrderId = '')
+    /**
+     * @param string $code
+     * @param string $error
+     * @param string $message
+     * @param string $merchantOrderId
+     */
+    public function __construct($code, $error, $message, $merchantOrderId = '')
     {
         $this->code = $code;
         $this->error = $error;
@@ -28,36 +44,50 @@ class ErrorResponse implements JsonSerializable, ArrayInterface
     /**
      * @param array<string, string> $response
      * @psalm-param array{code: string, error: string, message: string, merchantOrderId?: string} $response
+     * @return \BnplPartners\Factoring004\ChangeStatus\ErrorResponse
      */
-    public static function createFromArray(array $response): ErrorResponse
+    public static function createFromArray(array $response)
     {
-        return new self($response['code'], $response['error'], $response['message'], $response['merchantOrderId'] ?? '');
+        return new self($response['code'], $response['error'], $response['message'], isset($response['merchantOrderId']) ? $response['merchantOrderId'] : '');
     }
 
-    public function getCode(): string
+    /**
+     * @return string
+     */
+    public function getCode()
     {
         return $this->code;
     }
 
-    public function getError(): string
+    /**
+     * @return string
+     */
+    public function getError()
     {
         return $this->error;
     }
 
-    public function getMessage(): string
+    /**
+     * @return string
+     */
+    public function getMessage()
     {
         return $this->message;
     }
 
-    public function getMerchantOrderId(): string
+    /**
+     * @return string
+     */
+    public function getMerchantOrderId()
     {
         return $this->merchantOrderId;
     }
 
     /**
      * @psalm-return array{code: string, error: string, message: string, merchantOrderId: string}
+     * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'code' => $this->getCode(),
@@ -70,7 +100,7 @@ class ErrorResponse implements JsonSerializable, ArrayInterface
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

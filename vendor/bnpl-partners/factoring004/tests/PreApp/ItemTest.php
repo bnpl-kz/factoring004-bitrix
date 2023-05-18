@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ItemTest extends TestCase
+class ItemTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new Item('1', 'test', 1, 6000, 8000);
         $actual = Item::createFromArray([
@@ -33,25 +34,34 @@ class ItemTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetItemSum(): void
+    /**
+     * @return void
+     */
+    public function testGetItemSum()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $this->assertEquals(8000, $item->getItemSum());
 
-        $item = new Item('1', 'test', 1, 6000, 10_000);
-        $this->assertEquals(10_000, $item->getItemSum());
+        $item = new Item('1', 'test', 1, 6000, 10000);
+        $this->assertEquals(10000, $item->getItemSum());
     }
 
-    public function testGetItemPrice(): void
+    /**
+     * @return void
+     */
+    public function testGetItemPrice()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $this->assertEquals(6000, $item->getItemPrice());
 
-        $item = new Item('1', 'test', 1, 10_000, 8000);
-        $this->assertEquals(10_000, $item->getItemPrice());
+        $item = new Item('1', 'test', 1, 10000, 8000);
+        $this->assertEquals(10000, $item->getItemPrice());
     }
 
-    public function testGetItemName(): void
+    /**
+     * @return void
+     */
+    public function testGetItemName()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $this->assertEquals('test', $item->getItemName());
@@ -60,7 +70,10 @@ class ItemTest extends TestCase
         $this->assertEquals('name', $item->getItemName());
     }
 
-    public function testGetItemCategory(): void
+    /**
+     * @return void
+     */
+    public function testGetItemCategory()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $this->assertNull($item->getItemCategory());
@@ -70,7 +83,10 @@ class ItemTest extends TestCase
         $this->assertEquals('100', $item->getItemCategory());
     }
 
-    public function testGetItemQuantity(): void
+    /**
+     * @return void
+     */
+    public function testGetItemQuantity()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $this->assertEquals(1, $item->getItemQuantity());
@@ -79,7 +95,10 @@ class ItemTest extends TestCase
         $this->assertEquals(10, $item->getItemQuantity());
     }
 
-    public function testGetItemId(): void
+    /**
+     * @return void
+     */
+    public function testGetItemId()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $this->assertEquals('1', $item->getItemId());
@@ -88,7 +107,10 @@ class ItemTest extends TestCase
         $this->assertEquals('100', $item->getItemId());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $item = new Item('1', 'test', 1, 6000, 8000);
         $expected = [

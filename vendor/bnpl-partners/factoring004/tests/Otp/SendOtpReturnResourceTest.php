@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
@@ -15,15 +13,17 @@ class SendOtpReturnResourceTest extends AbstractResourceTest
      * @testWith [0]
      *           [6000]
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
+     * @param int $amount
      */
-    public function testSendOtpReturn(int $amount): void
+    public function testSendOtpReturn($amount)
     {
         $otp = new SendOtpReturn($amount, '1', '100');
 
         $transport = $this->createMock(TransportInterface::class);
         $transport->expects($this->once())
             ->method('request')
-            ->with('POST', '/accounting/v1/private/sendOtpReturn', $otp->toArray(), [])
+            ->with('POST', '/accounting/v1/sendOtpReturn', $otp->toArray(), [])
             ->willReturn(new Response(200, [], ['msg' => 'OK']));
 
         $resource = new OtpResource($transport, static::BASE_URI);
@@ -32,7 +32,10 @@ class SendOtpReturnResourceTest extends AbstractResourceTest
         $this->assertEquals(new DtoOtp('OK'), $response);
     }
 
-    protected function callResourceMethod(ClientInterface $client): void
+    /**
+     * @return void
+     */
+    protected function callResourceMethod(ClientInterface $client)
     {
         $resource = new OtpResource($this->createTransport($client), static::BASE_URI);
         $resource->sendOtpReturn(new SendOtpReturn(0, '1', '100'));

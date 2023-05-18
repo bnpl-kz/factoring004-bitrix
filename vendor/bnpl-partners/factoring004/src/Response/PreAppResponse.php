@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Response;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -13,11 +11,24 @@ use JsonSerializable;
  */
 class PreAppResponse implements JsonSerializable, ArrayInterface
 {
-    private Status $status;
-    private string $preAppId;
-    private string $redirectLink;
+    /**
+     * @var \BnplPartners\Factoring004\PreApp\Status
+     */
+    private $status;
+    /**
+     * @var string
+     */
+    private $preAppId;
+    /**
+     * @var string
+     */
+    private $redirectLink;
 
-    public function __construct(Status $status, string $preAppId, string $redirectLink)
+    /**
+     * @param string $preAppId
+     * @param string $redirectLink
+     */
+    public function __construct(Status $status, $preAppId, $redirectLink)
     {
         $this->status = $status;
         $this->preAppId = $preAppId;
@@ -27,23 +38,33 @@ class PreAppResponse implements JsonSerializable, ArrayInterface
     /**
      * @param array<string, mixed> $data
      * @psalm-param array{status: string, preappId: string, redirectLink: string} $data
+     * @return \BnplPartners\Factoring004\Response\PreAppResponse
      */
-    public static function createFromArray(array $data): PreAppResponse
+    public static function createFromArray(array $data)
     {
         return new self(new Status($data['status']), $data['preappId'], $data['redirectLink']);
     }
 
-    public function getStatus(): Status
+    /**
+     * @return \BnplPartners\Factoring004\PreApp\Status
+     */
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function getPreAppId(): string
+    /**
+     * @return string
+     */
+    public function getPreAppId()
     {
         return $this->preAppId;
     }
 
-    public function getRedirectLink(): string
+    /**
+     * @return string
+     */
+    public function getRedirectLink()
     {
         return $this->redirectLink;
     }
@@ -52,7 +73,7 @@ class PreAppResponse implements JsonSerializable, ArrayInterface
      * @return array<string, string>
      * @psalm-return array{status: string, preappId: string, redirectLink: string}
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'status' => (string) $this->getStatus()->getValue(),
@@ -64,7 +85,7 @@ class PreAppResponse implements JsonSerializable, ArrayInterface
     /**
      * @return array<string, mixed>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

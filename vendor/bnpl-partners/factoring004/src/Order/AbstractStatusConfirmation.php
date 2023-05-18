@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder;
@@ -10,18 +8,38 @@ use BnplPartners\Factoring004\Otp\OtpResource;
 
 abstract class AbstractStatusConfirmation implements StatusConfirmationInterface
 {
-    protected OtpResource $otpResource;
-    protected ChangeStatusResource $changeStatusResource;
-    protected string $merchantId;
-    protected string $orderId;
-    protected int $amount;
+    /**
+     * @var \BnplPartners\Factoring004\Otp\OtpResource
+     */
+    protected $otpResource;
+    /**
+     * @var \BnplPartners\Factoring004\ChangeStatus\ChangeStatusResource
+     */
+    protected $changeStatusResource;
+    /**
+     * @var string
+     */
+    protected $merchantId;
+    /**
+     * @var string
+     */
+    protected $orderId;
+    /**
+     * @var int
+     */
+    protected $amount;
 
+    /**
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     */
     public function __construct(
         OtpResource $otpResource,
         ChangeStatusResource $changeStatusResource,
-        string $merchantId,
-        string $orderId,
-        int $amount
+        $merchantId,
+        $orderId,
+        $amount
     ) {
         $this->otpResource = $otpResource;
         $this->changeStatusResource = $changeStatusResource;
@@ -30,7 +48,10 @@ abstract class AbstractStatusConfirmation implements StatusConfirmationInterface
         $this->amount = $amount;
     }
 
-    public function confirmWithoutOtp(): StatusConfirmationResponse
+    /**
+     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
+     */
+    public function confirmWithoutOtp()
     {
         return StatusConfirmationResponse::create(
             ChangeStatusCaller::create($this->changeStatusResource, $this->merchantId)
@@ -39,5 +60,8 @@ abstract class AbstractStatusConfirmation implements StatusConfirmationInterface
         );
     }
 
-    abstract protected function getMerchantOrder(): AbstractMerchantOrder;
+    /**
+     * @return \BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder
+     */
+    abstract protected function getMerchantOrder();
 }

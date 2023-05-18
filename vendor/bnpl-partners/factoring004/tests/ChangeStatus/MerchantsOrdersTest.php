@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class MerchantsOrdersTest extends TestCase
+class MerchantsOrdersTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new MerchantsOrders('1', [new CancelOrder('1000', CancelStatus::CANCEL())]);
         $actual = MerchantsOrders::createFromArray([
@@ -24,24 +25,30 @@ class MerchantsOrdersTest extends TestCase
         ]);
         $this->assertEquals($expected, $actual);
 
-        $expected = new MerchantsOrders('1', [new ReturnOrder('1000', ReturnStatus::RETURN(), 6000)]);
+        $expected = new MerchantsOrders('1', [new ReturnOrder('1000', ReturnStatus::RE_TURN(), 6000)]);
         $actual = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
         ]);
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetMerchantId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantId()
     {
         $merchantOrders = new MerchantsOrders('1', [new DeliveryOrder('1000', DeliveryStatus::DELIVERY(), 6000)]);
         $this->assertEquals('1', $merchantOrders->getMerchantId());
 
-        $merchantOrders = new MerchantsOrders('100', [new ReturnOrder('1000', ReturnStatus::RETURN(), 6000)]);
+        $merchantOrders = new MerchantsOrders('100', [new ReturnOrder('1000', ReturnStatus::RE_TURN(), 6000)]);
         $this->assertEquals('100', $merchantOrders->getMerchantId());
     }
 
-    public function testGetOrders(): void
+    /**
+     * @return void
+     */
+    public function testGetOrders()
     {
         $merchantOrders = new MerchantsOrders('1', []);
         $this->assertEmpty($merchantOrders->getOrders());
@@ -54,32 +61,39 @@ class MerchantsOrdersTest extends TestCase
         $this->assertEquals($orders, $merchantOrders->getOrders());
 
         $orders = [
-            new ReturnOrder('1000', ReturnStatus::RETURN(), 6000),
-            new ReturnOrder('2000', ReturnStatus::PARTRETURN(), 10_000),
+            new ReturnOrder('1000', ReturnStatus::RE_TURN(), 6000),
+            new ReturnOrder('2000', ReturnStatus::PARTRETURN(), 10000),
         ];
         $merchantOrders = new MerchantsOrders('100', $orders);
         $this->assertEquals($orders, $merchantOrders->getOrders());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $orders = [new DeliveryOrder('1000', DeliveryStatus::DELIVERY(), 6000)];
         $merchantOrders = new MerchantsOrders('1', $orders);
         $expected = [
             'merchantId' => '1',
-            'orders' => array_map(fn(AbstractMerchantOrder $order) => $order->toArray(), $orders),
+            'orders' => array_map(function (AbstractMerchantOrder $order) {
+                return $order->toArray();
+            }, $orders),
         ];
 
         $this->assertEquals($expected, $merchantOrders->toArray());
 
         $orders = [
-            new ReturnOrder('1000', ReturnStatus::RETURN(), 6000),
-            new ReturnOrder('2000', ReturnStatus::PARTRETURN(), 10_000),
+            new ReturnOrder('1000', ReturnStatus::RE_TURN(), 6000),
+            new ReturnOrder('2000', ReturnStatus::PARTRETURN(), 10000),
         ];
         $merchantOrders = new MerchantsOrders('100', $orders);
         $expected = [
             'merchantId' => '100',
-            'orders' => array_map(fn(AbstractMerchantOrder $order) => $order->toArray(), $orders),
+            'orders' => array_map(function (AbstractMerchantOrder $order) {
+                return $order->toArray();
+            }, $orders),
         ];
 
         $this->assertEquals($expected, $merchantOrders->toArray());

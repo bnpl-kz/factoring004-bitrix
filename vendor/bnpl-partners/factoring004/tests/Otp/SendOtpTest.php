@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class SendOtpTest extends TestCase
+class SendOtpTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new SendOtp('test', '1000', 6000);
         $actual = SendOtp::createFromArray(['merchantId' => 'test', 'merchantOrderId' => '1000', 'amount' => 6000]);
@@ -16,7 +17,10 @@ class SendOtpTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetMerchantId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantId()
     {
         $sendOtp = new SendOtp('test', '1000', 6000);
         $this->assertEquals('test', $sendOtp->getMerchantId());
@@ -25,7 +29,10 @@ class SendOtpTest extends TestCase
         $this->assertEquals('other', $sendOtp->getMerchantId());
     }
 
-    public function testGetMerchantOrderId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantOrderId()
     {
         $sendOtp = new SendOtp('test', '1000', 6000);
         $this->assertEquals('1000', $sendOtp->getMerchantOrderId());
@@ -34,7 +41,10 @@ class SendOtpTest extends TestCase
         $this->assertEquals('2000', $sendOtp->getMerchantOrderId());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $sendOtp = new SendOtp('test', '1000', 6000);
         $expected = ['merchantId' => 'test', 'merchantOrderId' => '1000', 'amount' => 6000];

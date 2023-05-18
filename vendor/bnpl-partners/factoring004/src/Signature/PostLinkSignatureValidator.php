@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Signature;
 
 use BnplPartners\Factoring004\Exception\InvalidSignatureException;
@@ -11,17 +9,29 @@ use BnplPartners\Factoring004\Exception\InvalidSignatureException;
  */
 class PostLinkSignatureValidator
 {
-    private PostLinkSignatureCalculator $calculator;
+    /**
+     * @var \BnplPartners\Factoring004\Signature\PostLinkSignatureCalculator
+     */
+    private $calculator;
 
-    public function __construct(string $secretKey, ?PostLinkSignatureCalculator $calculator = null)
+    /**
+     * @param string $secretKey
+     * @param \BnplPartners\Factoring004\Signature\PostLinkSignatureCalculator|null $calculator
+     */
+    public function __construct($secretKey, PostLinkSignatureCalculator $calculator = null)
     {
-        $this->calculator = $calculator ?? PostLinkSignatureCalculator::create($secretKey);
+        $this->calculator = isset($calculator) ? $calculator : PostLinkSignatureCalculator::create($secretKey);
     }
 
+    /**
+     * @param string $secretKey
+     * @return \BnplPartners\Factoring004\Signature\PostLinkSignatureValidator
+     * @param \BnplPartners\Factoring004\Signature\PostLinkSignatureCalculator|null $calculator
+     */
     public static function create(
-        string $secretKey,
-        ?PostLinkSignatureCalculator $calculator = null
-    ): PostLinkSignatureValidator {
+        $secretKey,
+        PostLinkSignatureCalculator $calculator = null
+    ) {
         return new self($secretKey, $calculator);
     }
 
@@ -32,8 +42,10 @@ class PostLinkSignatureValidator
      * @psalm-param array{status: string, billNumber: string, preappId: string, scoring?: int} $data
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
+     * @return void
+     * @param string $knownHash
      */
-    public function validate(array $data, string $knownHash): void
+    public function validate(array $data, $knownHash)
     {
         $hash = $this->calculator->calculate($data);
 
@@ -49,8 +61,10 @@ class PostLinkSignatureValidator
      * @psalm-param array{status: string, billNumber: string, preappId: string, signature?: string, scoring?: int} $data
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
+     * @return void
+     * @param string $signatureKeyName
      */
-    public function validateData(array $data, string $signatureKeyName = 'signature'): void
+    public function validateData(array $data, $signatureKeyName = 'signature')
     {
         if (empty($data[$signatureKeyName])) {
             throw new InvalidSignatureException('Known signature not found');

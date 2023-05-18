@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
-use MyCLabs\Enum\Enum;
+use BnplPartners\Factoring004\AbstractEnum;
 
 /**
  * @method static static RECEIVED()
@@ -12,8 +10,8 @@ use MyCLabs\Enum\Enum;
  *
  * @psalm-immutable
  */
-final class Status extends Enum
+final class Status extends AbstractEnum
 {
-    private const RECEIVED = 'received';
-    private const ERROR = 'error';
+    const RECEIVED = 'received';
+    const ERROR = 'error';
 }

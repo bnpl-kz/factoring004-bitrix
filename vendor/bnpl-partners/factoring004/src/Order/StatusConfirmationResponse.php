@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -12,19 +10,32 @@ use JsonSerializable;
  */
 class StatusConfirmationResponse implements ArrayInterface, JsonSerializable
 {
-    private string $message;
+    /**
+     * @var string
+     */
+    private $message;
 
-    public function __construct(string $message)
+    /**
+     * @param string $message
+     */
+    public function __construct($message)
     {
         $this->message = $message;
     }
 
-    public static function create(string $message): StatusConfirmationResponse
+    /**
+     * @param string $message
+     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
+     */
+    public static function create($message)
     {
         return new self($message);
     }
 
-    public function getMessage(): string
+    /**
+     * @return string
+     */
+    public function getMessage()
     {
         return $this->message;
     }
@@ -33,7 +44,7 @@ class StatusConfirmationResponse implements ArrayInterface, JsonSerializable
      * @return array<string, string>
      * @psalm-return array{message: string}
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'message' => $this->getMessage(),
@@ -43,7 +54,7 @@ class StatusConfirmationResponse implements ArrayInterface, JsonSerializable
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Transport;
 
 use BnplPartners\Factoring004\Exception\NetworkException;
@@ -21,31 +19,52 @@ use Psr\Http\Message\UriInterface;
 
 class GuzzleTransport extends AbstractTransport
 {
-    private ClientInterface $client;
+    /**
+     * @var \GuzzleHttp\ClientInterface
+     */
+    private $client;
 
-    public function __construct(?ClientInterface $client = null)
+    /**
+     * @param \GuzzleHttp\ClientInterface|null $client
+     */
+    public function __construct(ClientInterface $client = null)
     {
         parent::__construct();
 
-        $this->client = $client ?? new Client();
+        $this->client = isset($client) ? $client : new Client();
     }
 
-    protected function createRequest(string $method, UriInterface $uri): RequestInterface
+    /**
+     * @param string $method
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    protected function createRequest($method, UriInterface $uri)
     {
         return new Request($method, $uri);
     }
 
-    protected function createStream(string $content): StreamInterface
+    /**
+     * @param string $content
+     * @return \Psr\Http\Message\StreamInterface
+     */
+    protected function createStream($content)
     {
         return Utils::streamFor($content);
     }
 
-    protected function createUri(string $uri): UriInterface
+    /**
+     * @param string $uri
+     * @return \Psr\Http\Message\UriInterface
+     */
+    protected function createUri($uri)
     {
         return new Uri($uri);
     }
 
-    protected function sendRequest(RequestInterface $request): PsrResponseInterface
+    /**
+     * @return PsrResponseInterface
+     */
+    protected function sendRequest(RequestInterface $request)
     {
         try {
             return $this->client->send($request);

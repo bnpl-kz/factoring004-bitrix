@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class SendOtpReturnTest extends TestCase
+class SendOtpReturnTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new SendOtpReturn(0, 'test', '1000');
         $actual = SendOtpReturn::createFromArray(['amountAR' => 0, 'merchantId' => 'test', 'merchantOrderId' => '1000']);
@@ -16,7 +17,10 @@ class SendOtpReturnTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetAmountAr(): void
+    /**
+     * @return void
+     */
+    public function testGetAmountAr()
     {
         $SendOtpReturn = new SendOtpReturn(0, 'test', '1000');
         $this->assertEquals(0, $SendOtpReturn->getAmountAr());
@@ -25,7 +29,10 @@ class SendOtpReturnTest extends TestCase
         $this->assertEquals(6000, $SendOtpReturn->getAmountAr());
     }
 
-    public function testGetMerchantId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantId()
     {
         $SendOtpReturn = new SendOtpReturn(0, 'test', '1000');
         $this->assertEquals('test', $SendOtpReturn->getMerchantId());
@@ -34,7 +41,10 @@ class SendOtpReturnTest extends TestCase
         $this->assertEquals('other', $SendOtpReturn->getMerchantId());
     }
 
-    public function testGetMerchantOrderId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantOrderId()
     {
         $SendOtpReturn = new SendOtpReturn(0, 'test', '1000');
         $this->assertEquals('1000', $SendOtpReturn->getMerchantOrderId());
@@ -43,7 +53,10 @@ class SendOtpReturnTest extends TestCase
         $this->assertEquals('2000', $SendOtpReturn->getMerchantOrderId());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $SendOtpReturn = new SendOtpReturn(0, 'test', '1000');
         $expected = ['amountAR' => 0, 'merchantId' => 'test', 'merchantOrderId' => '1000'];

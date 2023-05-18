@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Transport;
 
 use BnplPartners\Factoring004\Auth\AuthenticationInterface;
@@ -14,20 +12,24 @@ interface TransportInterface extends LoggerAwareInterface
 {
     /**
      * Base URI of endpoints.
+     * @param string $uri
+     * @return \BnplPartners\Factoring004\Transport\TransportInterface
      */
-    public function setBaseUri(string $uri): TransportInterface;
+    public function setBaseUri($uri);
 
     /**
      * Sets global HTTP headers. Content-Type, User-Agent etc.
      *
      * @param array<string, string> $headers
+     * @return \BnplPartners\Factoring004\Transport\TransportInterface
      */
-    public function setHeaders(array $headers): TransportInterface;
+    public function setHeaders(array $headers);
 
     /**
      * Sets authentication method.
+     * @return \BnplPartners\Factoring004\Transport\TransportInterface
      */
-    public function setAuthentication(AuthenticationInterface $authentication): TransportInterface;
+    public function setAuthentication(AuthenticationInterface $authentication);
 
     /**
      * Sends HTTP GET request to the endpoint.
@@ -42,7 +44,7 @@ interface TransportInterface extends LoggerAwareInterface
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      */
-    public function get(string $path, array $query = [], array $headers = []): ResponseInterface;
+    public function get($path, array $query = [], array $headers = []);
 
     /**
      * Sends HTTP POST request to the endpoint.
@@ -57,7 +59,7 @@ interface TransportInterface extends LoggerAwareInterface
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      */
-    public function post(string $path, array $data = [], array $headers = []): ResponseInterface;
+    public function post($path, array $data = [], array $headers = []);
 
     /**
      * Sends HTTP request using method and parameters.
@@ -73,5 +75,5 @@ interface TransportInterface extends LoggerAwareInterface
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      */
-    public function request(string $method, string $path, array $data = [], array $headers = []): ResponseInterface;
+    public function request($method, $path, array $data = [], array $headers = []);
 }

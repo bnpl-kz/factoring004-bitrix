@@ -1,15 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class PartnerDataTest extends TestCase
+class PartnerDataTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new PartnerData('a', 'b', 'c');
         $actual = PartnerData::createFromArray([
@@ -54,15 +55,19 @@ class PartnerDataTest extends TestCase
      * @param array<string, string> $partnerData
      *
      * @dataProvider invalidArraysProvider
+     * @return void
      */
-    public function testCreateFromArrayFailed(array $partnerData): void
+    public function testCreateFromArrayFailed(array $partnerData)
     {
         $this->expectException(InvalidArgumentException::class);
 
         PartnerData::createFromArray($partnerData);
     }
 
-    public function testGetPartnerName(): void
+    /**
+     * @return void
+     */
+    public function testGetPartnerName()
     {
         $partnerData = new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com');
         $this->assertEquals('a', $partnerData->getPartnerName());
@@ -71,7 +76,10 @@ class PartnerDataTest extends TestCase
         $this->assertEquals('test', $partnerData->getPartnerName());
     }
 
-    public function testGetPointCode(): void
+    /**
+     * @return void
+     */
+    public function testGetPointCode()
     {
         $partnerData = new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com');
         $this->assertEquals('c', $partnerData->getPointCode());
@@ -80,7 +88,10 @@ class PartnerDataTest extends TestCase
         $this->assertEquals('test', $partnerData->getPointCode());
     }
 
-    public function testGetPartnerCode(): void
+    /**
+     * @return void
+     */
+    public function testGetPartnerCode()
     {
         $partnerData = new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com');
         $this->assertEquals('b', $partnerData->getPartnerCode());
@@ -89,7 +100,10 @@ class PartnerDataTest extends TestCase
         $this->assertEquals('test', $partnerData->getPartnerCode());
     }
 
-    public function testGetPartnerEmail(): void
+    /**
+     * @return void
+     */
+    public function testGetPartnerEmail()
     {
         $partnerData = new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com');
         $this->assertEquals('test@example.com', $partnerData->getPartnerEmail());
@@ -104,7 +118,10 @@ class PartnerDataTest extends TestCase
         $this->assertNull($partnerData->getPartnerEmail());
     }
 
-    public function testGetPartnerWebsite(): void
+    /**
+     * @return void
+     */
+    public function testGetPartnerWebsite()
     {
         $partnerData = new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com');
         $this->assertEquals('http://example.com', $partnerData->getPartnerWebsite());
@@ -119,7 +136,10 @@ class PartnerDataTest extends TestCase
         $this->assertNull($partnerData->getPartnerWebsite());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $partnerData = new PartnerData('a', 'b', 'c', 'test@example.com', 'http://example.com');
         $expected = [
@@ -160,7 +180,10 @@ class PartnerDataTest extends TestCase
         $this->assertEquals($expected, $partnerData->toArray());
     }
 
-    public function invalidArraysProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function invalidArraysProvider()
     {
         return [
             [[]],

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Transport;
 
 use BnplPartners\Factoring004\Exception\NetworkException;
@@ -19,10 +17,22 @@ use Psr\Http\Message\UriInterface;
 
 class PsrTransport extends AbstractTransport
 {
-    private RequestFactoryInterface $requestFactory;
-    private StreamFactoryInterface $streamFactory;
-    private UriFactoryInterface $uriFactory;
-    private ClientInterface $client;
+    /**
+     * @var \Psr\Http\Message\RequestFactoryInterface
+     */
+    private $requestFactory;
+    /**
+     * @var \Psr\Http\Message\StreamFactoryInterface
+     */
+    private $streamFactory;
+    /**
+     * @var \Psr\Http\Message\UriFactoryInterface
+     */
+    private $uriFactory;
+    /**
+     * @var \Psr\Http\Client\ClientInterface
+     */
+    private $client;
 
     /**
      * @param \Psr\Http\Message\RequestFactoryInterface $requestFactory
@@ -44,22 +54,37 @@ class PsrTransport extends AbstractTransport
         $this->client = $client;
     }
 
-    protected function createRequest(string $method, UriInterface $uri): RequestInterface
+    /**
+     * @param string $method
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    protected function createRequest($method, UriInterface $uri)
     {
         return $this->requestFactory->createRequest($method, $uri);
     }
 
-    protected function createStream(string $content): StreamInterface
+    /**
+     * @param string $content
+     * @return \Psr\Http\Message\StreamInterface
+     */
+    protected function createStream($content)
     {
         return $this->streamFactory->createStream($content);
     }
 
-    protected function createUri(string $uri): UriInterface
+    /**
+     * @param string $uri
+     * @return \Psr\Http\Message\UriInterface
+     */
+    protected function createUri($uri)
     {
         return $this->uriFactory->createUri($uri);
     }
 
-    protected function sendRequest(RequestInterface $request): PsrResponseInterface
+    /**
+     * @return PsrResponseInterface
+     */
+    protected function sendRequest(RequestInterface $request)
     {
         try {
             return $this->client->sendRequest($request);

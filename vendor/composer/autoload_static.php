@@ -34,7 +34,6 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         'B' => 
         array (
             'BnplPartners\\Factoring004\\' => 26,
-            'BnplPartners\\Factoring004RectorRules\\' => 37,
         ),
     );
 
@@ -49,8 +48,8 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -76,10 +75,6 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         array (
             0 => __DIR__ . '/..' . '/bnpl-partners/factoring004/src',
         ),
-        'BnplPartners\\Factoring004RectorRules\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/bnpl-partners/factoring004/rector/rules',
-        ),
     );
 
     public static $classMap = array (
@@ -89,7 +84,6 @@ class ComposerStaticInitaf60407a44b5dd9e433a4a44069b783a
         'Bnpl\\Payment\\PaymentProcessor' => __DIR__ . '/../..' . '/lib/PaymentProcessor.php',
         'Bnpl\\Payment\\SimpleDebugLogger' => __DIR__ . '/../..' . '/lib/SimpleDebugLogger.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
