@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Transport;
 
 use BnplPartners\Factoring004\Exception\DataSerializationException;
@@ -13,23 +11,27 @@ use Psr\Http\Message\ResponseInterface as PsrResponse;
  */
 class Response implements ResponseInterface
 {
-    private int $statusCode;
+    /**
+     * @var int
+     */
+    private $statusCode;
 
     /**
      * @var array<string, string>
      */
-    private array $headers;
+    private $headers;
 
     /**
      * @var array<array-key, T>
      */
-    private array $body;
+    private $body;
 
     /**
      * @param array<string, string> $headers
      * @param array<array-key, T> $body
+     * @param int $statusCode
      */
-    public function __construct(int $statusCode, array $headers, array $body = [])
+    public function __construct($statusCode, array $headers, array $body = [])
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
@@ -38,8 +40,9 @@ class Response implements ResponseInterface
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\DataSerializationException
+     * @return \BnplPartners\Factoring004\Transport\Response
      */
-    public static function createFromPsrResponse(PsrResponse $response): Response
+    public static function createFromPsrResponse(PsrResponse $response)
     {
         $content = (string) $response->getBody();
         $data = [];
@@ -52,24 +55,31 @@ class Response implements ResponseInterface
             }
         }
 
-        return new self(
-            $response->getStatusCode(),
-            array_map(fn(array $values) => implode(', ', $values), $response->getHeaders()),
-            $data,
-        );
+        return new self($response->getStatusCode(), array_map(function (array $values) {
+            return implode(', ', $values);
+        }, $response->getHeaders()), $data);
     }
 
-    public function getStatusCode(): int
+    /**
+     * @return int
+     */
+    public function getStatusCode()
     {
         return $this->statusCode;
     }
 
-    public function getHeaders(): array
+    /**
+     * @return mixed[]
+     */
+    public function getHeaders()
     {
         return $this->headers;
     }
 
-    public function getBody(): array
+    /**
+     * @return mixed[]
+     */
+    public function getBody()
     {
         return $this->body;
     }

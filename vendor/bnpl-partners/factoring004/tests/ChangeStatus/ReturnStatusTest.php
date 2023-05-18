@@ -1,19 +1,23 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ReturnStatusTest extends TestCase
+class ReturnStatusTest extends AbstractTestCase
 {
-    public function testRETURN(): void
+    /**
+     * @return void
+     */
+    public function testRETURN()
     {
-        $this->assertEquals(ReturnStatus::RETURN(), ReturnStatus::from('return'));
+        $this->assertEquals(ReturnStatus::RE_TURN(), ReturnStatus::from('return'));
     }
 
-    public function testPARTRETURN(): void
+    /**
+     * @return void
+     */
+    public function testPARTRETURN()
     {
         $this->assertEquals(ReturnStatus::PARTRETURN(), ReturnStatus::from('part_return'));
     }

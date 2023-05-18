@@ -6,10 +6,14 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Bnpl\\Payment\\AbstractManager' => $baseDir . '/lib/AbstractManager.php',
     'Bnpl\\Payment\\AuthTokenManager' => $baseDir . '/lib/AuthTokenManager.php',
     'Bnpl\\Payment\\BitrixSimpleCache' => $baseDir . '/lib/BitrixSimpleCache.php',
     'Bnpl\\Payment\\Config' => $baseDir . '/lib/Config.php',
     'Bnpl\\Payment\\DebugLoggerFactory' => $baseDir . '/lib/DebugLoggerFactory.php',
+    'Bnpl\\Payment\\DeliveryAmountException' => $baseDir . '/lib/DeliveryAmountException.php',
+    'Bnpl\\Payment\\DeliveryManager' => $baseDir . '/lib/DeliveryManager.php',
+    'Bnpl\\Payment\\DeliveryManagerException' => $baseDir . '/lib/DeliveryManagerException.php',
     'Bnpl\\Payment\\EmptyBasketItemsException' => $baseDir . '/lib/EmptyBasketItemsException.php',
     'Bnpl\\Payment\\PartialRefundManager' => $baseDir . '/lib/PartialRefundManager.php',
     'Bnpl\\Payment\\PartialRefundManagerException' => $baseDir . '/lib/PartialRefundManagerException.php',
@@ -17,5 +21,4 @@ return array(
     'Bnpl\\Payment\\PaymentScheduleAsset' => $baseDir . '/lib/PaymentScheduleAsset.php',
     'Bnpl\\Payment\\SimpleDebugLogger' => $baseDir . '/lib/SimpleDebugLogger.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Stringable' => $vendorDir . '/myclabs/php-enum/stubs/Stringable.php',
 );

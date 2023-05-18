@@ -1,15 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Signature;
 
 use BnplPartners\Factoring004\Exception\InvalidSignatureException;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class PostLinkSignatureValidatorTest extends TestCase
+class PostLinkSignatureValidatorTest extends AbstractTestCase
 {
-    public function testCreate(): void
+    /**
+     * @return void
+     */
+    public function testCreate()
     {
         $expected = new PostLinkSignatureValidator('test');
         $actual = PostLinkSignatureValidator::create('test');
@@ -26,8 +27,10 @@ class PostLinkSignatureValidatorTest extends TestCase
      * @dataProvider dataProvider
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
+     * @return void
+     * @param string $key
      */
-    public function testValidate(string $key, array $data): void
+    public function testValidate($key, array $data)
     {
         $validator = new PostLinkSignatureValidator($key);
         $hash = PostLinkSignatureCalculator::create($key)->calculate($data);
@@ -42,8 +45,11 @@ class PostLinkSignatureValidatorTest extends TestCase
      * @dataProvider validationDataProvider
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
+     * @return void
+     * @param string $key
+     * @param string $signatureKeyName
      */
-    public function testValidateData(string $key, array $data, string $signatureKeyName): void
+    public function testValidateData($key, array $data, $signatureKeyName)
     {
         $validator = new PostLinkSignatureValidator($key);
         $hash = PostLinkSignatureCalculator::create($key)->calculate($data);
@@ -58,8 +64,10 @@ class PostLinkSignatureValidatorTest extends TestCase
      * @dataProvider differentSignatureKeyNamesProvider
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
+     * @return void
+     * @param string $signatureKeyName
      */
-    public function testValidateDataWithOtherSignatureKeyName(string $signatureKeyName, array $data): void
+    public function testValidateDataWithOtherSignatureKeyName($signatureKeyName, array $data)
     {
         $key = 'test';
         $validator = new PostLinkSignatureValidator($key);
@@ -76,8 +84,10 @@ class PostLinkSignatureValidatorTest extends TestCase
      * @dataProvider dataProvider
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
+     * @return void
+     * @param string $key
      */
-    public function testInvalidSignature(string $key, array $data): void
+    public function testInvalidSignature($key, array $data)
     {
         $validator = new PostLinkSignatureValidator($key);
         $hash = PostLinkSignatureCalculator::create('otherKey')->calculate($data);
@@ -87,7 +97,10 @@ class PostLinkSignatureValidatorTest extends TestCase
         $validator->validate($data, $hash);
     }
 
-    public function dataProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function dataProvider()
     {
         return [
             ['test', ['status' => 'preapproved', 'billNumber' => '100', 'preappId' => 'test', 'scoring' => 100]],
@@ -118,7 +131,10 @@ class PostLinkSignatureValidatorTest extends TestCase
         ];
     }
 
-    public function validationDataProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function validationDataProvider()
     {
         $result = [];
         $keys = ['signature', 'hash'];
@@ -133,7 +149,10 @@ class PostLinkSignatureValidatorTest extends TestCase
         return $result;
     }
 
-    public function differentSignatureKeyNamesProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function differentSignatureKeyNamesProvider()
     {
         return [
             ['signature', ['status' => 'preapproved', 'billNumber' => '100', 'preappId' => 'test']],

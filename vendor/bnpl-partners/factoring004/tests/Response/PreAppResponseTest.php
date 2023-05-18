@@ -1,15 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Response;
 
 use BnplPartners\Factoring004\PreApp\Status;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class PreAppResponseTest extends TestCase
+class PreAppResponseTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new PreAppResponse(Status::RECEIVED(), 'id-1', 'http://example.com');
         $actual = PreAppResponse::createFromArray([
@@ -21,7 +22,10 @@ class PreAppResponseTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetStatus(): void
+    /**
+     * @return void
+     */
+    public function testGetStatus()
     {
         $response = new PreAppResponse(Status::RECEIVED(), 'id-1', 'http://example.com');
         $this->assertEquals(Status::RECEIVED(), $response->getStatus());
@@ -30,7 +34,10 @@ class PreAppResponseTest extends TestCase
         $this->assertEquals(Status::ERROR(), $response->getStatus());
     }
 
-    public function testGetRedirectLink(): void
+    /**
+     * @return void
+     */
+    public function testGetRedirectLink()
     {
         $response = new PreAppResponse(Status::RECEIVED(), 'id-1', 'http://example.com');
         $this->assertEquals('http://example.com', $response->getRedirectLink());
@@ -39,7 +46,10 @@ class PreAppResponseTest extends TestCase
         $this->assertEquals('http://example.org', $response->getRedirectLink());
     }
 
-    public function testGetPreAppId(): void
+    /**
+     * @return void
+     */
+    public function testGetPreAppId()
     {
         $response = new PreAppResponse(Status::RECEIVED(), 'id-1', 'http://example.com');
         $this->assertEquals('id-1', $response->getPreAppId());
@@ -48,7 +58,10 @@ class PreAppResponseTest extends TestCase
         $this->assertEquals('id-2', $response->getPreAppId());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $response = new PreAppResponse(Status::RECEIVED(), 'id-1', 'http://example.com');
         $expected = [
@@ -69,7 +82,10 @@ class PreAppResponseTest extends TestCase
         $this->assertEquals($expected, $response->toArray());
     }
 
-    public function testJsonSerialize(): void
+    /**
+     * @return void
+     */
+    public function testJsonSerialize()
     {
         $response = new PreAppResponse(Status::RECEIVED(), 'id-1', 'http://example.com');
         $expected = [

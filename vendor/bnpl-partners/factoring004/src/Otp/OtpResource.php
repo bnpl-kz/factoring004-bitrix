@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
 use BnplPartners\Factoring004\AbstractResource;
@@ -14,30 +12,46 @@ use BnplPartners\Factoring004\Transport\ResponseInterface;
 
 class OtpResource extends AbstractResource
 {
-    private string $checkOtpPath = '/accounting/v1/checkOtp';
-    private string $sendOtpPath = '/accounting/v1/sendOtp';
-    private string $checkOtpReturnPath = '/accounting/v1/checkOtpReturn';
-    private string $sendOtpReturnPath = '/accounting/v1/sendOtpReturn';
+    private $checkOtpPath = '/accounting/v1/checkOtp';
+    private $sendOtpPath = '/accounting/v1/sendOtp';
+    private $checkOtpReturnPath = '/accounting/v1/checkOtpReturn';
+    private $sendOtpReturnPath = '/accounting/v1/sendOtpReturn';
 
-    public function setCheckOtpPath(string $checkOtpPath): OtpResource
+    /**
+     * @param string $checkOtpPath
+     * @return OtpResource
+     */
+    public function setCheckOtpPath($checkOtpPath)
     {
         $this->checkOtpPath = $checkOtpPath;
         return $this;
     }
 
-    public function setSendOtpPath(string $sendOtpPath): OtpResource
+    /**
+     * @param string $sendOtpPath
+     * @return OtpResource
+     */
+    public function setSendOtpPath($sendOtpPath)
     {
         $this->sendOtpPath = $sendOtpPath;
         return $this;
     }
 
-    public function setCheckOtpReturnPath(string $checkOtpReturnPath): OtpResource
+    /**
+     * @param string $checkOtpReturnPath
+     * @return OtpResource
+     */
+    public function setCheckOtpReturnPath($checkOtpReturnPath)
     {
         $this->checkOtpReturnPath = $checkOtpReturnPath;
         return $this;
     }
 
-    public function setSendOtpReturnPath(string $sendOtpReturnPath): OtpResource
+    /**
+     * @param string $sendOtpReturnPath
+     * @return OtpResource
+     */
+    public function setSendOtpReturnPath($sendOtpReturnPath)
     {
         $this->sendOtpReturnPath = $sendOtpReturnPath;
         return  $this;
@@ -50,8 +64,9 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
+     * @return \BnplPartners\Factoring004\Otp\DtoOtp
      */
-    public function checkOtp(CheckOtp $otp): DtoOtp
+    public function checkOtp(CheckOtp $otp)
     {
         $response = $this->postRequest($this->checkOtpPath, $otp->toArray());
 
@@ -71,8 +86,9 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
+     * @return \BnplPartners\Factoring004\Otp\DtoOtp
      */
-    public function sendOtp(SendOtp $otp): DtoOtp
+    public function sendOtp(SendOtp $otp)
     {
         $response = $this->postRequest($this->sendOtpPath, $otp->toArray());
 
@@ -92,8 +108,9 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
+     * @return \BnplPartners\Factoring004\Otp\DtoOtp
      */
-    public function checkOtpReturn(CheckOtpReturn $otp): DtoOtp
+    public function checkOtpReturn(CheckOtpReturn $otp)
     {
         $response = $this->postRequest($this->checkOtpReturnPath, $otp->toArray());
 
@@ -113,8 +130,9 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
+     * @return \BnplPartners\Factoring004\Otp\DtoOtp
      */
-    public function sendOtpReturn(SendOtpReturn $otp): DtoOtp
+    public function sendOtpReturn(SendOtpReturn $otp)
     {
         $response = $this->postRequest($this->sendOtpReturnPath, $otp->toArray());
 
@@ -131,11 +149,16 @@ class OtpResource extends AbstractResource
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
      * @throws \BnplPartners\Factoring004\Exception\ErrorResponseException
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
+     * @return void
      */
-    private function handleClientError(ResponseInterface $response): void
+    private function handleClientError(ResponseInterface $response)
     {
         if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 500) {
             $data = $response->getBody();
+
+            if ($response->getStatusCode() === 401) {
+                throw new AuthenticationException('', isset($data['message']) ? $data['message'] : '', $data['code']);
+            }
 
             if (isset($data['error']) && is_array($data['error'])) {
                 $data = $data['error'];
@@ -146,11 +169,7 @@ class OtpResource extends AbstractResource
             }
 
             if (empty($data['code'])) {
-                throw new UnexpectedResponseException($response, $data['message'] ?? 'Unexpected response schema');
-            }
-
-            if ($response->getStatusCode() === 401) {
-                throw new AuthenticationException('', $data['message'] ?? '', $data['code']);
+                throw new UnexpectedResponseException($response, isset($data['message']) ? $data['message'] : 'Unexpected response schema');
             }
 
             /** @psalm-suppress ArgumentTypeCoercion */

@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="1"
+    totallyTyped="true"
     resolveFromConfigFile="true"
-    reportMixedIssues="false"
-    checkForThrowsDocblock="true"
-    checkForThrowsInGlobalScope="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -13,12 +10,11 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
-            <directory name="tests" />
+            <directory name="src/PHPUnit" />
         </ignoreFiles>
     </projectFiles>
 
-    <ignoreExceptions>
-        <classAndDescendants name="RuntimeException" onlyGlobalScope="false" />
-        <classAndDescendants name="LogicException" onlyGlobalScope="false" />
-    </ignoreExceptions>
+    <issueHandlers>
+        <MixedAssignment errorLevel="info" />
+    </issueHandlers>
 </psalm>

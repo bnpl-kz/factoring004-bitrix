@@ -1,15 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Response;
 
 use BnplPartners\Factoring004\PreApp\ValidationErrorDetail;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ValidationErrorResponseTest extends TestCase
+class ValidationErrorResponseTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $detail = new ValidationErrorDetail('test', 'expiresAt');
         $expected = new ValidationErrorResponse(1, [$detail], 'test');
@@ -22,7 +23,10 @@ class ValidationErrorResponseTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetCode(): void
+    /**
+     * @return void
+     */
+    public function testGetCode()
     {
         $error = new ValidationErrorResponse(1, [new ValidationErrorDetail('test', 'expiresAt')], 'test');
         $this->assertEquals(1, $error->getCode());
@@ -31,7 +35,10 @@ class ValidationErrorResponseTest extends TestCase
         $this->assertEquals(3, $error->getCode());
     }
 
-    public function testGetMessage(): void
+    /**
+     * @return void
+     */
+    public function testGetMessage()
     {
         $error = new ValidationErrorResponse(1, [new ValidationErrorDetail('test', 'expiresAt')], 'test');
         $this->assertEquals('test', $error->getMessage());
@@ -40,7 +47,10 @@ class ValidationErrorResponseTest extends TestCase
         $this->assertEquals('message', $error->getMessage());
     }
 
-    public function testGetDetails(): void
+    /**
+     * @return void
+     */
+    public function testGetDetails()
     {
         $details = [new ValidationErrorDetail('test', 'expiresAt')];
         $error = new ValidationErrorResponse(1, $details, 'test');
@@ -55,7 +65,10 @@ class ValidationErrorResponseTest extends TestCase
         $this->assertEmpty($error->getDetails());
     }
 
-    public function testGetPrefix(): void
+    /**
+     * @return void
+     */
+    public function testGetPrefix()
     {
         $error = new ValidationErrorResponse(1, [new ValidationErrorDetail('test', 'expiresAt')], 'test');
         $this->assertNull($error->getPrefix());
@@ -64,7 +77,10 @@ class ValidationErrorResponseTest extends TestCase
         $this->assertEquals('test', $error->getPrefix());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $details = [new ValidationErrorDetail('test', 'expiresAt')];
         $error = new ValidationErrorResponse(1, $details, 'test');
@@ -97,7 +113,10 @@ class ValidationErrorResponseTest extends TestCase
         $this->assertEquals($expected, $error->toArray());
     }
 
-    public function testJsonSerialize(): void
+    /**
+     * @return void
+     */
+    public function testJsonSerialize()
     {
         $details = [new ValidationErrorDetail('test', 'expiresAt')];
         $error = new ValidationErrorResponse(1, $details, 'test');

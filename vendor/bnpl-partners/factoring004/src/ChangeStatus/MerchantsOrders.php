@@ -1,24 +1,26 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\ArrayInterface;
 
 class MerchantsOrders implements ArrayInterface
 {
-    private string $merchantId;
+    /**
+     * @var string
+     */
+    private $merchantId;
 
     /**
      * @var \BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder[]
      */
-    private array $orders;
+    private $orders;
 
     /**
      * @param \BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder[] $orders
+     * @param string $merchantId
      */
-    public function __construct(string $merchantId, array $orders)
+    public function __construct($merchantId, array $orders)
     {
         $this->merchantId = $merchantId;
         $this->orders = $orders;
@@ -27,8 +29,9 @@ class MerchantsOrders implements ArrayInterface
     /**
      * @param array<string, mixed> $merchantsOrders
      * @psalm-param array{merchantId: string, orders: array{orderId: string, status: string, amount?: int}[]} $merchantsOrders
+     * @return \BnplPartners\Factoring004\ChangeStatus\MerchantsOrders
      */
-    public static function createFromArray(array $merchantsOrders): MerchantsOrders
+    public static function createFromArray(array $merchantsOrders)
     {
         return new self(
             $merchantsOrders['merchantId'],
@@ -46,7 +49,10 @@ class MerchantsOrders implements ArrayInterface
         );
     }
 
-    public function getMerchantId(): string
+    /**
+     * @return string
+     */
+    public function getMerchantId()
     {
         return $this->merchantId;
     }
@@ -54,19 +60,22 @@ class MerchantsOrders implements ArrayInterface
     /**
      * @return \BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder[]
      */
-    public function getOrders(): array
+    public function getOrders()
     {
         return $this->orders;
     }
 
     /**
      * @psalm-return array{merchantId: string, orders: array{orderId: string, status: string, amount?: int}[]}
+     * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'merchantId' => $this->getMerchantId(),
-            'orders' => array_map(fn(AbstractMerchantOrder $order) => $order->toArray(), $this->getOrders()),
+            'orders' => array_map(function (AbstractMerchantOrder $order) {
+                return $order->toArray();
+            }, $this->getOrders()),
         ];
     }
 }

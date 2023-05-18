@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\Api;
@@ -21,14 +19,15 @@ use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Response\PreAppResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class OrderManagerPreAppTest extends TestCase
+class OrderManagerPreAppTest extends AbstractTestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreAppWithArray(): void
+    public function testPreAppWithArray()
     {
         $message = PreAppMessage::createFromArray(PreAppMessageTest::REQUIRED_DATA);
         $preAppResponse = $this->createStub(PreAppResponse::class);
@@ -51,8 +50,9 @@ class OrderManagerPreAppTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreAppWithMessage(): void
+    public function testPreAppWithMessage()
     {
         $message = PreAppMessage::createFromArray(PreAppMessageTest::REQUIRED_DATA);
         $preAppResponse = $this->createStub(PreAppResponse::class);
@@ -75,8 +75,9 @@ class OrderManagerPreAppTest extends TestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreAppWithInvalidArgument(): void
+    public function testPreAppWithInvalidArgument()
     {
         $api = $this->createMock(Api::class);
         $api->expects($this->never())
@@ -93,8 +94,9 @@ class OrderManagerPreAppTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
+     * @return void
      */
-    public function testPreAppWithException(PackageException $exception): void
+    public function testPreAppWithException(PackageException $exception)
     {
         $preAppResource = $this->createMock(PreAppResource::class);
         $preAppResource->expects($this->once())
@@ -113,7 +115,10 @@ class OrderManagerPreAppTest extends TestCase
         $manager->preApp(PreAppMessageTest::REQUIRED_DATA);
     }
 
-    public function exceptionsProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function exceptionsProvider()
     {
         return [
             [new NetworkException()],

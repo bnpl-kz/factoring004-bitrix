@@ -1,15 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Auth;
 
 use GuzzleHttp\Psr7\Request;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ApiKeyAuthTest extends TestCase
+class ApiKeyAuthTest extends AbstractTestCase
 {
-    public function testApply(): void
+    /**
+     * @return void
+     */
+    public function testApply()
     {
         $auth = new ApiKeyAuth('test');
         $request = new Request('GET', '/');

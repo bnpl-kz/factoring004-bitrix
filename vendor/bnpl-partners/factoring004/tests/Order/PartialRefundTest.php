@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\ChangeStatus\ChangeStatusResource;
@@ -25,16 +23,21 @@ use BnplPartners\Factoring004\Otp\OtpResource;
 use BnplPartners\Factoring004\Otp\SendOtpReturn;
 use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class PartialRefundTest extends TestCase
+class PartialRefundTest extends AbstractTestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
+     * @return void
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     * @param string $message
      */
-    public function testSendOtp(string $merchantId, string $orderId, int $amount, string $message): void
+    public function testSendOtp($merchantId, $orderId, $amount, $message)
     {
         $sendOtpReturn = new SendOtpReturn($amount, $merchantId, $orderId);
 
@@ -54,8 +57,14 @@ class PartialRefundTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
+     * @return void
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     * @param string $message
+     * @param string $otp
      */
-    public function testCheckOtp(string $merchantId, string $orderId, int $amount, string $message, string $otp): void
+    public function testCheckOtp($merchantId, $orderId, $amount, $message, $otp)
     {
         $checkOtpReturn = new CheckOtpReturn($amount, $merchantId, $orderId, $otp);
 
@@ -75,8 +84,13 @@ class PartialRefundTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
+     * @return void
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     * @param string $message
      */
-    public function testConfirmWithoutOtp(string $merchantId, string $orderId, int $amount, string $message): void
+    public function testConfirmWithoutOtp($merchantId, $orderId, $amount, $message)
     {
         $orders = [
             new MerchantsOrders($merchantId, [new ReturnOrder($orderId, ReturnStatus::PARTRETURN(), $amount)]),
@@ -98,15 +112,21 @@ class PartialRefundTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
+     * @return void
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     * @param string $message
+     * @param string $otp
      */
     public function testSendOtpWithError(
-        string $merchantId,
-        string $orderId,
-        int $amount,
-        string $message,
-        string $otp,
+        $merchantId,
+        $orderId,
+        $amount,
+        $message,
+        $otp,
         PackageException $exception
-    ): void {
+    ) {
         $sendOtpReturn = new SendOtpReturn($amount, $merchantId, $orderId);
 
         $changeStatusResource = $this->createStub(ChangeStatusResource::class);
@@ -127,15 +147,21 @@ class PartialRefundTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
+     * @return void
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     * @param string $message
+     * @param string $otp
      */
     public function testCheckOtpWithError(
-        string $merchantId,
-        string $orderId,
-        int $amount,
-        string $message,
-        string $otp,
+        $merchantId,
+        $orderId,
+        $amount,
+        $message,
+        $otp,
         PackageException $exception
-    ): void {
+    ) {
         $checkOtpReturn = new CheckOtpReturn($amount, $merchantId, $orderId, $otp);
 
         $changeStatusResource = $this->createStub(ChangeStatusResource::class);
@@ -155,15 +181,21 @@ class PartialRefundTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
+     * @return void
+     * @param string $merchantId
+     * @param string $orderId
+     * @param int $amount
+     * @param string $message
+     * @param string $otp
      */
     public function testConfirmWithoutOtpWithError(
-        string $merchantId,
-        string $orderId,
-        int $amount,
-        string $message,
-        string $otp,
+        $merchantId,
+        $orderId,
+        $amount,
+        $message,
+        $otp,
         PackageException $exception
-    ): void {
+    ) {
         $orders = [
             new MerchantsOrders($merchantId, [new ReturnOrder($orderId, ReturnStatus::PARTRETURN(), $amount)]),
         ];
@@ -181,16 +213,22 @@ class PartialRefundTest extends TestCase
         $refund->confirmWithoutOtp();
     }
 
-    public function dataProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function dataProvider()
     {
         return [
             ['1', '1', 6000, 'ok', '1234'],
             ['10', '1000', 8000, 'test', '0204'],
-            ['100', '10', 10_000, 'message', '0000'],
+            ['100', '10', 10000, 'message', '0000'],
         ];
     }
 
-    public function exceptionsProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function exceptionsProvider()
     {
         $exceptions = [
             new NetworkException(),
@@ -208,7 +246,7 @@ class PartialRefundTest extends TestCase
 
         foreach ($this->dataProvider() as $item) {
             foreach ($exceptions as $exception) {
-                $result[] = [...$item, $exception];
+                $result[] = array_merge(is_array($item) ? $item : iterator_to_array($item), [$exception]);
             }
         }
 

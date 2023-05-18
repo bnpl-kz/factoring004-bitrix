@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\PreApp;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
@@ -15,8 +13,9 @@ class PreAppResourceTest extends AbstractResourceTest
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreApp(): void
+    public function testPreApp()
     {
         $data = [
             'preappId' => '102dbb8f-ca4e-7cad-a3f2-aa98107a1f03',
@@ -36,8 +35,9 @@ class PreAppResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testPreAppWithValidationError(): void
+    public function testPreAppWithValidationError()
     {
         $data = [
             'error' => [
@@ -79,7 +79,10 @@ class PreAppResourceTest extends AbstractResourceTest
         }
     }
 
-    protected function callResourceMethod(ClientInterface $client): void
+    /**
+     * @return void
+     */
+    protected function callResourceMethod(ClientInterface $client)
     {
         $resource = new PreAppResource($this->createTransport($client), static::BASE_URI);
         $resource->preApp(PreAppMessage::createFromArray(PreAppMessageTest::REQUIRED_DATA));

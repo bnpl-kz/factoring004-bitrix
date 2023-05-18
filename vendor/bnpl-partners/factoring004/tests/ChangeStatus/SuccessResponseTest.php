@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class SuccessResponseTest extends TestCase
+class SuccessResponseTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new SuccessResponse('test', 'message');
         $actual = SuccessResponse::createFromArray(['error' => 'test', 'msg' => 'message']);
@@ -19,7 +20,10 @@ class SuccessResponseTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetError(): void
+    /**
+     * @return void
+     */
+    public function testGetError()
     {
         $response = new SuccessResponse('test', 'message');
         $this->assertEquals('test', $response->getError());
@@ -28,7 +32,10 @@ class SuccessResponseTest extends TestCase
         $this->assertEquals('error', $response->getError());
     }
 
-    public function testGetMsg(): void
+    /**
+     * @return void
+     */
+    public function testGetMsg()
     {
         $response = new SuccessResponse('test', 'message');
         $this->assertEquals('message', $response->getMsg());
@@ -37,7 +44,10 @@ class SuccessResponseTest extends TestCase
         $this->assertEquals('test', $response->getMsg());
     }
 
-    public function testGetMerchantOrderId(): void
+    /**
+     * @return void
+     */
+    public function testGetMerchantOrderId()
     {
         $response = new SuccessResponse('test', 'message');
         $this->assertEmpty($response->getMerchantOrderId());
@@ -46,7 +56,10 @@ class SuccessResponseTest extends TestCase
         $this->assertEquals('100', $response->getMerchantOrderId());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $response = new SuccessResponse('test', 'message');
         $expected = [
@@ -65,7 +78,10 @@ class SuccessResponseTest extends TestCase
         $this->assertEquals($expected, $response->toArray());
     }
 
-    public function testJsonSerialize(): void
+    /**
+     * @return void
+     */
+    public function testJsonSerialize()
     {
         $response = new SuccessResponse('test', 'message');
         $expected = [

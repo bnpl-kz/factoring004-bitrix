@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Exception;
 
 use BnplPartners\Factoring004\Response\ErrorResponse;
@@ -9,9 +7,15 @@ use Throwable;
 
 class ErrorResponseException extends ApiException
 {
-    private ErrorResponse $errorResponse;
+    /**
+     * @var \BnplPartners\Factoring004\Response\ErrorResponse
+     */
+    private $errorResponse;
 
-    public function __construct(ErrorResponse $errorResponse, Throwable $previous = null)
+    /**
+     * @param \Throwable $previous
+     */
+    public function __construct(ErrorResponse $errorResponse, $previous = null)
     {
         parent::__construct(
             $errorResponse->getMessage(),
@@ -22,7 +26,10 @@ class ErrorResponseException extends ApiException
         $this->errorResponse = $errorResponse;
     }
 
-    public function getErrorResponse(): ErrorResponse
+    /**
+     * @return \BnplPartners\Factoring004\Response\ErrorResponse
+     */
+    public function getErrorResponse()
     {
         return $this->errorResponse;
     }

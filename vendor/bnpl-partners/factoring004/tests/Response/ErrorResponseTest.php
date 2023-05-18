@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Response;
 
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ErrorResponseTest extends TestCase
+class ErrorResponseTest extends AbstractTestCase
 {
-    public function testCreateFromArray(): void
+    /**
+     * @return void
+     */
+    public function testCreateFromArray()
     {
         $expected = new ErrorResponse('100', 'test', 'test');
         $actual = ErrorResponse::createFromArray(['code' => '100', 'message' => 'test', 'description' => 'test']);
@@ -25,7 +26,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals($actual, $expected);
     }
 
-    public function testGetCode(): void
+    /**
+     * @return void
+     */
+    public function testGetCode()
     {
         $response = new ErrorResponse('100', 'test', 'test');
         $this->assertEquals('100', $response->getCode());
@@ -34,7 +38,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('200', $response->getCode());
     }
 
-    public function testGetMessage(): void
+    /**
+     * @return void
+     */
+    public function testGetMessage()
     {
         $response = new ErrorResponse('100', 'test', 'test');
         $this->assertEquals('test', $response->getMessage());
@@ -43,7 +50,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('message', $response->getMessage());
     }
 
-    public function testGetType(): void
+    /**
+     * @return void
+     */
+    public function testGetType()
     {
         $response = new ErrorResponse('100', 'test', 'test');
         $this->assertNull($response->getType());
@@ -52,7 +62,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('test', $response->getType());
     }
 
-    public function testGetError(): void
+    /**
+     * @return void
+     */
+    public function testGetError()
     {
         $response = new ErrorResponse('100', 'test', 'test', 'test');
         $this->assertNull($response->getError());
@@ -61,7 +74,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('error', $response->getError());
     }
 
-    public function testGetDescription(): void
+    /**
+     * @return void
+     */
+    public function testGetDescription()
     {
         $response = new ErrorResponse('100', 'test', 'test');
         $this->assertEquals('test', $response->getDescription());
@@ -70,7 +86,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals('desc', $response->getDescription());
     }
 
-    public function testToArray(): void
+    /**
+     * @return void
+     */
+    public function testToArray()
     {
         $response = new ErrorResponse('100', 'test', 'test');
         $expected = [
@@ -91,7 +110,10 @@ class ErrorResponseTest extends TestCase
         $this->assertEquals($expected, $response->toArray());
     }
 
-    public function testJsonSerialize(): void
+    /**
+     * @return void
+     */
+    public function testJsonSerialize()
     {
         $response = new ErrorResponse('100', 'test', 'test');
         $expected = json_encode($response->toArray());

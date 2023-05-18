@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\Api;
@@ -28,11 +26,14 @@ use BnplPartners\Factoring004\Exception\TransportException;
 use BnplPartners\Factoring004\Exception\UnexpectedResponseException;
 use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
-use PHPUnit\Framework\TestCase;
+use BnplPartners\Factoring004\AbstractTestCase;
 
-class ChangeStatusCallerTest extends TestCase
+class ChangeStatusCallerTest extends AbstractTestCase
 {
-    public function testCreate(): void
+    /**
+     * @return void
+     */
+    public function testCreate()
     {
         $expected = new ChangeStatusCaller(Api::create('http://example.com')->changeStatus, '1');
         $actual = ChangeStatusCaller::create(Api::create('http://example.com')->changeStatus, '1');
@@ -47,8 +48,10 @@ class ChangeStatusCallerTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider ordersProvider
+     * @return void
+     * @param string $merchantId
      */
-    public function testCall(string $merchantId, AbstractMerchantOrder $order): void
+    public function testCall($merchantId, AbstractMerchantOrder $order)
     {
         $orders = [new MerchantsOrders($merchantId, [$order])];
         $successResponse = new SuccessResponse('', 'Success', $order->getOrderId());
@@ -68,12 +71,14 @@ class ChangeStatusCallerTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionOrdersProvider
+     * @return void
+     * @param string $merchantId
      */
     public function testCallWithException(
-        string $merchantId,
+        $merchantId,
         AbstractMerchantOrder $order,
         PackageException $exception
-    ): void {
+    ) {
         $orders = [new MerchantsOrders($merchantId, [$order])];
 
         $resource = $this->createMock(ChangeStatusResource::class);
@@ -92,12 +97,14 @@ class ChangeStatusCallerTest extends TestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider errorOrdersProvider
+     * @return void
+     * @param string $merchantId
      */
     public function testCallWithErrorResponse(
-        string $merchantId,
+        $merchantId,
         AbstractMerchantOrder $order,
         ChangeStatusErrorResponse $errorResponse
-    ): void {
+    ) {
         $orders = [new MerchantsOrders($merchantId, [$order])];
 
         $resource = $this->createMock(ChangeStatusResource::class);
@@ -107,13 +114,7 @@ class ChangeStatusCallerTest extends TestCase
             ->willReturn(new ChangeStatusResponse([], [$errorResponse]));
 
         $caller = new ChangeStatusCaller($resource, $merchantId);
-        $expectedErrorResponse = new ErrorResponse(
-            $errorResponse->getCode(),
-            $errorResponse->getMessage(),
-            null,
-            null,
-            $errorResponse->getError(),
-        );
+        $expectedErrorResponse = new ErrorResponse($errorResponse->getCode(), $errorResponse->getMessage(), null, null, $errorResponse->getError());
 
         try {
             $caller->call($order);
@@ -122,14 +123,17 @@ class ChangeStatusCallerTest extends TestCase
         }
     }
 
-    public function ordersProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function ordersProvider()
     {
         return [
             ['1', new DeliveryOrder('1', DeliveryStatus::DELIVERED(), 6000)],
-            ['2', new DeliveryOrder('100', DeliveryStatus::DELIVERED(), 10_000)],
+            ['2', new DeliveryOrder('100', DeliveryStatus::DELIVERED(), 10000)],
 
-            ['10', new ReturnOrder('1', ReturnStatus::RETURN(), 6000)],
-            ['10', new ReturnOrder('1', ReturnStatus::RETURN(), 0)],
+            ['10', new ReturnOrder('1', ReturnStatus::RE_TURN(), 6000)],
+            ['10', new ReturnOrder('1', ReturnStatus::RE_TURN(), 0)],
             ['20', new ReturnOrder('100', ReturnStatus::PARTRETURN(), 6000)],
 
             ['1000', new CancelOrder('1', CancelStatus::CANCEL())],
@@ -137,7 +141,10 @@ class ChangeStatusCallerTest extends TestCase
         ];
     }
 
-    public function exceptionOrdersProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function exceptionOrdersProvider()
     {
         $exceptions = [
             new NetworkException(),
@@ -155,14 +162,17 @@ class ChangeStatusCallerTest extends TestCase
 
         foreach ($this->ordersProvider() as $item) {
             foreach ($exceptions as $exception) {
-                $result[] = [...$item, $exception];
+                $result[] = array_merge(is_array($item) ? $item : iterator_to_array($item), [$exception]);
             }
         }
 
         return $result;
     }
 
-    public function errorOrdersProvider(): array
+    /**
+     * @return mixed[]
+     */
+    public function errorOrdersProvider()
     {
         $errors = [
             new ChangeStatusErrorResponse('1', 'error', 'test'),
@@ -174,7 +184,7 @@ class ChangeStatusCallerTest extends TestCase
 
         foreach ($this->ordersProvider() as $item) {
             foreach ($errors as $error) {
-                $result[] = [...$item, $error];
+                $result[] = array_merge(is_array($item) ? $item : iterator_to_array($item), [$error]);
             }
         }
 

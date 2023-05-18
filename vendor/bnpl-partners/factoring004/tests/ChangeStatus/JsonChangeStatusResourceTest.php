@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
@@ -13,8 +11,9 @@ class JsonChangeStatusResourceTest extends AbstractResourceTest
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testChangeStatusJson(): void
+    public function testChangeStatusJson()
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
@@ -42,8 +41,9 @@ class JsonChangeStatusResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testChangeStatusJsonWithError(): void
+    public function testChangeStatusJsonWithError()
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
@@ -71,8 +71,9 @@ class JsonChangeStatusResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
      */
-    public function testChangeStatusJsonWithMixedResponse(): void
+    public function testChangeStatusJsonWithMixedResponse()
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
@@ -98,7 +99,10 @@ class JsonChangeStatusResourceTest extends AbstractResourceTest
         $this->assertEquals($expected, $response);
     }
 
-    protected function callResourceMethod(ClientInterface $client): void
+    /**
+     * @return void
+     */
+    protected function callResourceMethod(ClientInterface $client)
     {
         $resource = new ChangeStatusResource($this->createTransport($client), static::BASE_URI);
         $resource->changeStatusJson([

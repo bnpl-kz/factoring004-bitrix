@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\OAuth;
 
 use BadMethodCallException;
@@ -13,19 +11,37 @@ use InvalidArgumentException;
 
 class OAuthTokenManager implements OAuthTokenManagerInterface
 {
-    public const ACCESS_PATH = '/sign-in';
-    public const REFRESH_PATH = '/refresh';
+    const ACCESS_PATH = '/sign-in';
+    const REFRESH_PATH = '/refresh';
 
-    private TransportInterface $transport;
-    private string $baseUri;
-    private string $username;
-    private string $password;
+    /**
+     * @var \BnplPartners\Factoring004\Transport\TransportInterface
+     */
+    private $transport;
+    /**
+     * @var string
+     */
+    private $baseUri;
+    /**
+     * @var string
+     */
+    private $username;
+    /**
+     * @var string
+     */
+    private $password;
 
+    /**
+     * @param string $baseUri
+     * @param string $username
+     * @param string $password
+     * @param \BnplPartners\Factoring004\Transport\TransportInterface|null $transport
+     */
     public function __construct(
-        string $baseUri,
-        string $username,
-        string $password,
-        ?TransportInterface $transport = null
+        $baseUri,
+        $username,
+        $password,
+        TransportInterface $transport = null
     ) {
         if (!$baseUri) {
             throw new InvalidArgumentException('Base URI cannot be empty');
@@ -39,13 +55,16 @@ class OAuthTokenManager implements OAuthTokenManagerInterface
             throw new InvalidArgumentException('Password cannot be empty');
         }
 
-        $this->transport = $transport ?? new GuzzleTransport();
+        $this->transport = isset($transport) ? $transport : new GuzzleTransport();
         $this->baseUri = $baseUri;
         $this->username = $username;
         $this->password = $password;
     }
 
-    public function getAccessToken(): OAuthToken
+    /**
+     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
+     */
+    public function getAccessToken()
     {
         return $this->manageToken(static::ACCESS_PATH, [
             'username' => $this->username,
@@ -53,20 +72,24 @@ class OAuthTokenManager implements OAuthTokenManagerInterface
         ]);
     }
 
-    public function refreshToken(string $refreshToken): OAuthToken
+    public function refreshToken($refreshToken)
     {
         return $this->manageToken(static::REFRESH_PATH, compact('refreshToken'));
     }
 
-    public function revokeToken(): void
+    /**
+     * @return void
+     */
+    public function revokeToken()
     {
         throw new BadMethodCallException('Method ' . __FUNCTION__ . ' is not supported');
     }
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
+     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
      */
-    private function manageToken(string $path, array $data = []): OAuthToken
+    private function manageToken($path, array $data = [])
     {
         $this->transport->setBaseUri($this->baseUri);
 
@@ -80,6 +103,8 @@ class OAuthTokenManager implements OAuthTokenManagerInterface
             return OAuthToken::createFromArray($response->getBody());
         }
 
-        throw new OAuthException($response->getBody()['message'] ?? 'Cannot generate an access token');
+        throw new OAuthException(
+            isset($response->getBody()['message']) ? $response->getBody()['message'] : 'Cannot generate an access token'
+        );
     }
 }

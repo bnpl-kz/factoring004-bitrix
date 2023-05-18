@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace BnplPartners\Factoring004\Otp;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
@@ -15,8 +13,10 @@ class CheckOtpReturnResourceTest extends AbstractResourceTest
      * @testWith [0]
      *           [6000]
      * @throws \BnplPartners\Factoring004\Exception\PackageException
+     * @return void
+     * @param int $amount
      */
-    public function testCheckOtpReturn(int $amount): void
+    public function testCheckOtpReturn($amount)
     {
         $otp = new CheckOtpReturn($amount, '100', 'test', '1234');
 
@@ -32,7 +32,10 @@ class CheckOtpReturnResourceTest extends AbstractResourceTest
         $this->assertEquals(new DtoOtp('OK'), $response);
     }
 
-    protected function callResourceMethod(ClientInterface $client): void
+    /**
+     * @return void
+     */
+    protected function callResourceMethod(ClientInterface $client)
     {
         $resource = new OtpResource($this->createTransport($client), static::BASE_URI);
         $resource->checkOtpReturn(new CheckOtpReturn(0, '1', '100', '1234'));

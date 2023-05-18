@@ -34,7 +34,6 @@ class ComposerStaticInitf927bf3f8c351449ac4d96cb7f64290f
         'B' => 
         array (
             'BnplPartners\\Factoring004\\' => 26,
-            'BnplPartners\\Factoring004RectorRules\\' => 37,
         ),
     );
 
@@ -49,8 +48,8 @@ class ComposerStaticInitf927bf3f8c351449ac4d96cb7f64290f
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -76,17 +75,17 @@ class ComposerStaticInitf927bf3f8c351449ac4d96cb7f64290f
         array (
             0 => __DIR__ . '/..' . '/bnpl-partners/factoring004/src',
         ),
-        'BnplPartners\\Factoring004RectorRules\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/bnpl-partners/factoring004/rector/rules',
-        ),
     );
 
     public static $classMap = array (
+        'Bnpl\\Payment\\AbstractManager' => __DIR__ . '/../..' . '/lib/AbstractManager.php',
         'Bnpl\\Payment\\AuthTokenManager' => __DIR__ . '/../..' . '/lib/AuthTokenManager.php',
         'Bnpl\\Payment\\BitrixSimpleCache' => __DIR__ . '/../..' . '/lib/BitrixSimpleCache.php',
         'Bnpl\\Payment\\Config' => __DIR__ . '/../..' . '/lib/Config.php',
         'Bnpl\\Payment\\DebugLoggerFactory' => __DIR__ . '/../..' . '/lib/DebugLoggerFactory.php',
+        'Bnpl\\Payment\\DeliveryAmountException' => __DIR__ . '/../..' . '/lib/DeliveryAmountException.php',
+        'Bnpl\\Payment\\DeliveryManager' => __DIR__ . '/../..' . '/lib/DeliveryManager.php',
+        'Bnpl\\Payment\\DeliveryManagerException' => __DIR__ . '/../..' . '/lib/DeliveryManagerException.php',
         'Bnpl\\Payment\\EmptyBasketItemsException' => __DIR__ . '/../..' . '/lib/EmptyBasketItemsException.php',
         'Bnpl\\Payment\\PartialRefundManager' => __DIR__ . '/../..' . '/lib/PartialRefundManager.php',
         'Bnpl\\Payment\\PartialRefundManagerException' => __DIR__ . '/../..' . '/lib/PartialRefundManagerException.php',
@@ -94,7 +93,6 @@ class ComposerStaticInitf927bf3f8c351449ac4d96cb7f64290f
         'Bnpl\\Payment\\PaymentScheduleAsset' => __DIR__ . '/../..' . '/lib/PaymentScheduleAsset.php',
         'Bnpl\\Payment\\SimpleDebugLogger' => __DIR__ . '/../..' . '/lib/SimpleDebugLogger.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
