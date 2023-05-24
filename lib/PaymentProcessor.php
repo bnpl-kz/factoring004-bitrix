@@ -81,6 +81,18 @@ class PaymentProcessor
     }
 
     /**
+     * @param $property
+     * @return string
+     */
+    private function getValue($property)
+    {
+        if (empty($property)) {
+            return '';
+        }
+        return $property->getValue();
+    }
+
+    /**
      * @param string $serverHost
      *
      * @return \BnplPartners\Factoring004\PreApp\PreAppMessage
@@ -93,9 +105,9 @@ class PaymentProcessor
     private function createPreAppMessage(Order $order, $serverHost)
     {
         $paymentCollection = $order->getPropertyCollection();
-        $phone = $paymentCollection->getPhone();
+        $phone = $this->getValue($paymentCollection->getPhone());
         $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
-        $cityValue = $city->getValue();
+        $cityValue = $this->getValue($city);
         $itemsQuantity = array_map(function ($item) {
             return (int) $item->getField('QUANTITY');
         }, $order->getBasket()->getBasketItems());
@@ -113,9 +125,9 @@ class PaymentProcessor
             'itemsQuantity' => array_sum($itemsQuantity),
             'successRedirect' => $serverHost,
             'postLink' => Config::get('BNPL_PAYMENT_POSTLINK'),
-            'phoneNumber' => $phone ? $this->formatPhone($phone->getValue()) : null,
+            'phoneNumber' => $phone ? $this->formatPhone($phone) : null,
             'deliveryPoint' => [
-                'city' => !empty($cityValue) ? $cityValue : '',
+                'city' => $cityValue,
             ],
             'items' => array_map(function ($item) {
                 return [
