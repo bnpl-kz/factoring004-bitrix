@@ -138,6 +138,10 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
         if ($status === static::STATUS_COMPLETED) {
             $result->setOperationType(ServiceResult::MONEY_COMING);
             $psStatus = 'Y';
+
+            $order = $payment->getOrder();
+            $order->setField('STATUS_ID', 'P');
+            $order->save();
         } elseif ($status === static::STATUS_DECLINED) {
             $result->setOperationType(ServiceResult::MONEY_LEAVING);
             $psStatus = 'N';
@@ -158,10 +162,6 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
             'PS_CURRENCY' => $payment->getOrder()->getCurrency(),
             'PS_RESPONSE_DATE' => new DateTime(),
         ]);
-
-        $order = $payment->getOrder();
-        $order->setField('STATUS_ID', 'P');
-        $order->save();
 
         return $result;
     }
