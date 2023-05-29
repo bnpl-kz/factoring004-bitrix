@@ -27,4 +27,9 @@ class AuthTokenManager
     {
         return $this->manager->getAccessToken()->getAccess();
     }
+
+    public function clearCache(): void
+    {
+        $this->manager->clearCache();
+    }
 }

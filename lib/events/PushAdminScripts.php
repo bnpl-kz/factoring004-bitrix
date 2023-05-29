@@ -11,6 +11,7 @@ class PushAdminScripts
     private const PATHS_MAP = [
         '/bitrix/admin/sale_pay_system_edit.php' => [
             __DIR__ . '/../../template/set_values_default.php',
+            __DIR__ . '/../../template/clear_cache_button.php',
         ],
         '/bitrix/admin/sale_order_view.php' => [
             __DIR__ . '/../../template/pre_sale_order_view.php',
