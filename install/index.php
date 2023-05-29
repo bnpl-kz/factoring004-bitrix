@@ -50,6 +50,13 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_cache_clear.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_cache_clear.php',
+            true,
+            true
+        );
+
+        CopyDirFiles(
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment.php',
             $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment.php',
             true,
@@ -99,6 +106,7 @@ class bnpl_payment extends CModule
     public function UnInstallFiles()
     {
        DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpayment');
+       DeleteDirFilesEx('/bitrix/admin/bnplpayment_cache_clear.php');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment.php');
        DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
        DeleteDirFilesEx('/bitrix/tmp/factoring004');
