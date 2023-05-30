@@ -44,6 +44,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 $apiHost = Config::get('BNPL_PAYMENT_API_HOST');
 $oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
 $oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
+$debug = Config::get('BNPL_PAYMENT_DEBUG');
 
 $cache = new BitrixSimpleCache(Application::getInstance()->getCache());
 $transport = new GuzzleTransport();
@@ -55,6 +56,7 @@ $tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment'
 $token = $tokenManager->getAccessToken()->getAccess();
 
 $api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
+$session = \Bitrix\Main\Application::getInstance()->getSession();
 
 $request = Application::getInstance()->getContext()->getRequest();
 $processor = new PaymentProcessor($api);
@@ -62,6 +64,11 @@ $processor = new PaymentProcessor($api);
 try {
     $response = $processor->preApp($request);
 } catch (\Exception $e) {
+
+    if ($debug === 'on') {
+        $session->set('bnplpayment_debug', $e);
+    }
+
     if ($e instanceof ErrorResponseException) {
         $response = $e->getErrorResponse();
         $logger->error(sprintf(

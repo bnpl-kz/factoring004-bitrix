@@ -1,3 +1,18 @@
+<?php
+
+require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/bx_root.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
+
+$session = \Bitrix\Main\Application::getInstance()->getSession();
+
+if ($session->has('bnplpayment_debug')) {
+    var_dump($session->get('bnplpayment_debug'));
+    $session->remove('bnplpayment_debug');
+    die;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
