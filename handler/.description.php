@@ -99,6 +99,24 @@ $data = array(
                 'PROVIDER_VALUE' => 'redirect'
             )
         ),
+
+        'BNPL_PAYMENT_DEBUG' => array(
+            'NAME' => Loc::getMessage('BNPL_PAYMENT_DEBUG_NAME'),
+            'DESCRIPTION' => Loc::getMessage('BNPL_PAYMENT_DEBUG_DESCRIPTION'),
+            'SORT' => 1300,
+            'GROUP' => 'OTHER',
+            'INPUT' => array(
+                'TYPE' => 'ENUM',
+                'OPTIONS' => array(
+                    'on' => Loc::getMessage('BNPL_PAYMENT_DEBUG_ON'),
+                    'off' => Loc::getMessage('BNPL_PAYMENT_DEBUG_OFF')
+                ),
+            ),
+            'DEFAULT' => array(
+                'PROVIDER_KEY' => 'INPUT',
+                'PROVIDER_VALUE' => 'off'
+            )
+        ),
     )
 );
 
