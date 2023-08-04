@@ -10,12 +10,47 @@ $url = Config::get('BNPL_PAYMENT_API_HOST');
 $domain = stripos($url, 'dev') ? 'dev.bnpl.kz' : 'bnpl.kz';
 
 ?>
+    <style>
+        #button-bnplpayment {
+            border: none;
+            cursor: pointer;
+            padding: 16px 28px;
+            border-radius: 16px;
+            background: linear-gradient(
+                    89.93deg,
+                    #fc96fc 0.08%,
+                    #959ef1 46.14%,
+                    #0dc9d5 99.97%
+            );
+            box-shadow: 0px 3px 15px 0px rgba(255, 255, 255, 0.64) inset;
+            box-shadow: -2px -6px 15px 0px rgba(0, 0, 0, 0.15) inset;
+        }
 
+        #button-bnplpayment > p {
+            font-family: "Roboto", sans-serif;
+            font-size: 25px;
+            font-weight: 700;
+            line-height: 20px;
+            margin: 0;
+            color: #fff;
+        }
+
+        #button-bnplpayment > span {
+            font-family: "Roboto", sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 20px;
+            margin: 0;
+            color: #fff;
+        }
+    </style>
 <form id="form-bnplpayment" action="<?= $action ?>" method="post">
     <input type="hidden" name="lang" value="<?=LANGUAGE_ID?>">
     <?=bitrix_sessid_post()?>
     <input type="hidden" name="order_id" value="<?= $orderId ?>">
-    <button id="button-bnplpayment" class="btn btn-primary"><?= Loc::getMessage('BNPL_PAYMENT_PAY_BUTTON') ?></button>
+    <button class="bnplButton" id="button-bnplpayment">
+        <p>Купить в рассрочку</p>
+    </button>
 </form>
 
 <?php
