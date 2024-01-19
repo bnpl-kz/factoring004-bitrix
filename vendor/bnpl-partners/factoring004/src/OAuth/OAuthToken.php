@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -10,33 +12,12 @@ use JsonSerializable;
  */
 class OAuthToken implements JsonSerializable, ArrayInterface
 {
-    /**
-     * @var string
-     */
-    private $access;
+    private string $access;
+    private int $accessExpiresAt;
+    private string $refresh;
+    private int $refreshExpiresAt;
 
-    /**
-     * @var int
-     */
-    private $accessExpiresAt;
-
-    /**
-     * @var string
-     */
-    private $refresh;
-
-    /**
-     * @var int
-     */
-    private $refreshExpiresAt;
-
-    /**
-     * @param string $access
-     * @param int $accessExpiresAt
-     * @param string $refresh
-     * @param int $refreshExpiresAt
-     */
-    public function __construct($access, $accessExpiresAt, $refresh, $refreshExpiresAt)
+    public function __construct(string $access, int $accessExpiresAt, string $refresh, int $refreshExpiresAt)
     {
         $this->access = $access;
         $this->accessExpiresAt = $accessExpiresAt;
@@ -47,51 +28,36 @@ class OAuthToken implements JsonSerializable, ArrayInterface
     /**
      * @param array<string, mixed> $token
      * @psalm-param array{access: string, accessExpiresAt: int, refresh: string, refreshExpiresAt: int} $token
-     *
-     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
      */
-    public static function createFromArray(array $token)
+    public static function createFromArray(array $token): OAuthToken
     {
         return new self($token['access'], $token['accessExpiresAt'], $token['refresh'], $token['refreshExpiresAt']);
     }
 
-    /**
-     * @return string
-     */
-    public function getAccess()
+    public function getAccess(): string
     {
         return $this->access;
     }
 
-    /**
-     * @return int
-     */
-    public function getAccessExpiresAt()
+    public function getAccessExpiresAt(): int
     {
         return $this->accessExpiresAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getRefresh()
+    public function getRefresh(): string
     {
         return $this->refresh;
     }
 
-    /**
-     * @return int
-     */
-    public function getRefreshExpiresAt()
+    public function getRefreshExpiresAt(): int
     {
         return $this->refreshExpiresAt;
     }
 
     /**
      * @psalm-return array{access: string, accessExpiresAt: int, refresh: string, refreshExpiresAt: int}
-     * @return array<string, mixed>
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'access' => $this->getAccess(),
@@ -104,7 +70,7 @@ class OAuthToken implements JsonSerializable, ArrayInterface
     /**
      * @return array<string, mixed>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

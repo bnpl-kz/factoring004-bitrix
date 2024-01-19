@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\ArrayInterface;
@@ -13,12 +15,12 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
     /**
      * @var \BnplPartners\Factoring004\ChangeStatus\SuccessResponse[]
      */
-    private $successfulResponses;
+    private array $successfulResponses;
 
     /**
      * @var \BnplPartners\Factoring004\ChangeStatus\ErrorResponse[]
      */
-    private $errorResponses;
+    private array $errorResponses;
 
     /**
      * @param \BnplPartners\Factoring004\ChangeStatus\SuccessResponse[] $successfulResponses
@@ -41,60 +43,54 @@ class ChangeStatusResponse implements JsonSerializable, ArrayInterface
      *
      * @return \BnplPartners\Factoring004\ChangeStatus\ChangeStatusResponse
      */
-    public static function createFromArray(array $responses)
+    public static function createFromArray(array $responses): ChangeStatusResponse
     {
-        return new self(array_map(
-            function (array $response) {
-                return SuccessResponse::createFromArray($response);
-            },
-            isset($responses['successfulResponses']) ? $responses['successfulResponses'] : (isset($responses['SuccessfulResponses']) ? $responses['SuccessfulResponses'] : [])
-        ), array_map(
-            function (array $response) {
-                return ErrorResponse::createFromArray($response);
-            },
-            isset($responses['errorResponses']) ? $responses['errorResponses'] : (isset($responses['ErrorResponses']) ? $responses['ErrorResponses'] : [])
-        ));
+        return new self(
+            array_map(
+                fn(array $response) => SuccessResponse::createFromArray($response),
+                $responses['successfulResponses'] ?? $responses['SuccessfulResponses'] ?? []
+            ),
+            array_map(
+                fn(array $response) => ErrorResponse::createFromArray($response),
+                $responses['errorResponses'] ?? $responses['ErrorResponses'] ?? []
+            ),
+        );
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function getSuccessfulResponses()
+    public function getSuccessfulResponses(): array
     {
         return $this->successfulResponses;
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function getErrorResponses()
+    public function getErrorResponses(): array
     {
         return $this->errorResponses;
     }
 
     /**
-    * @psalm-return array{
-        SuccessfulResponses: array{error: string, msg: string}[],
-        ErrorResponses: array{code: string, error: string, message: string}[],
-    }
-     * @return mixed[]
-    */
-    public function toArray()
+     * @psalm-return array{
+         SuccessfulResponses: array{error: string, msg: string}[],
+         ErrorResponses: array{code: string, error: string, message: string}[],
+     }
+     */
+    public function toArray(): array
     {
         return [
-            'SuccessfulResponses' => array_map(function (SuccessResponse $response) {
-                return $response->toArray();
-            }, $this->getSuccessfulResponses()),
-            'ErrorResponses' => array_map(function (ErrorResponse $response) {
-                return $response->toArray();
-            }, $this->getErrorResponses()),
+            'SuccessfulResponses' => array_map(
+                fn(SuccessResponse $response) => $response->toArray(),
+                $this->getSuccessfulResponses(),
+            ),
+            'ErrorResponses' => array_map(
+                fn(ErrorResponse $response) => $response->toArray(),
+                $this->getErrorResponses(),
+            ),
         ];
     }
 
     /**
      * @return array<string, array<string, mixed>[]>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

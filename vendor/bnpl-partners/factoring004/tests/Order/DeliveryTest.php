@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\ChangeStatus\ChangeStatusResource;
@@ -23,21 +25,16 @@ use BnplPartners\Factoring004\Otp\OtpResource;
 use BnplPartners\Factoring004\Otp\SendOtp;
 use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class DeliveryTest extends AbstractTestCase
+class DeliveryTest extends TestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
      */
-    public function testSendOtp($merchantId, $orderId, $amount, $message)
+    public function testSendOtp(string $merchantId, string $orderId, int $amount, string $message): void
     {
         $sendOtp = new SendOtp($merchantId, $orderId, $amount);
 
@@ -57,14 +54,8 @@ class DeliveryTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
-    public function testCheckOtp($merchantId, $orderId, $amount, $message, $otp)
+    public function testCheckOtp(string $merchantId, string $orderId, int $amount, string $message, string $otp): void
     {
         $checkOtp = new CheckOtp($merchantId, $orderId, $otp, $amount);
 
@@ -84,13 +75,8 @@ class DeliveryTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
      */
-    public function testConfirmWithoutOtp($merchantId, $orderId, $amount, $message)
+    public function testConfirmWithoutOtp(string $merchantId, string $orderId, int $amount, string $message): void
     {
         $orders = [
             new MerchantsOrders($merchantId, [new DeliveryOrder($orderId, DeliveryStatus::DELIVERED(), $amount)]),
@@ -112,21 +98,15 @@ class DeliveryTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
     public function testSendOtpWithError(
-        $merchantId,
-        $orderId,
-        $amount,
-        $message,
-        $otp,
+        string $merchantId,
+        string $orderId,
+        int $amount,
+        string $message,
+        string $otp,
         PackageException $exception
-    ) {
+    ): void {
         $sendOtp = new SendOtp($merchantId, $orderId, $amount);
 
         $changeStatusResource = $this->createStub(ChangeStatusResource::class);
@@ -147,21 +127,15 @@ class DeliveryTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
     public function testCheckOtpWithError(
-        $merchantId,
-        $orderId,
-        $amount,
-        $message,
-        $otp,
+        string $merchantId,
+        string $orderId,
+        int $amount,
+        string $message,
+        string $otp,
         PackageException $exception
-    ) {
+    ): void {
         $checkOtp = new CheckOtp($merchantId, $orderId, $otp, $amount);
 
         $changeStatusResource = $this->createStub(ChangeStatusResource::class);
@@ -181,21 +155,15 @@ class DeliveryTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
     public function testConfirmWithoutOtpWithError(
-        $merchantId,
-        $orderId,
-        $amount,
-        $message,
-        $otp,
+        string $merchantId,
+        string $orderId,
+        int $amount,
+        string $message,
+        string $otp,
         PackageException $exception
-    ) {
+    ): void {
         $orders = [
             new MerchantsOrders($merchantId, [new DeliveryOrder($orderId, DeliveryStatus::DELIVERED(), $amount)]),
         ];
@@ -213,22 +181,16 @@ class DeliveryTest extends AbstractTestCase
         $delivery->confirmWithoutOtp();
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function dataProvider()
+    public function dataProvider(): array
     {
         return [
             ['1', '1', 6000, 'ok', '1234'],
             ['10', '1000', 8000, 'test', '0204'],
-            ['100', '10', 10000, 'message', '0000'],
+            ['100', '10', 10_000, 'message', '0000'],
         ];
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function exceptionsProvider()
+    public function exceptionsProvider(): array
     {
         $exceptions = [
             new NetworkException(),
@@ -246,7 +208,7 @@ class DeliveryTest extends AbstractTestCase
 
         foreach ($this->dataProvider() as $item) {
             foreach ($exceptions as $exception) {
-                $result[] = array_merge(is_array($item) ? $item : iterator_to_array($item), [$exception]);
+                $result[] = [...$item, $exception];
             }
         }
 

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
-use BnplPartners\Factoring004\AbstractEnum;
+use MyCLabs\Enum\Enum;
 
 /**
  * @method static static ALWAYS_RETRIEVE()
@@ -10,8 +12,8 @@ use BnplPartners\Factoring004\AbstractEnum;
  *
  * @psalm-immutable
  */
-final class OAuthTokenRefreshPolicy extends AbstractEnum
+final class OAuthTokenRefreshPolicy extends Enum
 {
-    const ALWAYS_RETRIEVE = 'always_retrieve';
-    const ALWAYS_REFRESH = 'always_refresh';
+    private const ALWAYS_RETRIEVE = 'always_retrieve';
+    private const ALWAYS_REFRESH = 'always_refresh';
 }

@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class StatusConfirmationResponseTest extends AbstractTestCase
+class StatusConfirmationResponseTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreate()
+    public function testCreate(): void
     {
         $expected = new StatusConfirmationResponse('Test');
         $actual = StatusConfirmationResponse::create('Test');
@@ -20,10 +19,7 @@ class StatusConfirmationResponseTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetMessage()
+    public function testGetMessage(): void
     {
         $response = new StatusConfirmationResponse('Test');
         $this->assertEquals('Test', $response->getMessage());
@@ -32,10 +28,7 @@ class StatusConfirmationResponseTest extends AbstractTestCase
         $this->assertEquals('Message', $response->getMessage());
     }
 
-    /**
-     * @return void
-     */
-    public function testToArray()
+    public function testToArray(): void
     {
         $response = new StatusConfirmationResponse('Test');
         $this->assertEquals(['message' => 'Test'], $response->toArray());
@@ -44,10 +37,7 @@ class StatusConfirmationResponseTest extends AbstractTestCase
         $this->assertEquals(['message' => 'Message'], $response->toArray());
     }
 
-    /**
-     * @return void
-     */
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $response = new StatusConfirmationResponse('Test');
         $this->assertJsonStringEqualsJsonString(json_encode(['message' => 'Test']), json_encode($response));

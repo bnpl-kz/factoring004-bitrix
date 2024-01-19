@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Signature;
 
 /**
@@ -7,28 +9,18 @@ namespace BnplPartners\Factoring004\Signature;
  */
 class PostLinkSignatureCalculator
 {
-    const FIELD_SEPARATOR = ':';
-    const HASH_ALGO = 'sha512';
-    const FIELDS = ['status', 'preappId', 'billNumber'];
+    private const FIELD_SEPARATOR = ':';
+    private const HASH_ALGO = 'sha512';
+    private const FIELDS = ['status', 'preappId', 'billNumber'];
 
-    /**
-     * @var string
-     */
-    private $secretKey;
+    private string $secretKey;
 
-    /**
-     * @param string $secretKey
-     */
-    public function __construct($secretKey)
+    public function __construct(string $secretKey)
     {
         $this->secretKey = $secretKey;
     }
 
-    /**
-     * @param string $secretKey
-     * @return \BnplPartners\Factoring004\Signature\PostLinkSignatureCalculator
-     */
-    public static function create($secretKey)
+    public static function create(string $secretKey): PostLinkSignatureCalculator
     {
         return new self($secretKey);
     }
@@ -36,9 +28,8 @@ class PostLinkSignatureCalculator
     /**
      * @param array<string, mixed> $data
      * @psalm-param array{status: string, billNumber: string, preappId: string, scoring?: int} $data
-     * @return string
      */
-    public function calculate(array $data)
+    public function calculate(array $data): string
     {
         return $this->calculateHash($this->convertDataToString($data));
     }
@@ -46,9 +37,8 @@ class PostLinkSignatureCalculator
     /**
      * @param array<string, mixed> $data
      * @psalm-param array{status: string, billNumber: string, preappId: string, scoring?: int} $data
-     * @return string
      */
-    private function convertDataToString(array $data)
+    private function convertDataToString(array $data): string
     {
         $str = '';
 
@@ -61,11 +51,7 @@ class PostLinkSignatureCalculator
         return substr($str, 0, -1);
     }
 
-    /**
-     * @param string $data
-     * @return string
-     */
-    private function calculateHash($data)
+    private function calculateHash(string $data): string
     {
         return hash_hmac(static::HASH_ALGO, $data, $this->secretKey);
     }

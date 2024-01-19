@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder;
@@ -12,23 +14,16 @@ use BnplPartners\Factoring004\Otp\SendOtpReturn;
 
 class FullRefund extends AbstractStatusConfirmation
 {
-    /**
-     * @param string $merchantId
-     * @param string $orderId
-     */
     public function __construct(
         OtpResource $otpResource,
         ChangeStatusResource $changeStatusResource,
-        $merchantId,
-        $orderId
+        string $merchantId,
+        string $orderId
     ) {
         parent::__construct($otpResource, $changeStatusResource, $merchantId, $orderId, 0);
     }
 
-    /**
-     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
-     */
-    public function sendOtp()
+    public function sendOtp(): StatusConfirmationResponse
     {
         return StatusConfirmationResponse::create(
             $this->otpResource->sendOtpReturn(
@@ -37,11 +32,7 @@ class FullRefund extends AbstractStatusConfirmation
         );
     }
 
-    /**
-     * @param string $otp
-     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
-     */
-    public function checkOtp($otp)
+    public function checkOtp(string $otp): StatusConfirmationResponse
     {
         return StatusConfirmationResponse::create(
             $this->otpResource->checkOtpReturn(
@@ -50,11 +41,8 @@ class FullRefund extends AbstractStatusConfirmation
         );
     }
 
-    /**
-     * @return \BnplPartners\Factoring004\ChangeStatus\AbstractMerchantOrder
-     */
-    protected function getMerchantOrder()
+    protected function getMerchantOrder(): AbstractMerchantOrder
     {
-        return new ReturnOrder($this->orderId, ReturnStatus::RE_TURN(), $this->amount);
+        return new ReturnOrder($this->orderId, ReturnStatus::RETURN(), $this->amount);
     }
 }

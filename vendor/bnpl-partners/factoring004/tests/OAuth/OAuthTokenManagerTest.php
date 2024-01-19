@@ -1,43 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
 use BadMethodCallException;
-use BnplPartners\Factoring004\AbstractTestCase;
 use BnplPartners\Factoring004\Exception\OAuthException;
 use BnplPartners\Factoring004\Transport\GuzzleTransport;
+use BnplPartners\Factoring004\Transport\TransportInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
-class OAuthTokenManagerTest extends AbstractTestCase
+class OAuthTokenManagerTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testWithEmptyBaseUri()
+    public function testWithEmptyBaseUri(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new OAuthTokenManager('', 'test', 'test');
     }
 
-    /**
-     * @return void
-     */
-    public function testWithEmptyUsername()
+    public function testWithEmptyUsername(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new OAuthTokenManager('http://example.com', '', 'test');
     }
 
-    /**
-     * @return void
-     */
-    public function testWithEmptyPassword()
+    public function testWithEmptyPassword(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -46,9 +40,8 @@ class OAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessToken()
+    public function testGetAccessToken(): void
     {
         $username = 'test';
         $password = 'password';
@@ -73,16 +66,20 @@ class OAuthTokenManagerTest extends AbstractTestCase
             }))
             ->willReturn(new Response(200, [], json_encode($responseData)));
 
-        $manager = new OAuthTokenManager('http://example.com', $username, $password, $this->createTransport($client));
+        $manager = new OAuthTokenManager(
+            'http://example.com',
+            $username,
+            $password,
+            $this->createTransport($client),
+        );
 
         $this->assertEquals(OAuthToken::createFromArray($responseData), $manager->getAccessToken());
     }
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessTokenFailed()
+    public function testGetAccessTokenFailed(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -90,7 +87,12 @@ class OAuthTokenManagerTest extends AbstractTestCase
             ->withAnyParameters()
             ->willThrowException($this->createStub(TransferException::class));
 
-        $manager = new OAuthTokenManager('http://example.com', 'a62f2225bf70bfaccbc7f1ef2a397836717377de', 'e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4', $this->createTransport($client));
+        $manager = new OAuthTokenManager(
+            'http://example.com',
+            'a62f2225bf70bfaccbc7f1ef2a397836717377de',
+            'e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4',
+            $this->createTransport($client),
+        );
 
         $this->expectException(OAuthException::class);
         $manager->getAccessToken();
@@ -98,9 +100,8 @@ class OAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testGetAccessTokenFailedWithUnexpectedResponse()
+    public function testGetAccessTokenFailedWithUnexpectedResponse(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -108,7 +109,12 @@ class OAuthTokenManagerTest extends AbstractTestCase
             ->withAnyParameters()
             ->willReturn(new Response(400, [], json_encode([])));
 
-        $manager = new OAuthTokenManager('http://example.com', 'a62f2225bf70bfaccbc7f1ef2a397836717377de', 'e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4', $this->createTransport($client));
+        $manager = new OAuthTokenManager(
+            'http://example.com',
+            'a62f2225bf70bfaccbc7f1ef2a397836717377de',
+            'e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4',
+            $this->createTransport($client),
+        );
 
         $this->expectException(OAuthException::class);
         $manager->getAccessToken();
@@ -116,9 +122,8 @@ class OAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testRefreshToken()
+    public function testRefreshToken(): void
     {
         $refreshToken = 'dG9rZW4=';
         $responseData = [
@@ -145,7 +150,7 @@ class OAuthTokenManagerTest extends AbstractTestCase
             'http://example.com',
             'test',
             'password',
-            $this->createTransport($client)
+            $this->createTransport($client),
         );
 
         $this->assertEquals(OAuthToken::createFromArray($responseData), $manager->refreshToken($refreshToken));
@@ -153,9 +158,8 @@ class OAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testRefreshTokenFailed()
+    public function testRefreshTokenFailed(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -167,7 +171,7 @@ class OAuthTokenManagerTest extends AbstractTestCase
             'http://example.com',
             'test',
             'password',
-            $this->createTransport($client)
+            $this->createTransport($client),
         );
 
         $this->expectException(OAuthException::class);
@@ -176,9 +180,8 @@ class OAuthTokenManagerTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     * @return void
      */
-    public function testRefreshTokenFailedWithUnexpectedResponse()
+    public function testRefreshTokenFailedWithUnexpectedResponse(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -190,7 +193,7 @@ class OAuthTokenManagerTest extends AbstractTestCase
             'http://example.com',
             'test',
             'password',
-            $this->createTransport($client)
+            $this->createTransport($client),
         );
 
         $this->expectException(OAuthException::class);
@@ -198,9 +201,9 @@ class OAuthTokenManagerTest extends AbstractTestCase
     }
 
     /**
-     * @return void
+     * @throws \BnplPartners\Factoring004\Exception\OAuthException
      */
-    public function testRevokeToken()
+    public function testRevokeToken(): void
     {
         $manager = new OAuthTokenManager(
             'http://example.com',
@@ -213,10 +216,7 @@ class OAuthTokenManagerTest extends AbstractTestCase
         $manager->revokeToken();
     }
 
-    /**
-     * @return \BnplPartners\Factoring004\Transport\TransportInterface
-     */
-    public function createTransport(ClientInterface $client)
+    public function createTransport(ClientInterface $client): TransportInterface
     {
         return new GuzzleTransport($client);
     }

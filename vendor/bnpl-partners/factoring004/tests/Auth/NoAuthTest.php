@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Auth;
 
 use GuzzleHttp\Psr7\Request;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class NoAuthTest extends AbstractTestCase
+class NoAuthTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testApply()
+    public function testApply(): void
     {
         $auth = new NoAuth();
         $expected = new Request('GET', '/');
