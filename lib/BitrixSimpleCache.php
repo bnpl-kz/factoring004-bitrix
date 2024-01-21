@@ -6,6 +6,7 @@ use Psr\SimpleCache\CacheInterface;
 use Bitrix\Main\Data\Cache as BitrixCache;
 use Bitrix\Main\Result;
 use Bitrix\Main\Error;
+use DateInterval;
 
 /**
  * @see https://gist.github.com/SerginhoLD/285240cd0f8b979c4e60855dec9acab2
@@ -48,7 +49,7 @@ class BitrixSimpleCache implements CacheInterface
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         $result = $this->getResult($key);
         return $result->isSuccess() ? $result->getData()['value'] : $default;
@@ -99,7 +100,7 @@ class BitrixSimpleCache implements CacheInterface
      *
      * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return $this->getResult($key)->isSuccess();
     }
@@ -112,7 +113,7 @@ class BitrixSimpleCache implements CacheInterface
      * @return bool
      * @throws \Exception
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
     {
         $this->delete($key); // todo: т.к. битрикс в исходниках положил хуй на пересохранение, то всегда сначала delete
 
@@ -178,7 +179,7 @@ class BitrixSimpleCache implements CacheInterface
      *
      * @return bool
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $this->bitrixCache->clean($key, $this->initDir, $this->baseDir);
         return true;
@@ -187,7 +188,7 @@ class BitrixSimpleCache implements CacheInterface
     /**
      * @return bool
      */
-    public function clear()
+    public function clear(): bool
     {
         $this->bitrixCache->cleanDir($this->initDir, $this->baseDir);
         return true;
@@ -199,7 +200,7 @@ class BitrixSimpleCache implements CacheInterface
      *
      * @return iterable|\Generator
      */
-    public function getMultiple($keys, $default = null)
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         foreach ($keys as $key) {
             yield $key => $this->get($key, $default);
@@ -213,7 +214,7 @@ class BitrixSimpleCache implements CacheInterface
      * @return bool
      * @throws \Exception
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
     {
         foreach ($values as $key => $value) {
             $this->set($key, $value, $ttl);
@@ -227,7 +228,7 @@ class BitrixSimpleCache implements CacheInterface
      *
      * @return bool
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple(iterable $keys): bool
     {
         foreach ($keys as $key) {
             $this->delete($key);
