@@ -104,6 +104,10 @@ class PaymentProcessor
         $phone = $this->getValue($paymentCollection->getPhone());
         $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
         $cityValue = $this->getValue($city);
+        $deliveryPoint = [];
+        if (!empty($city)) {
+            $deliveryPoint['city'] = $cityValue;
+        }
         $itemsQuantity = array_map(function ($item) {
             return (int) $item->getField('QUANTITY');
         }, $order->getBasket()->getBasketItems());
@@ -122,9 +126,7 @@ class PaymentProcessor
             'successRedirect' => $serverHost,
             'postLink' => Config::get('BNPL_PAYMENT_POSTLINK'),
             'phoneNumber' => $phone ? $this->formatPhone($phone) : null,
-            'deliveryPoint' => [
-                'city' => $cityValue,
-            ],
+            'deliveryPoint' => $deliveryPoint,
             'items' => array_map(function ($item) {
                 return [
                     'itemId' => (string) $item->getProductId(),
