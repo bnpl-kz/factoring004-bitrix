@@ -104,7 +104,9 @@ class PaymentProcessor
         $phone = $this->getValue($paymentCollection->getPhone());
         $city = $paymentCollection->getItemByOrderPropertyCode('CITY');
         $cityValue = $this->getValue($city);
-        $deliveryPoint = [];
+        $deliveryPoint = [
+            'city' => ''
+        ];
         if (!empty($city)) {
             $deliveryPoint['city'] = $cityValue;
         }
