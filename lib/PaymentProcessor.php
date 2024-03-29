@@ -107,7 +107,7 @@ class PaymentProcessor
         $deliveryPoint = [
             'city' => ''
         ];
-        if (!empty($city)) {
+        if (!empty($cityValue)) {
             $deliveryPoint['city'] = $cityValue;
         }
         $itemsQuantity = array_map(function ($item) {
