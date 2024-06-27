@@ -7,7 +7,7 @@ $action = $params['PAYMENT_ACTION'];
 $orderId = $params['ORDER_ID'];
 $url = Config::get('BNPL_PAYMENT_API_HOST');
 
-$domain = stripos($url, 'dev') ? 'dev.bnpl.kz' : 'bnpl.kz';
+$domain = preg_replace('#^(https?)://([^/]+).*#', '$2', $url);
 
 ?>
 
