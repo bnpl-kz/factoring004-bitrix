@@ -56,7 +56,7 @@ class Config
 
         $result = PaySystemActionTable::getRow([
             'select' => array('ID'),
-            'filter' => array('CODE' => 'factoring004'),
+            'filter' => array('CODE' => 'factoring004', 'ACTIVE' => 'Y'),
             'limit' => 1,
         ]);
 
