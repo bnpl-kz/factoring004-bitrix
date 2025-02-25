@@ -2,10 +2,14 @@
 
 use Bitrix\Main\Localization\Loc;
 use Bnpl\Payment\Config;
+use Bitrix\Sale\Order;
 
 $action = $params['PAYMENT_ACTION'];
 $orderId = $params['ORDER_ID'];
-$url = Config::get('BNPL_PAYMENT_API_HOST');
+$order = Order::load($orderId);
+$personTypeId = $order->getPersonTypeId();
+$url = Config::get('BNPL_PAYMENT_API_HOST', $personTypeId);
+$clientRoute = Config::get('BNPL_PAYMENT_CLIENT_ROUTE', $personTypeId);
 
 $domain = preg_replace('#^(https?)://([^/]+).*#', '$2', $url);
 
@@ -20,7 +24,7 @@ $domain = preg_replace('#^(https?)://([^/]+).*#', '$2', $url);
 
 <?php
 
-if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
+if ($clientRoute === 'modal') {
     echo "<div id='modal-bnplpayment'></div>
             <script defer src='https://$domain/widget/index_bundle.js'></script>
             <script>

@@ -107,6 +107,7 @@ class PaymentProcessor
         $deliveryPoint = [
             'city' => ''
         ];
+        $personTypeId = $order->getPersonTypeId();
         if (!empty($cityValue)) {
             $deliveryPoint['city'] = $cityValue;
         }
@@ -116,17 +117,17 @@ class PaymentProcessor
 
         return PreAppMessage::createFromArray([
             'partnerData' => [
-                'partnerName' => Config::get('BNPL_PAYMENT_PARTNER_NAME'),
-                'partnerCode' => Config::get('BNPL_PAYMENT_PARTNER_CODE'),
-                'pointCode' => Config::get('BNPL_PAYMENT_POINT_CODE'),
-                'partnerEmail' => Config::get('BNPL_PAYMENT_PARTNER_EMAIL'),
-                'partnerWebsite' => Config::get('BNPL_PAYMENT_PARTNER_WEBSITE'),
+                'partnerName' => Config::get('BNPL_PAYMENT_PARTNER_NAME', $personTypeId),
+                'partnerCode' => Config::get('BNPL_PAYMENT_PARTNER_CODE', $personTypeId),
+                'pointCode' => Config::get('BNPL_PAYMENT_POINT_CODE', $personTypeId),
+                'partnerEmail' => Config::get('BNPL_PAYMENT_PARTNER_EMAIL', $personTypeId),
+                'partnerWebsite' => Config::get('BNPL_PAYMENT_PARTNER_WEBSITE', $personTypeId),
             ],
             'billNumber' => (string) $order->getId(),
             'billAmount' => (int) round($order->getPrice()),
             'itemsQuantity' => array_sum($itemsQuantity),
             'successRedirect' => $serverHost,
-            'postLink' => Config::get('BNPL_PAYMENT_POSTLINK'),
+            'postLink' => Config::get('BNPL_PAYMENT_POSTLINK', $personTypeId),
             'phoneNumber' => $phone ? $this->formatPhone($phone) : null,
             'deliveryPoint' => $deliveryPoint,
             'items' => array_map(function ($item) {
@@ -148,5 +149,12 @@ class PaymentProcessor
     private function extractServerHost(HttpRequest $request)
     {
         return $request->getServer()->getRequestScheme() . '://' . $request->getServer()->getHttpHost();
+    }
+
+    public static function getOrderPersonTypeId(HttpRequest $request)
+    {
+        $order = Order::load($request->get('order_id'));
+
+        return $order->getPersonTypeId();
     }
 }

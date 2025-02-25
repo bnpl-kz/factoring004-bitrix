@@ -17,13 +17,14 @@ class Config
 
     /**
      * @param string|null $key
+     * @param int|null $personTypeId
      *
      * @return string|null
      */
-    public static function get($key)
+    public static function get($key, $personTypeId = null)
     {
         try {
-            return BusinessValue::get($key, static::KEY_PREFIX . static::findPaySystemId());
+            return BusinessValue::get($key, static::KEY_PREFIX . static::findPaySystemId(), $personTypeId);
         } catch (Exception $e) {
             return null;
         }

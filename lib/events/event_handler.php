@@ -32,7 +32,7 @@ class EventHandler
             return;
         }
 
-        if (!static::isRequiredOptionsFilled()) {
+        if (!static::isRequiredOptionsFilled($order->getPersonTypeId())) {
             static::disablePaymentSystemIfEnabled($arPaySystemServiceAll);
             return;
         }
@@ -76,10 +76,10 @@ class EventHandler
     /**
      * @return bool
      */
-    private static function isRequiredOptionsFilled()
+    private static function isRequiredOptionsFilled($personTypeId = null)
     {
         foreach (static::REQUIRED_OPTIONS as $option) {
-            if (!Config::get($option)) {
+            if (!Config::get($option, $personTypeId)) {
                 return false;
             }
         }

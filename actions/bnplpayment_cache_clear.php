@@ -14,6 +14,7 @@ use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
 use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
 use BnplPartners\Factoring004\Transport\GuzzleTransport;
 use Bitrix\Main\Application;
+use Bitrix\Sale\PersonType;
 
 define("NO_KEEP_STATISTIC", true);
 define("NO_AGENT_STATISTIC", true);
@@ -31,19 +32,27 @@ if (!check_bitrix_sessid()) {
 CModule::IncludeModule('bnpl.payment');
 CModule::IncludeModule('sale');
 
-$apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
-$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
+$personTypes = PersonType::getList()->fetchAll();
 
-$cache = new BitrixSimpleCache(Application::getInstance()->getCache());
-$transport = new GuzzleTransport();
-$logger = DebugLoggerFactory::create()->createLogger();
-$transport->setLogger($logger);
+foreach ($personTypes as $personType) {
+    if ($personType['ACTIVE'] === 'Y') {
+        $personTypeId = $personType['ID'];
 
-$tokenManager = new OAuthTokenManager($apiHost . '/users/api/v1', $oAuthLogin, $oAuthPassword, $transport);
-$tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
+        $apiHost = Config::get('BNPL_PAYMENT_API_HOST', $personTypeId);
+        $oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN', $personTypeId);
+        $oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD', $personTypeId);
 
-$tokenManager->clearCache();
+        $cache = new BitrixSimpleCache(Application::getInstance()->getCache());
+        $transport = new GuzzleTransport();
+        $logger = DebugLoggerFactory::create()->createLogger();
+        $transport->setLogger($logger);
+
+        $tokenManager = new OAuthTokenManager($apiHost . '/users/api/v1', $oAuthLogin, $oAuthPassword, $transport);
+        $tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment_' . $personTypeId);
+
+        $tokenManager->clearCache();
+    }
+}
 
 $response = new \Bitrix\Main\HttpResponse();
 $response->addHeader('Content-Type', 'application/json');

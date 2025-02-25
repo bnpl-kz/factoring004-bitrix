@@ -41,10 +41,13 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
-$apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
-$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
-$debug = Config::get('BNPL_PAYMENT_DEBUG');
+$request = Application::getInstance()->getContext()->getRequest();
+$personTypeId = PaymentProcessor::getOrderPersonTypeId($request);
+
+$apiHost = Config::get('BNPL_PAYMENT_API_HOST', $personTypeId);
+$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN', $personTypeId);
+$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD', $personTypeId);
+$debug = Config::get('BNPL_PAYMENT_DEBUG', $personTypeId);
 
 $cache = new BitrixSimpleCache(Application::getInstance()->getCache());
 $transport = new GuzzleTransport();
@@ -52,13 +55,12 @@ $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
 
 $tokenManager = new OAuthTokenManager($apiHost . '/users/api/v1', $oAuthLogin, $oAuthPassword, $transport);
-$tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
+$tokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment_' . $personTypeId);
 $token = $tokenManager->getAccessToken()->getAccess();
 
 $api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 $session = \Bitrix\Main\Application::getInstance()->getSession();
 
-$request = Application::getInstance()->getContext()->getRequest();
 $processor = new PaymentProcessor($api);
 
 try {
@@ -93,7 +95,7 @@ try {
         $error = $isDebug ? $e->getMessage() : 'An error occurred. Please try again.';
     }
 
-    if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
+    if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE', $personTypeId) === 'modal') {
         $response = (new Json([
             'redirectErrorPage' => '/personal/order/payment/bnplpayment_error.php'
         ]));

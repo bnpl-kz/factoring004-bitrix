@@ -128,7 +128,7 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
         DebugLoggerFactory::create()->createLogger()->debug('POSTLINK: ' . Json::encode($data));
 
         try {
-            $this->validateSignature($data);
+            $this->validateSignature($data, $payment->getOrder()->getPersonTypeId());
         } catch (InvalidSignatureException $e) {
             return $result->addError(new ResultError('Invalid signature', 'INVALID_SIGNATURE'));
         }
@@ -226,9 +226,9 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
      *
      * @throws \BnplPartners\Factoring004\Exception\InvalidSignatureException
      */
-    private function validateSignature(array $data)
+    private function validateSignature(array $data, $personTypeId)
     {
-        $secretKey = Config::get('BNPL_PAYMENT_PARTNER_CODE');
+        $secretKey = Config::get('BNPL_PAYMENT_PARTNER_CODE', $personTypeId);
         $validator = new PostLinkSignatureValidator($secretKey);
 
         $validator->validateData($data);
