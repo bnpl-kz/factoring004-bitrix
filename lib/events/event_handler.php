@@ -15,7 +15,7 @@ use CUtil;
 class EventHandler
 {
     const MIN_SUM = 6000;
-    const MAX_SUM = 200000;
+    const MAX_SUM = 50000;
     const REQUIRED_OPTIONS = [
         'BNPL_PAYMENT_API_OAUTH_LOGIN',
         'BNPL_PAYMENT_API_OAUTH_PASSWORD',

@@ -123,6 +123,7 @@ class PaymentProcessor
             'billNumber' => (string) $order->getId(),
             'billAmount' => (int) round($order->getPrice()),
             'itemsQuantity' => array_sum($itemsQuantity),
+            'paymentType' => "PAD",
             'successRedirect' => $serverHost,
             'postLink' => Config::get('BNPL_PAYMENT_POSTLINK'),
             'phoneNumber' => $phone ? $this->formatPhone($phone) : null,
