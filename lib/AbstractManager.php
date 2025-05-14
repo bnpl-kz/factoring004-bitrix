@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Sale\Order;
 
@@ -31,11 +31,11 @@ abstract class AbstractManager
         foreach ($this->order->getPaymentCollection() as $payment) {
             $paySystemService = $payment->getPaySystem();
 
-            if ($paySystemService->getField('CODE') === 'factoring004') {
+            if ($paySystemService->getField('CODE') === 'factoring004_pad') {
                 return $payment;
             }
         }
 
-        throw new InvalidArgumentException('Payment by code factoring004 is not found');
+        throw new InvalidArgumentException('Payment by code factoring004_pad is not found');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Main\ArgumentException;
 use Bitrix\Sale\Order;

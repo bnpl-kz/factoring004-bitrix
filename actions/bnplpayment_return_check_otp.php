@@ -8,12 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Context;
-use Bnpl\Payment\Config;
+use Bnpl\PaymentPad\Config;
 use Bitrix\Sale\Order;
 use Bitrix\Main\Application;
-use Bnpl\Payment\DebugLoggerFactory;
-use Bnpl\Payment\PartialRefundManager;
-use Bnpl\Payment\PartialRefundManagerException;
+use Bnpl\PaymentPad\DebugLoggerFactory;
+use Bnpl\PaymentPad\PartialRefundManager;
+use Bnpl\PaymentPad\PartialRefundManagerException;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
@@ -34,19 +34,19 @@ if (!check_bitrix_sessid()) {
     exit;
 }
 
-CModule::IncludeModule('bnpl.payment');
+CModule::IncludeModule('bnpl.pad');
 CModule::IncludeModule('sale');
 
-$apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$partnerCode = Config::get('BNPL_PAYMENT_PARTNER_CODE');
-$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
-$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
+$apiHost = Config::get('BNPL_PAYMENT_PAD_API_HOST');
+$partnerCode = Config::get('BNPL_PAYMENT_PAD_PARTNER_CODE');
+$oAuthLogin = Config::get('BNPL_PAYMENT_PAD_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_PAD_API_OAUTH_PASSWORD');
 
 $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
 
-$token = \Bnpl\Payment\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
+$token = \Bnpl\PaymentPad\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
 
 $api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 $context = Context::getCurrent();

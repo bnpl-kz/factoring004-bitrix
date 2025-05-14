@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 class DeliveryAmountException extends \Exception
 {

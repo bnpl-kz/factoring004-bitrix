@@ -2,7 +2,7 @@
 
 use Bitrix\Main\ArgumentNullException;
 use Bitrix\Sale\Order;
-use Bnpl\Payment\Config;
+use Bnpl\PaymentPad\Config;
 
 try {
     $__order = Order::load($_GET['order_id']);

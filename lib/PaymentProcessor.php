@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Main\Engine\Response\Json;
 use Bitrix\Main\HttpRequest;
@@ -114,18 +114,18 @@ class PaymentProcessor
 
         return PreAppMessage::createFromArray([
             'partnerData' => [
-                'partnerName' => Config::get('BNPL_PAYMENT_PARTNER_NAME'),
-                'partnerCode' => Config::get('BNPL_PAYMENT_PARTNER_CODE'),
-                'pointCode' => Config::get('BNPL_PAYMENT_POINT_CODE'),
-                'partnerEmail' => Config::get('BNPL_PAYMENT_PARTNER_EMAIL'),
-                'partnerWebsite' => Config::get('BNPL_PAYMENT_PARTNER_WEBSITE'),
+                'partnerName' => Config::get('BNPL_PAYMENT_PAD_PARTNER_NAME'),
+                'partnerCode' => Config::get('BNPL_PAYMENT_PAD_PARTNER_CODE'),
+                'pointCode' => Config::get('BNPL_PAYMENT_PAD_POINT_CODE'),
+                'partnerEmail' => Config::get('BNPL_PAYMENT_PAD_PARTNER_EMAIL'),
+                'partnerWebsite' => Config::get('BNPL_PAYMENT_PAD_PARTNER_WEBSITE'),
             ],
             'billNumber' => (string) $order->getId(),
             'billAmount' => (int) round($order->getPrice()),
             'itemsQuantity' => array_sum($itemsQuantity),
             'paymentType' => "PAD",
             'successRedirect' => $serverHost,
-            'postLink' => Config::get('BNPL_PAYMENT_POSTLINK'),
+            'postLink' => Config::get('BNPL_PAYMENT_PAD_POSTLINK'),
             'phoneNumber' => $phone ? $this->formatPhone($phone) : null,
             'deliveryPoint' => [
                 'city' => $cityValue,

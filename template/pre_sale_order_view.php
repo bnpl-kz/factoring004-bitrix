@@ -2,7 +2,7 @@
 
 use Bitrix\Main\ArgumentNullException;
 use Bitrix\Sale\Order;
-use Bnpl\Payment\Config;
+use Bnpl\PaymentPad\Config;
 
 if (empty($_GET['ID'])) {
     return;

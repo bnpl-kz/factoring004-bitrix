@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Diag\LogFormatter;
@@ -60,7 +60,7 @@ class DebugLoggerFactory
         $path = $config['settings']['file'] ?? '';
 
         if (empty($path)) {
-            return 'bitrix/tmp/factoring004/' . $this->getLogFilename();
+            return 'bitrix/tmp/factoring004_pad/' . $this->getLogFilename();
         }
 
         $path = pathinfo($path, PATHINFO_DIRNAME);
@@ -76,6 +76,6 @@ class DebugLoggerFactory
 
     private function getLogFilename(): string
     {
-        return 'factoring004-' . date('Y-m-d') . '.log';
+        return 'factoring004_pad-' . date('Y-m-d') . '.log';
     }
 }

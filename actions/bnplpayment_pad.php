@@ -17,9 +17,9 @@ if (!check_bitrix_sessid()) {
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Engine\Response\Json;
-use Bnpl\Payment\Config;
-use Bnpl\Payment\DebugLoggerFactory;
-use Bnpl\Payment\PaymentProcessor;
+use Bnpl\PaymentPad\Config;
+use Bnpl\PaymentPad\DebugLoggerFactory;
+use Bnpl\PaymentPad\PaymentProcessor;
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use BnplPartners\Factoring004\Exception\ErrorResponseException;
@@ -31,23 +31,23 @@ define('NO_AGENT_CHECK', true);
 define('NOT_CHECK_PERMISSIONS', true);
 define("DisableEventsCheck", true);
 
-CModule::IncludeModule('bnpl.payment');
+CModule::IncludeModule('bnpl.pad');
 CModule::IncludeModule('sale');
 
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     exit;
 }
 
-$apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
-$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
-$debug = Config::get('BNPL_PAYMENT_DEBUG');
+$apiHost = Config::get('BNPL_PAYMENT_PAD_API_HOST');
+$oAuthLogin = Config::get('BNPL_PAYMENT_PAD_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_PAD_API_OAUTH_PASSWORD');
+$debug = Config::get('BNPL_PAYMENT_PAD_DEBUG');
 
 $transport = new GuzzleTransport();
 $logger = DebugLoggerFactory::create()->createLogger();
 $transport->setLogger($logger);
 
-$token = \Bnpl\Payment\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
+$token = \Bnpl\PaymentPad\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->getToken();
 
 $api = Api::create($apiHost, new BearerTokenAuth($token), $transport);
 
@@ -88,7 +88,7 @@ try {
         $error = $isDebug ? $e->getMessage() : 'An error occurred. Please try again.';
     }
 
-    if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
+    if (Config::get('BNPL_PAYMENT_PAD_CLIENT_ROUTE') === 'modal') {
         $response = (new Json([
             'redirectErrorPage' => '/personal/order/payment/bnplpayment_error.php'
         ]));

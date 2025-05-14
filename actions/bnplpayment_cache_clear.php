@@ -6,8 +6,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-use Bnpl\Payment\Config;
-use Bnpl\Payment\DebugLoggerFactory;
+use Bnpl\PaymentPad\Config;
+use Bnpl\PaymentPad\DebugLoggerFactory;
 use BnplPartners\Factoring004\Transport\GuzzleTransport;
 use Bitrix\Main\Application;
 
@@ -24,12 +24,12 @@ if (!check_bitrix_sessid()) {
     exit;
 }
 
-CModule::IncludeModule('bnpl.payment');
+CModule::IncludeModule('bnpl.pad');
 CModule::IncludeModule('sale');
 
-$apiHost = Config::get('BNPL_PAYMENT_API_HOST');
-$oAuthLogin = Config::get('BNPL_PAYMENT_API_OAUTH_LOGIN');
-$oAuthPassword = Config::get('BNPL_PAYMENT_API_OAUTH_PASSWORD');
+$apiHost = Config::get('BNPL_PAYMENT_PAD_API_HOST');
+$oAuthLogin = Config::get('BNPL_PAYMENT_PAD_API_OAUTH_LOGIN');
+$oAuthPassword = Config::get('BNPL_PAYMENT_PAD_API_OAUTH_PASSWORD');
 
 
 $transport = new GuzzleTransport();
@@ -38,7 +38,7 @@ $transport->setLogger($logger);
 $response = new \Bitrix\Main\HttpResponse();
 $response->addHeader('Content-Type', 'application/json');
 
-\Bnpl\Payment\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->clearCache();
+\Bnpl\PaymentPad\AuthTokenManager::init($oAuthLogin, $oAuthPassword, $apiHost, $transport, Application::getInstance())->clearCache();
 
 $response->setContent(json_encode(['success' => true]));
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
 use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
@@ -15,7 +15,7 @@ class AuthTokenManager
     {
         $cache = new BitrixSimpleCache($instance->getCache());
         $tokenManager = new OAuthTokenManager($apiHost . '/users/api/v1', $login, $password, $transport);
-        $this->manager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.payment');
+        $this->manager = new CacheOAuthTokenManager($tokenManager, $cache, 'bnpl.pad');
     }
 
     public static function init(string $login, string $password, string $apiHost, TransportInterface $transport, Application $instance): AuthTokenManager

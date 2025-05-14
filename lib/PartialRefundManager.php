@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Main\ArgumentException;
 use Bitrix\Sale\Order;
@@ -21,7 +21,7 @@ class PartialRefundManager extends AbstractManager
     }
 
     /**
-     * @throws \Bnpl\Payment\PartialRefundManagerException
+     * @throws \Bnpl\PaymentPad\PartialRefundManagerException
      */
     public function calculateAmount(): int
     {
@@ -49,8 +49,8 @@ class PartialRefundManager extends AbstractManager
     }
 
     /**
-     * @throws \Bnpl\Payment\EmptyBasketItemsException
-     * @throws \Bnpl\Payment\PartialRefundManagerException
+     * @throws \Bnpl\PaymentPad\EmptyBasketItemsException
+     * @throws \Bnpl\PaymentPad\PartialRefundManagerException
      */
     public function refund(): void
     {

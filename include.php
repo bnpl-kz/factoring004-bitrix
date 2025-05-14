@@ -3,8 +3,8 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 $classes = array(
-    '\Bnpl\Payment\EventHandler' => 'lib/events/event_handler.php',
-    '\Bnpl\Payment\PushAdminScripts' => 'lib/events/PushAdminScripts.php',
+    '\Bnpl\PaymentPad\EventHandler' => 'lib/events/event_handler.php',
+    '\Bnpl\PaymentPad\PushAdminScripts' => 'lib/events/PushAdminScripts.php',
 );
 
-CModule::AddAutoloadClasses('bnpl.payment', $classes);
+CModule::AddAutoloadClasses('bnpl.pad', $classes);

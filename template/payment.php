@@ -1,11 +1,11 @@
 <?php
 
 use Bitrix\Main\Localization\Loc;
-use Bnpl\Payment\Config;
+use Bnpl\PaymentPad\Config;
 
 $action = $params['PAYMENT_ACTION'];
 $orderId = $params['ORDER_ID'];
-$url = Config::get('BNPL_PAYMENT_API_HOST');
+$url = Config::get('BNPL_PAYMENT_PAD_API_HOST');
 
 $domain = stripos($url, 'dev') ? 'dev.bnpl.kz' : 'bnpl.kz';
 
@@ -20,13 +20,13 @@ $domain = stripos($url, 'dev') ? 'dev.bnpl.kz' : 'bnpl.kz';
 
 <?php
 
-if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
-    echo "<div id='modal-bnplpayment'></div>
+if (Config::get('BNPL_PAYMENT_PAD_CLIENT_ROUTE') === 'modal') {
+    echo "<div id='modal-bnplpayment_pad'></div>
             <script defer src='https://$domain/widget/index_bundle.js'></script>
             <script>
             setTimeout((function () {
-                let bnplpaymentForm = document.getElementById('form-bnplpayment')
-                let bnplpaymentButton = document.getElementById('button-bnplpayment');
+                let bnplpaymentForm = document.getElementById('form-bnplpayment_pad')
+                let bnplpaymentButton = document.getElementById('button-bnplpayment_pad');
                 let sessId = document.getElementById('sessid')
                 let formData = new FormData()
                 bnplpaymentForm.addEventListener('submit', function (e) {
@@ -47,7 +47,7 @@ if (Config::get('BNPL_PAYMENT_CLIENT_ROUTE') === 'modal') {
                                 }
                                 const bnplKzApi = new BnplKzApi.CPO(
                                 {
-                                  rootId: 'modal-bnplpayment',
+                                  rootId: 'modal-bnplpayment_pad',
                                   callbacks: {
                                     onLoad: () => bnplpaymentButton.setAttribute('disabled', true),
                                     onError: () => window.location.replace(result.redirectLink),

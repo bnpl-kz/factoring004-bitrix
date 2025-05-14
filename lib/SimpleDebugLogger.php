@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Main\Diag\Debug;
 use Psr\Log\AbstractLogger;

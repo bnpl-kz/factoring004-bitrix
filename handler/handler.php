@@ -10,8 +10,8 @@ use Bitrix\Sale\Payment;
 use Bitrix\Sale\PaySystem;
 use Bitrix\Sale\PaySystem\ServiceResult;
 use Bitrix\Sale\ResultError;
-use Bnpl\Payment\Config;
-use Bnpl\Payment\DebugLoggerFactory;
+use Bnpl\PaymentPad\Config;
+use Bnpl\PaymentPad\DebugLoggerFactory;
 use BnplPartners\Factoring004\Exception\InvalidSignatureException;
 use BnplPartners\Factoring004\Signature\PostLinkSignatureValidator;
 use Exception;
@@ -21,7 +21,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * @package Sale\Handlers\PaySystem
  */
-class BnplPaymentHandler extends PaySystem\ServiceHandler
+class BnplPadHandler extends PaySystem\ServiceHandler
 {
     const STATUS_PREAPPROVED = 'preapproved';
     const STATUS_COMPLETED = 'completed';
@@ -54,7 +54,7 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
      */
     public static function getIndicativeFields()
     {
-        return ['ps' => 'bnpl.payment'];
+        return ['ps' => 'bnpl.pad'];
     }
 
     /**
@@ -96,7 +96,7 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
     {
         return [
             'pay' => [
-                self::ACTIVE_URL => '/personal/order/payment/bnplpayment.php',
+                self::ACTIVE_URL => '/personal/order/payment/bnplpayment_pad.php',
             ],
         ];
     }
@@ -152,7 +152,7 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
         $result->setPsData([
             'PS_STATUS' => $psStatus,
             'PS_STATUS_CODE' => $status,
-            'PS_STATUS_DESCRIPTION' => 'Factoring004',
+            'PS_STATUS_DESCRIPTION' => 'Factoring004 PAD',
             'PS_STATUS_MESSAGE' => implode('; ', [
                 'Status: ' . $status,
                 'PreAppId: ' . $data['preappId'],
@@ -228,7 +228,7 @@ class BnplPaymentHandler extends PaySystem\ServiceHandler
      */
     private function validateSignature(array $data)
     {
-        $secretKey = Config::get('BNPL_PAYMENT_PARTNER_CODE');
+        $secretKey = Config::get('BNPL_PAYMENT_PAD_PARTNER_CODE');
         $validator = new PostLinkSignatureValidator($secretKey);
 
         $validator->validateData($data);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Sale\BusinessValue;
 use Bitrix\Sale\Internals\PaySystemActionTable;
@@ -56,7 +56,7 @@ class Config
 
         $result = PaySystemActionTable::getRow([
             'select' => array('ID'),
-            'filter' => array('CODE' => 'factoring004', 'ACTIVE' => 'Y'),
+            'filter' => array('CODE' => 'factoring004_pad', 'ACTIVE' => 'Y'),
             'limit' => 1,
         ]);
 
@@ -99,9 +99,9 @@ class Config
             return [];
         }
         foreach (BusinessValue::getConsumerCodePersonMapping()[$prefix] as $key => $item) {
-            if (strpos($key,'BNPL_PAYMENT_DELIVERY_') !== false) {
+            if (strpos($key,'BNPL_PAYMENT_PAD_DELIVERY_') !== false) {
                 foreach ($item as $val) {
-                    $result[substr($key, strlen('BNPL_PAYMENT_DELIVERY_'))] = $val['PROVIDER_VALUE'];
+                    $result[substr($key, strlen('BNPL_PAYMENT_PAD_DELIVERY_'))] = $val['PROVIDER_VALUE'];
                 }
             }
         }

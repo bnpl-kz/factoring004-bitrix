@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Psr\SimpleCache\CacheInterface;
 use Bitrix\Main\Data\Cache as BitrixCache;

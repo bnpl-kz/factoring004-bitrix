@@ -1,6 +1,6 @@
 <?php
 
-namespace Bnpl\Payment;
+namespace Bnpl\PaymentPad;
 
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Localization\Loc;
@@ -17,12 +17,12 @@ class EventHandler
     const MIN_SUM = 6000;
     const MAX_SUM = 50000;
     const REQUIRED_OPTIONS = [
-        'BNPL_PAYMENT_API_OAUTH_LOGIN',
-        'BNPL_PAYMENT_API_OAUTH_PASSWORD',
-        'BNPL_PAYMENT_API_HOST',
-        'BNPL_PAYMENT_PARTNER_NAME',
-        'BNPL_PAYMENT_PARTNER_CODE',
-        'BNPL_PAYMENT_POINT_CODE',
+        'BNPL_PAYMENT_PAD_API_OAUTH_LOGIN',
+        'BNPL_PAYMENT_PAD_API_OAUTH_PASSWORD',
+        'BNPL_PAYMENT_PAD_API_HOST',
+        'BNPL_PAYMENT_PAD_PARTNER_NAME',
+        'BNPL_PAYMENT_PAD_PARTNER_CODE',
+        'BNPL_PAYMENT_PAD_POINT_CODE',
     ];
 
     public static function hidePaySystem(
@@ -48,9 +48,9 @@ class EventHandler
             return;
         }
 
-        static::addScheduleOrDisablePaymentMethod();
+        static::disablePaymentMethod();
 
-        if (Config::get('BNPL_PAYMENT_FILE')) {
+        if (Config::get('BNPL_PAYMENT_PAD_FILE')) {
             static::addJS();
         }
     }
@@ -58,7 +58,7 @@ class EventHandler
     private static function getPaymentSystemIndex(array $paymentSystems)
     {
         foreach ($paymentSystems as $i => $item) {
-            if ($item['CODE'] === 'factoring004') {
+            if ($item['CODE'] === 'factoring004_pad') {
                 return $i;
             }
         }
@@ -104,10 +104,10 @@ class EventHandler
         }
 
         $agreementLink = static::getAgreementLink();
-        $agreementText = Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT');
-        $agreementTextLink =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_LINK');
-        $agreementTextError =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_ERROR');
-        $agreementTextButton =  Loc::getMessage('BNPL_PAYMENT_AGREEMENT_TEXT_BUTTON');
+        $agreementText = Loc::getMessage('BNPL_PAYMENT_PAD_AGREEMENT_TEXT');
+        $agreementTextLink =  Loc::getMessage('BNPL_PAYMENT_PAD_AGREEMENT_TEXT_LINK');
+        $agreementTextError =  Loc::getMessage('BNPL_PAYMENT_PAD_AGREEMENT_TEXT_ERROR');
+        $agreementTextButton =  Loc::getMessage('BNPL_PAYMENT_PAD_AGREEMENT_TEXT_BUTTON');
 
         Asset::getInstance()->addString(
             <<<JS
@@ -181,13 +181,13 @@ JS
     private static function getPaySystemId()
     {
         return PaySystemActionTable::getRow(array(
-            'filter'=>array('CODE'=>'factoring004')
+            'filter'=>array('CODE'=>'factoring004_pad')
         ))['ID'];
     }
 
     private static function getAgreementLink()
     {
-        $id = Config::get('BNPL_PAYMENT_FILE');
+        $id = Config::get('BNPL_PAYMENT_PAD_FILE');
         if (!$id) {
             return '';
         }
@@ -197,7 +197,7 @@ JS
         return '/upload/'.$result['SUBDIR'].'/'.$result['FILE_NAME'];
     }
 
-    private static function addScheduleOrDisablePaymentMethod()
+    private static function disablePaymentMethod()
     {
         $paySystemId = Config::getPaySystemId();
 
@@ -208,11 +208,10 @@ JS
 
         $minAmount = static::MIN_SUM;
         $maxAmount = static::MAX_SUM;
-        $minAmountMessage = Loc::getMessage('BNPL_PAYMENT_MIN_AMOUNT_CONDITION');
-        $maxAmountMessage = Loc::getMessage('BNPL_PAYMENT_MAX_AMOUNT_CONDITION');
+        $minAmountMessage = Loc::getMessage('BNPL_PAYMENT_PAD_MIN_AMOUNT_CONDITION');
+        $maxAmountMessage = Loc::getMessage('BNPL_PAYMENT_PAD_MAX_AMOUNT_CONDITION');
 
-        Asset::getInstance()->addCss('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
-        Asset::getInstance()->addString('<script src="/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS . '" defer></script>');
+
         Asset::getInstance()->addString(
             <<<JS
                 <script>
@@ -239,22 +238,6 @@ JS
                             disablePaymentMethod(container, input, totalAmount);
                             return;
                           }
-                          
-                          let elem = document.getElementById('factoring004-schedule');
-                          
-                          if (!elem) {
-                            const schedule = new Factoring004.PaymentSchedule({
-                              elemId: 'factoring004-schedule',
-                              totalAmount,
-                            });
-                          
-                            elem = document.createElement('div');
-                            elem.id = 'factoring004-schedule';
-                            
-                            schedule.renderTo(elem);
-                          }
-                        
-                          container.insertAdjacentElement('afterend', elem);
                         };
                         
                         function disablePaymentMethod (container, input, totalAmount) {

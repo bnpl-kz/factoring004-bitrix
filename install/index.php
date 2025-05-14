@@ -4,13 +4,12 @@ use Bitrix\Main\EventManager;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Application;
 use Bitrix\Main\IO\File;
-use Bnpl\Payment\PaymentScheduleAsset;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class bnpl_payment extends CModule
+class bnpl_pad extends CModule
 {
-    var $MODULE_ID = 'bnpl.payment';
+    var $MODULE_ID = 'bnpl.pad';
     var $MODULE_VERSION;
     var $MODULE_VERSION_DATE;
     var $MODULE_NAME;
@@ -29,9 +28,9 @@ class bnpl_payment extends CModule
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 
-        $this->MODULE_NAME = Loc::getMessage('BNPL_PAYMENT_INSTALL_NAME');
-        $this->MODULE_DESCRIPTION = Loc::getMessage('BNPL_PAYMENT_INSTALL_DESCRIPTION');
-        $this->PARTNER_NAME = Loc::getMessage('BNPL_PAYMENT_DEVELOPMENT_TEAM');
+        $this->MODULE_NAME = Loc::getMessage('BNPL_PAYMENT_PAD_INSTALL_NAME');
+        $this->MODULE_DESCRIPTION = Loc::getMessage('BNPL_PAYMENT_PAD_INSTALL_DESCRIPTION');
+        $this->PARTNER_NAME = Loc::getMessage('BNPL_PAYMENT_PAD_DEVELOPMENT_TEAM');
         $this->PARTNER_URI = "https://alfabank.kz/";
     }
 
@@ -53,8 +52,8 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_pad.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_pad.php',
             true,
             true
         );
@@ -95,31 +94,17 @@ class bnpl_payment extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/schedule/' . PaymentScheduleAsset::FILE_CSS,
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS,
-            true,
-            true
-        );
-
-        CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/schedule/' . PaymentScheduleAsset::FILE_JS,
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS,
-            true,
-            true
-        );
-
-        CopyDirFiles(
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_error.php',
             $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_error.php',
             true,
             true
         );
 
-        mkdir($_SERVER['DOCUMENT_ROOT'] . '/bitrix/tmp/factoring004', 0755, true);
+        mkdir($_SERVER['DOCUMENT_ROOT'] . '/bitrix/tmp/factoring004_pad', 0755, true);
 
         $source = Application::getDocumentRoot() . '/bitrix/modules/' . $this->MODULE_ID . '/install';
         $logo_dir = Application::getDocumentRoot() . '/bitrix/images/sale/sale_payments/';
-        File::putFileContents($logo_dir . 'bnplpayment.png', File::getFileContents($source . "/sale_payment/bnplpayment/bnplpayment.png"));
+        File::putFileContents($logo_dir . 'bnplpayment_pad.png', File::getFileContents($source . "/sale_payment/bnplpad/bnplpayment.png"));
     }
 
     public function installEvents() {
@@ -127,7 +112,7 @@ class bnpl_payment extends CModule
             'sale',
             'OnSaleComponentOrderCreated',
             $this->MODULE_ID,
-            '\Bnpl\Payment\EventHandler',
+            '\Bnpl\PaymentPad\EventHandler',
             'hidePaySystem'
         );
 
@@ -135,7 +120,7 @@ class bnpl_payment extends CModule
             'main',
             'OnAdminTabControlBegin',
             $this->MODULE_ID,
-            '\Bnpl\Payment\PushAdminScripts',
+            '\Bnpl\PaymentPad\PushAdminScripts',
             'push'
         );
     }
@@ -150,17 +135,15 @@ class bnpl_payment extends CModule
 
     public function UnInstallFiles()
     {
-       DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpayment');
-       DeleteDirFilesEx('/personal/order/payment/bnplpayment.php');
+       DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpad');
+       DeleteDirFilesEx('/personal/order/payment/bnplpayment_pad.php');
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_delivery.php');
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_cache_clear.php');
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_delivery_check_otp.php');
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_return.php');
        DeleteDirFilesEx('/bitrix/admin/bnplpayment_return_check_otp.php');
-       DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment.png');
-       DeleteDirFilesEx('/bitrix/css/factoring004/' . PaymentScheduleAsset::FILE_CSS);
-       DeleteDirFilesEx('/bitrix/js/factoring004/' . PaymentScheduleAsset::FILE_JS);
-       DeleteDirFilesEx('/bitrix/tmp/factoring004');
+       DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment_pad.png');
+       DeleteDirFilesEx('/bitrix/tmp/_pad');
        DeleteDirFilesEx('/personal/order/payment/bnplpayment_error.php');
     }
 
@@ -169,7 +152,7 @@ class bnpl_payment extends CModule
             'sale',
             'OnSaleComponentOrderCreated',
             $this->MODULE_ID,
-            '\Bnpl\Payment\EventHandler',
+            '\Bnpl\PaymentPad\EventHandler',
             'hidePaySystem'
         );
 
@@ -177,7 +160,7 @@ class bnpl_payment extends CModule
             'main',
             'OnAdminTabControlBegin',
             $this->MODULE_ID,
-            '\Bnpl\Payment\PushAdminScripts',
+            '\Bnpl\PaymentPad\PushAdminScripts',
             'push'
         );
     }
