@@ -18,7 +18,7 @@ class bnpl_pad extends CModule
     var $PARTNER_URI;
 
     /**
-     * bnpl_payment constructor.
+     * bnpl_pad constructor.
      */
     public function __construct()
     {
@@ -52,50 +52,50 @@ class bnpl_pad extends CModule
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_pad.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_pad.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpad.php',
             true,
             true
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_cache_clear.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_cache_clear.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad_cache_clear.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpad_cache_clear.php',
             true,
             true
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_delivery.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_delivery.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad_delivery.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpad_delivery.php',
             true,
             true
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_delivery_check_otp.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_delivery_check_otp.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad_delivery_check_otp.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpad_delivery_check_otp.php',
             true,
             true
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_return.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_return.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad_return.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpad_return.php',
             true,
             true
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_return_check_otp.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpayment_return_check_otp.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad_return_check_otp.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/bnplpad_return_check_otp.php',
             true,
             true
         );
 
         CopyDirFiles(
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpayment_error.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpayment_error.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/' . $this->MODULE_ID . '/install/actions/bnplpad_error.php',
+            $_SERVER['DOCUMENT_ROOT'] . '/personal/order/payment/bnplpad_error.php',
             true,
             true
         );
@@ -104,7 +104,7 @@ class bnpl_pad extends CModule
 
         $source = Application::getDocumentRoot() . '/bitrix/modules/' . $this->MODULE_ID . '/install';
         $logo_dir = Application::getDocumentRoot() . '/bitrix/images/sale/sale_payments/';
-        File::putFileContents($logo_dir . 'bnplpayment_pad.png', File::getFileContents($source . "/sale_payment/bnplpad/bnplpayment.png"));
+        //File::putFileContents($logo_dir . 'bnplpayment_pad.png', File::getFileContents($source . "/sale_payment/bnplpad/bnplpayment.png"));
     }
 
     public function installEvents() {
@@ -136,15 +136,15 @@ class bnpl_pad extends CModule
     public function UnInstallFiles()
     {
        DeleteDirFilesEx('/bitrix/php_interface/include/sale_payment/bnplpad');
-       DeleteDirFilesEx('/personal/order/payment/bnplpayment_pad.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_delivery.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_cache_clear.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_delivery_check_otp.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_return.php');
-       DeleteDirFilesEx('/bitrix/admin/bnplpayment_return_check_otp.php');
-       DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment_pad.png');
+       DeleteDirFilesEx('/personal/order/payment/bnplpad.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpad_delivery.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpad_cache_clear.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpad_delivery_check_otp.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpad_return.php');
+       DeleteDirFilesEx('/bitrix/admin/bnplpad_return_check_otp.php');
+       //DeleteDirFilesEx('/bitrix/images/sale/sale_payments/bnplpayment_pad.png');
        DeleteDirFilesEx('/bitrix/tmp/_pad');
-       DeleteDirFilesEx('/personal/order/payment/bnplpayment_error.php');
+       DeleteDirFilesEx('/personal/order/payment/bnplpad_error.php');
     }
 
     public function uninstallEvents() {

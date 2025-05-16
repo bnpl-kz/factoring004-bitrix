@@ -48,7 +48,7 @@
         return;
       }
 
-      fetch('/bitrix/admin/bnplpayment_return.php', {
+      fetch('/bitrix/admin/bnplpad_return.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -93,7 +93,7 @@
 
                   const otp = document.getElementById('bnpl_payment_otp').value;
 
-                  fetch('/bitrix/admin/bnplpayment_return_check_otp.php', {
+                  fetch('/bitrix/admin/bnplpad_return_check_otp.php', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/x-www-form-urlencoded',

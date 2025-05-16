@@ -123,7 +123,7 @@
                                     'items' : deliveryItems
                                 }
 
-                                fetch('/bitrix/admin/bnplpayment_delivery.php', {
+                                fetch('/bitrix/admin/bnplpad_delivery.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -179,7 +179,7 @@
                                                             'items': deliveryItems
                                                         }
 
-                                                        fetch('/bitrix/admin/bnplpayment_delivery_check_otp.php', {
+                                                        fetch('/bitrix/admin/bnplpad_delivery_check_otp.php', {
                                                             method: 'POST',
                                                             headers: {
                                                                 'Content-Type': 'application/x-www-form-urlencoded',

@@ -61,7 +61,7 @@ try {
 } catch (\Exception $e) {
 
     if ($debug === 'on') {
-        $session->set('bnplpayment_debug', $e);
+        $session->set('bnplpad_debug', $e);
     }
 
     if ($e instanceof ErrorResponseException) {
@@ -90,10 +90,10 @@ try {
 
     if (Config::get('BNPL_PAYMENT_PAD_CLIENT_ROUTE') === 'modal') {
         $response = (new Json([
-            'redirectErrorPage' => '/personal/order/payment/bnplpayment_error.php'
+            'redirectErrorPage' => '/personal/order/payment/bnplpad_error.php'
         ]));
     } else {
-        $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpayment_error.php');
+        $response = new \Bitrix\Main\Engine\Response\Redirect('/personal/order/payment/bnplpad_error.php');
     }
 }
 

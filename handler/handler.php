@@ -96,7 +96,7 @@ class BnplPadHandler extends PaySystem\ServiceHandler
     {
         return [
             'pay' => [
-                self::ACTIVE_URL => '/personal/order/payment/bnplpayment_pad.php',
+                self::ACTIVE_URL => '/personal/order/payment/bnplpad.php',
             ],
         ];
     }

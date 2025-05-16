@@ -129,7 +129,7 @@
               let data = {};
 
               try {
-                const response = await request('/bitrix/admin/bnplpayment_return_check_otp.php', {
+                const response = await request('/bitrix/admin/bnplpad_return_check_otp.php', {
                   order_id: orderId,
                   otp,
                   returnItems,
@@ -187,7 +187,7 @@
         let data = {};
 
         try {
-          const response = await request('/bitrix/admin/bnplpayment_return.php', {
+          const response = await request('/bitrix/admin/bnplpad_return.php', {
             order_id: orderId,
             returnItems,
           });

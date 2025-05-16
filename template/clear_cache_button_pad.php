@@ -5,14 +5,14 @@
     document.addEventListener('DOMContentLoaded',function (e) {
         let title = document.querySelector('.adm-detail-title-view-tab')
 
-        let form = '<div style="text-align: center" class="cache-clear-button-block"> <p class="cache-clear-help"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_CACHE_HELP"); ?></p> <button class="cache-clear-button" type="button"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_CACHE_BUTTON"); ?></button></div>'
+        let form = '<div style="text-align: center" class="cache-clear-button-block"> <p class="cache-clear-help"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_HELP"); ?></p> <button class="cache-clear-button" type="button"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_BUTTON"); ?></button></div>'
 
         title.insertAdjacentHTML("afterend", form)
 
         let button = document.querySelector('.cache-clear-button');
 
         button.addEventListener('click', function () {
-            fetch('/bitrix/admin/bnplpayment_cache_clear.php', {
+            fetch('/bitrix/admin/bnplpad_cache_clear.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,7 +22,7 @@
             }).then((response) => response.json()).then((data) => {
                 if (data.success) {
                     BX.UI.Notification.Center.notify({
-                        content: "<?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_CACHE_ALERT"); ?>",
+                        content: "<?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_ALERT"); ?>",
                         position: "bottom-right"
                     });
                 }

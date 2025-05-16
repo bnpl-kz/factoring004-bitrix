@@ -5,9 +5,9 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_be
 
 $session = \Bitrix\Main\Application::getInstance()->getSession();
 
-if ($session->has('bnplpayment_debug')) {
-     var_dump($session->get('bnplpayment_debug'));
-     $session->remove('bnplpayment_debug');
+if ($session->has('bnplpad_debug')) {
+     var_dump($session->get('bnplpad_debug'));
+     $session->remove('bnplpad_debug');
      die;
 }
 
