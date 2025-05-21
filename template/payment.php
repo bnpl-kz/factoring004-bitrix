@@ -15,7 +15,7 @@ $domain = stripos($url, 'dev') ? 'dev.bnpl.kz' : 'bnpl.kz';
         <input type="hidden" name="lang" value="<?=LANGUAGE_ID?>">
         <?=bitrix_sessid_post()?>
         <input type="hidden" name="order_id" value="<?= $orderId ?>">
-        <button id="button-bnplpayment" class="btn btn-primary"><?= Loc::getMessage('BNPL_PAYMENT_PAY_BUTTON') ?></button>
+        <button id="button-bnplpayment" class="btn btn-primary"><?= Loc::getMessage('BNPL_PAYMENT_PAD_PAY_BUTTON') ?></button>
     </form>
 
 <?php

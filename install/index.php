@@ -120,7 +120,7 @@ class bnpl_pad extends CModule
             'main',
             'OnAdminTabControlBegin',
             $this->MODULE_ID,
-            '\Bnpl\PaymentPad\PushAdminScripts',
+            '\Bnpl\PaymentPad\PadPushAdminScripts',
             'push'
         );
     }
@@ -160,7 +160,7 @@ class bnpl_pad extends CModule
             'main',
             'OnAdminTabControlBegin',
             $this->MODULE_ID,
-            '\Bnpl\PaymentPad\PushAdminScripts',
+            '\Bnpl\PaymentPad\PadPushAdminScripts',
             'push'
         );
     }

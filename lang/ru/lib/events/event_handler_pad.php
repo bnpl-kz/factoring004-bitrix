@@ -1,0 +1,9 @@
+<?php
+
+$MESS['BNPL_PAYMENT_PAD_AGREEMENT_TEXT'] = 'Я ознакомлен и согласен с условиями';
+$MESS['BNPL_PAYMENT_PAD_AGREEMENT_TEXT_LINK'] = 'Оплата после доставки';
+$MESS['BNPL_PAYMENT_PAD_AGREEMENT_TEXT_ERROR'] = 'Вам необходимо согласиться с условиями!';
+$MESS['BNPL_PAYMENT_PAD_AGREEMENT_TEXT_BUTTON'] = 'Оформить заказ';
+
+$MESS['BNPL_PAYMENT_PAD_MIN_AMOUNT_CONDITION'] = 'Минимальная сумма заказа {amount}. Не хватает {value}.';
+$MESS['BNPL_PAYMENT_PAD_MAX_AMOUNT_CONDITION'] = 'Максимальная сумма заказа {amount}. Превышает {value}.';

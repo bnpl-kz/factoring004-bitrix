@@ -1,3 +1,3 @@
 <?php
 
-$MESS['BNPL_PAYMENT_PAY_BUTTON'] = 'Оплатить';
+$MESS['BNPL_PAYMENT_PAD_PAY_BUTTON'] = 'Оплатить';
