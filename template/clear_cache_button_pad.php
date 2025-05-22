@@ -3,15 +3,15 @@
 ?>
 <script>
     document.addEventListener('DOMContentLoaded',function (e) {
-        let title = document.querySelector('.adm-detail-title-view-tab')
+        let title_pad = document.querySelector('.adm-detail-title-view-tab')
 
-        let form = '<div style="text-align: center" class="cache-clear-button-block"> <p class="cache-clear-help"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_HELP"); ?></p> <button class="cache-clear-button" type="button"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_BUTTON"); ?></button></div>'
+        let form_pad = '<div style="text-align: center" class="cache-clear-button-block-pad"> <p class="cache-clear-help-pad"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_HELP"); ?></p> <button class="cache-clear-button-pad" type="button"><?= \Bitrix\Main\Localization\Loc::getMessage("BNPL_PAYMENT_PAD_CACHE_BUTTON"); ?></button></div>'
 
-        title.insertAdjacentHTML("afterend", form)
+        title_pad.insertAdjacentHTML("afterend", form_pad)
 
-        let button = document.querySelector('.cache-clear-button');
+        let button_pad = document.querySelector('.cache-clear-button-pad');
 
-        button.addEventListener('click', function () {
+        button_pad.addEventListener('click', function () {
             fetch('/bitrix/admin/bnplpad_cache_clear.php', {
                 method: 'POST',
                 headers: {
@@ -32,7 +32,7 @@
 </script>
 
 <style>
-    .cache-clear-button {
+    .cache-clear-button-pad {
         padding: 5px 10px;
         background-color: #b03c3c;
         color: #fff;
@@ -41,10 +41,10 @@
         font-weight: bold;
         border: none;
     }
-    .cache-clear-button:hover {
+    .cache-clear-button-pad:hover {
         background-color: #c25454;
     }
-    .cache-clear-help {
+    .cache-clear-help-pad {
         font-weight: bold;
         font-style: italic;
     }
