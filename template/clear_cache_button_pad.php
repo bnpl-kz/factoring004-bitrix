@@ -1,5 +1,17 @@
 <?php
-    \Bitrix\Main\UI\Extension::load("ui.notification");
+use Bitrix\Sale\PaySystem\Manager;
+
+\Bitrix\Main\UI\Extension::load("ui.notification");
+
+$paySystemId = isset($_REQUEST['ID']) ? (int)$_REQUEST['ID'] : 0;
+if (!$paySystemId) {
+    return;
+}
+
+$paySystem = Manager::getById($paySystemId);
+if (!$paySystem || empty($paySystem['ACTION_FILE']) || $paySystem['ACTION_FILE'] !== 'bnplpad') {
+    return;
+}
 ?>
 <script>
     document.addEventListener('DOMContentLoaded',function (e) {
