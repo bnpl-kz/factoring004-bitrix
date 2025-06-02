@@ -2,7 +2,7 @@
   "type": "library",
   "require": {
     "php": ">=7.0",
-    "bnpl-partners/factoring004": "^2.0 || ^3.0",
+    "bnpl-partners/factoring004": "dev-2.x-pad",
     "guzzlehttp/guzzle": ">=6.0"
   },
   "license": "MIT",
@@ -15,6 +15,12 @@
       "php": "7.2.34"
     }
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/bnpl-kz/factoring004"
+    }
+  ],
   "autoload": {
     "classmap": ["lib"],
     "exclude-from-classmap": ["lib/events"]
