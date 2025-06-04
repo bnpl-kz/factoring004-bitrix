@@ -19,4 +19,46 @@
 ![Пример настроек плагина](docs/screen3.png)
 * Нажмите кнопку **"Сохранить"**
 
+## Корректировки
+* Для совместной корректной работы плагинов **"Рассрочка 0-0-4 (bnplpayment)"** и **"Оплата после доставки (bnplpad)"** необходимо в исходном коде плагина **"Рассрочка 0-0-4 (bnplpayment)"** сделать несколько изменений:
+* В файле `/bitrix/modules/bnpl.payment/template/set_values_default.php` удалить часть кода:
+```javascript
+else {
+   document.querySelector("[name='CODE']").readOnly = false
+   document.querySelector("[name='CODE']").value = ''
+   description.body.innerText = '';
+}
+```
+* В файле `/bitrix/modules/bnpl.payment/template/clear_cache_button.php` изменить начало кода:
+
+начало кода до:
+```php
+<?php
+   \Bitrix\Main\UI\Extension::load("ui.notification");
+?>
+```
+
+после:
+```php
+<?php
+use Bitrix\Sale\PaySystem\Manager;
+
+
+\Bitrix\Main\UI\Extension::load("ui.notification");
+
+
+$paySystemId = isset($_REQUEST['ID']) ? (int)$_REQUEST['ID'] : 0;
+if (!$paySystemId) {
+   return;
+}
+
+
+$paySystem = Manager::getById($paySystemId);
+if (!$paySystem || empty($paySystem['ACTION_FILE']) || $paySystem['ACTION_FILE'] !== 'bnplpayment') {
+   return;
+}
+?>
+```
+Последующие строки кода ниже оставляем без изменений
+
 Модуль настроен и готов к работе
