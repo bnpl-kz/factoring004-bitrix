@@ -28,10 +28,6 @@ class DebugLoggerFactory
 
         $level = $this->isDebug() ? LogLevel::DEBUG : LogLevel::INFO;
 
-        if (class_exists('\Bitrix\Main\Diag\Logger')) {
-            return $this->createPsrLogger($fullPath, $level);
-        }
-
         return new SimpleDebugLogger($path, $level);
     }
 
