@@ -15,7 +15,7 @@
 * На странице добавления платежной системы в списке **"Обработчик"** выберите значение - **Рассрочка 0-0-4(bnplpayment)**
 ![Обработчик в списке обработчиков платежных систем](docs/screen2.png)
 * На этой же странице в разделе **"Настройка обработчика ПС"** нажмите ссылку **"Показать все"** чтобы увидеть все настройки плагина
-* Заполните поля **OAuth Preapp Token**, **OAuth Accounting Service Token**, **API Host**, **Partner Name**, **Partner Code**, **Point Code**
+* Заполните поля **OAuth Login**, **OAuth Password**, **API Host**, **Partner Name**, **Partner Code**, **Point Code**, **Postlink URL** (https://{siteHost}/bitrix/tools/sale_ps_result.php?ps=bnpl.payment)
 ![Пример настроек плагина](docs/screen3.png)
 * Нажмите кнопку **"Сохранить"**
 
