@@ -2,7 +2,7 @@
 
 ## Установка
 
-* Скачайте архив [factoring004-bitrix](https://github.com/bnpl-kz/factoring004-bitrix/archive/refs/heads/main.zip)
+* Скачайте архив [factoring004-bitrix-light](https://github.com/bnpl-kz/factoring004-bitrix/archive/refs/heads/light.zip)
 * Распакуйте архив
 * Переместите содержимое директории factoring004-bitrix-main в директорию bitrix/modules/bnpl.payment
 * Авторизуйтесь в админ панели Bitrix
@@ -15,7 +15,8 @@
 * На странице добавления платежной системы в списке **"Обработчик"** выберите значение - **Рассрочка 0-0-4(bnplpayment)**
 ![Обработчик в списке обработчиков платежных систем](docs/screen2.png)
 * На этой же странице в разделе **"Настройка обработчика ПС"** нажмите ссылку **"Показать все"** чтобы увидеть все настройки плагина
-* Заполните поля **OAuth Preapp Token**, **OAuth Accounting Service Token**, **API Host**, **Partner Name**, **Partner Code**, **Point Code**
+* Заполните поля **OAuth Login**, **OAuth Password**, **API Host**, **Partner Name**, **Partner Code**, **Point Code**
+* В поле **Postlink URL** необходимо указать значение **{{host}}/bitrix/tools/sale_ps_result.php?ps=bnpl.payment** (вместо {{host}} ваш домен, например https://site.kz)
 ![Пример настроек плагина](docs/screen3.png)
 * Нажмите кнопку **"Сохранить"**
 
