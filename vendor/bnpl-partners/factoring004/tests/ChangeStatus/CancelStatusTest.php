@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class CancelStatusTest extends AbstractTestCase
+class CancelStatusTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCancel()
+    public function testCancel(): void
     {
         $this->assertEquals(CancelStatus::CANCEL(), CancelStatus::from('canceled'));
     }

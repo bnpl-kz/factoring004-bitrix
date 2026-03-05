@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\ChangeStatus\ChangeStatusResource;
@@ -23,21 +25,16 @@ use BnplPartners\Factoring004\Otp\OtpResource;
 use BnplPartners\Factoring004\Otp\SendOtpReturn;
 use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\ResponseInterface;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class FullRefundTest extends AbstractTestCase
+class FullRefundTest extends TestCase
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
      */
-    public function testSendOtp($merchantId, $orderId, $amount, $message)
+    public function testSendOtp(string $merchantId, string $orderId, int $amount, string $message): void
     {
         $sendOtpReturn = new SendOtpReturn($amount, $merchantId, $orderId);
 
@@ -57,14 +54,8 @@ class FullRefundTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
-    public function testCheckOtp($merchantId, $orderId, $amount, $message, $otp)
+    public function testCheckOtp(string $merchantId, string $orderId, int $amount, string $message, string $otp): void
     {
         $checkOtpReturn = new CheckOtpReturn($amount, $merchantId, $orderId, $otp);
 
@@ -84,16 +75,11 @@ class FullRefundTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
      */
-    public function testConfirmWithoutOtp($merchantId, $orderId, $amount, $message)
+    public function testConfirmWithoutOtp(string $merchantId, string $orderId, int $amount, string $message): void
     {
         $orders = [
-            new MerchantsOrders($merchantId, [new ReturnOrder($orderId, ReturnStatus::RE_TURN(), $amount)]),
+            new MerchantsOrders($merchantId, [new ReturnOrder($orderId, ReturnStatus::RETURN(), $amount)]),
         ];
 
         $otpResource = $this->createStub(OtpResource::class);
@@ -112,21 +98,15 @@ class FullRefundTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
     public function testSendOtpWithError(
-        $merchantId,
-        $orderId,
-        $amount,
-        $message,
-        $otp,
+        string $merchantId,
+        string $orderId,
+        int $amount,
+        string $message,
+        string $otp,
         PackageException $exception
-    ) {
+    ): void {
         $sendOtpReturn = new SendOtpReturn($amount, $merchantId, $orderId);
 
         $changeStatusResource = $this->createStub(ChangeStatusResource::class);
@@ -147,21 +127,15 @@ class FullRefundTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
     public function testCheckOtpWithError(
-        $merchantId,
-        $orderId,
-        $amount,
-        $message,
-        $otp,
+        string $merchantId,
+        string $orderId,
+        int $amount,
+        string $message,
+        string $otp,
         PackageException $exception
-    ) {
+    ): void {
         $checkOtpReturn = new CheckOtpReturn($amount, $merchantId, $orderId, $otp);
 
         $changeStatusResource = $this->createStub(ChangeStatusResource::class);
@@ -181,23 +155,17 @@ class FullRefundTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\PackageException
      *
      * @dataProvider exceptionsProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
-     * @param string $message
-     * @param string $otp
      */
     public function testConfirmWithoutOtpWithError(
-        $merchantId,
-        $orderId,
-        $amount,
-        $message,
-        $otp,
+        string $merchantId,
+        string $orderId,
+        int $amount,
+        string $message,
+        string $otp,
         PackageException $exception
-    ) {
+    ): void {
         $orders = [
-            new MerchantsOrders($merchantId, [new ReturnOrder($orderId, ReturnStatus::RE_TURN(), $amount)]),
+            new MerchantsOrders($merchantId, [new ReturnOrder($orderId, ReturnStatus::RETURN(), $amount)]),
         ];
 
         $otpResource = $this->createStub(OtpResource::class);
@@ -213,10 +181,7 @@ class FullRefundTest extends AbstractTestCase
         $refund->confirmWithoutOtp();
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function dataProvider()
+    public function dataProvider(): array
     {
         return [
             ['1', '1', 0, 'ok', '1234'],
@@ -225,10 +190,7 @@ class FullRefundTest extends AbstractTestCase
         ];
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function exceptionsProvider()
+    public function exceptionsProvider(): array
     {
         $exceptions = [
             new NetworkException(),
@@ -246,7 +208,7 @@ class FullRefundTest extends AbstractTestCase
 
         foreach ($this->dataProvider() as $item) {
             foreach ($exceptions as $exception) {
-                $result[] = array_merge(is_array($item) ? $item : iterator_to_array($item), [$exception]);
+                $result[] = [...$item, $exception];
             }
         }
 

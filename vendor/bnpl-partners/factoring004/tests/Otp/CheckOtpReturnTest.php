@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Otp;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class CheckOtpReturnTest extends AbstractTestCase
+class CheckOtpReturnTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $expected = new CheckOtpReturn(0, 'test', '1000', 'test');
         $actual = CheckOtpReturn::createFromArray([
@@ -22,10 +21,7 @@ class CheckOtpReturnTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetAmountAr()
+    public function testGetAmountAr(): void
     {
         $CheckOtpReturn = new CheckOtpReturn(0, 'test', '1000', 'test');
         $this->assertEquals(0, $CheckOtpReturn->getAmountAr());
@@ -34,10 +30,7 @@ class CheckOtpReturnTest extends AbstractTestCase
         $this->assertEquals(6000, $CheckOtpReturn->getAmountAr());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetMerchantId()
+    public function testGetMerchantId(): void
     {
         $CheckOtpReturn = new CheckOtpReturn(0, 'test', '1000', 'test');
         $this->assertEquals('test', $CheckOtpReturn->getMerchantId());
@@ -46,10 +39,7 @@ class CheckOtpReturnTest extends AbstractTestCase
         $this->assertEquals('other', $CheckOtpReturn->getMerchantId());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetMerchantOrderId()
+    public function testGetMerchantOrderId(): void
     {
         $CheckOtpReturn = new CheckOtpReturn(0, 'test', '1000', 'test');
         $this->assertEquals('1000', $CheckOtpReturn->getMerchantOrderId());
@@ -58,10 +48,7 @@ class CheckOtpReturnTest extends AbstractTestCase
         $this->assertEquals('2000', $CheckOtpReturn->getMerchantOrderId());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetOtp()
+    public function testGetOtp(): void
     {
         $CheckOtpReturn = new CheckOtpReturn(0, 'test', '1000', 'test');
         $this->assertEquals('test', $CheckOtpReturn->getOtp());
@@ -70,10 +57,7 @@ class CheckOtpReturnTest extends AbstractTestCase
         $this->assertEquals('another', $CheckOtpReturn->getOtp());
     }
 
-    /**
-     * @return void
-     */
-    public function testToArray()
+    public function testToArray(): void
     {
         $CheckOtpReturn = new CheckOtpReturn(0, 'test', '1000', 'test');
         $expected = ['amountAR' => 0, 'merchantId' => 'test', 'merchantOrderId' => '1000', 'otp' => 'test'];

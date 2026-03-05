@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
 interface StatusConfirmationInterface
@@ -11,9 +13,8 @@ interface StatusConfirmationInterface
      * @throws \BnplPartners\Factoring004\Exception\ErrorResponseException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
-     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
      */
-    public function sendOtp();
+    public function sendOtp(): StatusConfirmationResponse;
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
@@ -22,10 +23,8 @@ interface StatusConfirmationInterface
      * @throws \BnplPartners\Factoring004\Exception\ErrorResponseException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
-     * @param string $otp
-     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
      */
-    public function checkOtp($otp);
+    public function checkOtp(string $otp): StatusConfirmationResponse;
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
@@ -34,7 +33,6 @@ interface StatusConfirmationInterface
      * @throws \BnplPartners\Factoring004\Exception\ErrorResponseException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
      * @throws \BnplPartners\Factoring004\Exception\AuthenticationException
-     * @return \BnplPartners\Factoring004\Order\StatusConfirmationResponse
      */
-    public function confirmWithoutOtp();
+    public function confirmWithoutOtp(): StatusConfirmationResponse;
 }

@@ -50,13 +50,14 @@ Create an instance of ``BnplPartners\Factoring004\OAuth\OAuthTokenManager``.
 ```php
 use BnplPartners\Factoring004\OAuth\OAuthTokenManager;
 
-$tokenManager = new OAuthTokenManager('https://dev.bnpl.kz/api/users/v1', 'username', 'password');
+$tokenManager = new OAuthTokenManager('https://dev.bnpl.kz/api/users/api/v1', 'username', 'password');
 ```
 
 ### Generate access token
 
 ```php
 $token = $tokenManager->getAccessToken();
+$accessToken = $token->getAccess();
 ```
 
 ### Refresh access token
@@ -76,6 +77,7 @@ $tokenManager = new OAuthTokenManager('https://dev.bnpl.kz/api/users/v1', 'usern
 $cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key');
 
 $token = $cacheTokenManager->getAccessToken();
+$accessToken = $token->getAccess();
 ```
 
 ### Cached Token Refresh Policy
@@ -94,6 +96,7 @@ use BnplPartners\Factoring004\OAuth\OAuthTokenRefreshPolicy;
 $cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key', OAuthTokenRefreshPolicy::ALWAYS_RETRIEVE());
 
 $token = $cacheTokenManager->getAccessToken();
+$accessToken = $token->getAccess();
 ```
 
 #### Always Refresh
@@ -108,6 +111,7 @@ use BnplPartners\Factoring004\OAuth\OAuthTokenRefreshPolicy;
 $cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key', OAuthTokenRefreshPolicy::ALWAYS_REFRESH());
 
 $token = $cacheTokenManager->getAccessToken();
+$accessToken = $token->getAccess();
 ```
 
 ### Clear cached tokens
@@ -126,7 +130,7 @@ use BnplPartners\Factoring004\OAuth\CacheOAuthTokenManager;
 use BnplPartners\Factoring004\Order\OrderManager;
 
 $cacheTokenManager = new CacheOAuthTokenManager($tokenManager, $cache, 'cache key');
-$orderManager = OrderManager::create('https://dev.bnpl.kz/api', new BearerTokenAuth($cacheTokenManager->getAccessToken()));
+$orderManager = OrderManager::create('https://dev.bnpl.kz/api', new BearerTokenAuth($cacheTokenManager->getAccessToken()->getAccess()));
 
 try {
     $orderManager->preApp(...);
@@ -330,6 +334,20 @@ $response = $api->preApps->preApp($message);
 
 var_dump($response->getStatus(), $response->getPreAppId(), $response->getRedirectLink());
 var_dump($response->toArray(), json_encode($response));
+```
+
+### Get preapp status
+
+#### Get status by preapp id
+
+```php
+$status = $api->preApps->getStatus($preappID)->getStatus();
+```
+
+#### Get status by order id
+
+```php
+$status = $api->bill->getStatus($orderID)->getStatus();
 ```
 
 ### Delivery endpoints

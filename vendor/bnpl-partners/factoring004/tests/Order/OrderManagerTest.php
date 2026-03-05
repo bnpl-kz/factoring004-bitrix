@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Order;
 
 use BnplPartners\Factoring004\Api;
 use BnplPartners\Factoring004\Auth\BearerTokenAuth;
 use InvalidArgumentException;
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionProperty;
 
-class OrderManagerTest extends AbstractTestCase
+class OrderManagerTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreate()
+    public function testCreate(): void
     {
         $expected = new OrderManager(Api::create('http://example.com'));
         $actual = OrderManager::create('http://example.com');
@@ -27,12 +26,8 @@ class OrderManagerTest extends AbstractTestCase
 
     /**
      * @dataProvider ordersProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
      */
-    public function testDelivery($merchantId, $orderId, $amount)
+    public function testDelivery(string $merchantId, string $orderId, int $amount): void
     {
         $manager = OrderManager::create('http://example.com');
         $confirmation = $manager->delivery($merchantId, $orderId, $amount);
@@ -44,11 +39,8 @@ class OrderManagerTest extends AbstractTestCase
 
     /**
      * @dataProvider ordersProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
      */
-    public function testFullRefund($merchantId, $orderId)
+    public function testFullRefund(string $merchantId, string $orderId): void
     {
         $manager = OrderManager::create('http://example.com');
         $confirmation = $manager->fullRefund($merchantId, $orderId);
@@ -60,12 +52,8 @@ class OrderManagerTest extends AbstractTestCase
 
     /**
      * @dataProvider ordersProvider
-     * @return void
-     * @param string $merchantId
-     * @param string $orderId
-     * @param int $amount
      */
-    public function testPartialRefund($merchantId, $orderId, $amount)
+    public function testPartialRefund(string $merchantId, string $orderId, int $amount): void
     {
         $manager = OrderManager::create('http://example.com');
         $confirmation = $manager->partialRefund($merchantId, $orderId, $amount);
@@ -75,23 +63,19 @@ class OrderManagerTest extends AbstractTestCase
         $this->assertEquals($amount, $this->getPropertyValue($confirmation, 'amount'));
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function ordersProvider()
+    public function ordersProvider(): array
     {
         return [
             ['1', '1', 6000],
             ['2', '10', 8000],
-            ['3', '100', 10000],
+            ['3', '100', 10_000],
         ];
     }
 
     /**
      * @return mixed
-     * @param string $propertyName
      */
-    private function getPropertyValue(StatusConfirmationInterface $confirmation, $propertyName)
+    private function getPropertyValue(StatusConfirmationInterface $confirmation, string $propertyName)
     {
         try {
             $refProperty = new ReflectionProperty($confirmation, $propertyName);

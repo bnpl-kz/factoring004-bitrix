@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004;
 
 use BnplPartners\Factoring004\Exception\AuthenticationException;
@@ -8,18 +10,19 @@ use BnplPartners\Factoring004\Exception\UnexpectedResponseException;
 use BnplPartners\Factoring004\Response\ErrorResponse;
 use BnplPartners\Factoring004\Transport\GuzzleTransport;
 use BnplPartners\Factoring004\Transport\Response as TransportResponse;
+use BnplPartners\Factoring004\Transport\TransportInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
-abstract class AbstractResourceTest extends AbstractTestCase
+abstract class AbstractResourceTest extends TestCase
 {
-    const BASE_URI = 'http://example.com';
+    protected const BASE_URI = 'http://example.com';
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithMethodNotAllowedError()
+    public function testWithMethodNotAllowedError(): void
     {
         $data = [
             'code' => '405',
@@ -43,9 +46,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithMethodNotAllowedFault()
+    public function testWithMethodNotAllowedFault(): void
     {
         $data = [
             'fault' => [
@@ -71,9 +73,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithAuthenticationFailed()
+    public function testWithAuthenticationFailed(): void
     {
         $data = [
             'code' => 16,
@@ -95,9 +96,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithForbiddenError()
+    public function testWithForbiddenError(): void
     {
         $data = [
             'code' => '900908',
@@ -120,9 +120,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithForbiddenFault()
+    public function testWithForbiddenFault(): void
     {
         $data = [
             'fault' => [
@@ -147,9 +146,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithUnexpectedSchemaError()
+    public function testWithUnexpectedSchemaError(): void
     {
         $data = [
             'error' => [
@@ -173,9 +171,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testWithUnexpectedSchemaFault()
+    public function testWithUnexpectedSchemaFault(): void
     {
         $data = [
             'fault' => [
@@ -207,10 +204,8 @@ abstract class AbstractResourceTest extends AbstractTestCase
      *           [400, {}, "BnplPartners\\Factoring004\\Exception\\UnexpectedResponseException"]
      *           [500, {"message": "Error"}, "BnplPartners\\Factoring004\\Exception\\EndpointUnavailableException"]
      *           [500, {}, "BnplPartners\\Factoring004\\Exception\\EndpointUnavailableException"]
-     * @return void
-     * @param int $status
      */
-    public function testWithUnexpectedError($status, array $data, $exceptionClass)
+    public function testWithUnexpectedError(int $status, array $data, string $exceptionClass): void
     {
         $client = $this->createStub(ClientInterface::class);
         $response = new Response($status, ['Content-Type' => 'application/json'], json_encode($data));
@@ -233,14 +228,10 @@ abstract class AbstractResourceTest extends AbstractTestCase
      * @throws \BnplPartners\Factoring004\Exception\UnexpectedResponseException
      * @throws \BnplPartners\Factoring004\Exception\NetworkException
      * @throws \BnplPartners\Factoring004\Exception\TransportException
-     * @return void
      */
-    abstract protected function callResourceMethod(ClientInterface $client);
+    abstract protected function callResourceMethod(ClientInterface $client): void;
 
-    /**
-     * @return \BnplPartners\Factoring004\Transport\TransportInterface
-     */
-    protected function createTransport(ClientInterface $client)
+    protected function createTransport(ClientInterface $client): TransportInterface
     {
         return new GuzzleTransport($client);
     }

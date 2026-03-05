@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use BnplPartners\Factoring004\AbstractEnum;
+use MyCLabs\Enum\Enum;
 
 /**
  * @method static static DELIVERY()
@@ -10,11 +12,11 @@ use BnplPartners\Factoring004\AbstractEnum;
  *
  * @psalm-immutable
  */
-final class DeliveryStatus extends AbstractEnum
+final class DeliveryStatus extends Enum
 {
     /**
      * @deprecated Use DeliveryStatus::DELIVERED instead
      */
-    const DELIVERY = 'delivered';
-    const DELIVERED = 'delivered';
+    private const DELIVERY = 'delivered';
+    private const DELIVERED = 'delivered';
 }

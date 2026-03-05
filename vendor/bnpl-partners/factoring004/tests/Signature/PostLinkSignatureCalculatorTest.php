@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Signature;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class PostLinkSignatureCalculatorTest extends AbstractTestCase
+class PostLinkSignatureCalculatorTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreate()
+    public function testCreate(): void
     {
         $expected = new PostLinkSignatureCalculator('test');
         $actual = PostLinkSignatureCalculator::create('test');
@@ -24,11 +23,8 @@ class PostLinkSignatureCalculatorTest extends AbstractTestCase
      * @param array<string, mixed> $data
      *
      * @dataProvider dataProvider
-     * @return void
-     * @param string $key
-     * @param string $str
      */
-    public function testCalculate($key, $str, array $data)
+    public function testCalculate(string $key, string $str, array $data): void
     {
         $builder = new PostLinkSignatureCalculator($key);
         $hash = hash_hmac('sha512', $str, $key);
@@ -36,10 +32,7 @@ class PostLinkSignatureCalculatorTest extends AbstractTestCase
         $this->assertTrue(hash_equals($hash, $builder->calculate($data)));
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function dataProvider()
+    public function dataProvider(): array
     {
         return [
             [

@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class ChangeStatusResponseTest extends AbstractTestCase
+class ChangeStatusResponseTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $expected = new ChangeStatusResponse([], []);
         $actual = ChangeStatusResponse::createFromArray(['SuccessfulResponses' => [], 'ErrorResponses' => []]);
@@ -40,10 +39,7 @@ class ChangeStatusResponseTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetSuccessfulResponses()
+    public function testGetSuccessfulResponses(): void
     {
         $response = new ChangeStatusResponse([], []);
         $this->assertEmpty($response->getSuccessfulResponses());
@@ -52,10 +48,7 @@ class ChangeStatusResponseTest extends AbstractTestCase
         $this->assertEquals([new SuccessResponse('', 'test')], $response->getSuccessfulResponses());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetErrorResponses()
+    public function testGetErrorResponses(): void
     {
         $response = new ChangeStatusResponse([], []);
         $this->assertEmpty($response->getErrorResponses());
@@ -64,16 +57,16 @@ class ChangeStatusResponseTest extends AbstractTestCase
         $this->assertEquals([new ErrorResponse('code', 'error', 'message')], $response->getErrorResponses());
     }
 
-    /**
-     * @return void
-     */
-    public function testToArray()
+    public function testToArray(): void
     {
         $response = new ChangeStatusResponse([], []);
         $expected = ['SuccessfulResponses' => [], 'ErrorResponses' => []];
         $this->assertEquals($expected, $response->toArray());
 
-        $response = new ChangeStatusResponse([new SuccessResponse('', 'message')], [new ErrorResponse('code', 'error', 'message')]);
+        $response = new ChangeStatusResponse(
+            [new SuccessResponse('', 'message')],
+            [new ErrorResponse('code', 'error', 'message')],
+        );
         $expected = [
             'SuccessfulResponses' => [['error' => '', 'msg' => 'message', 'merchantOrderId' => '']],
             'ErrorResponses' => [['code' => 'code', 'error' => 'error', 'message' => 'message', 'merchantOrderId' => '']],
@@ -81,16 +74,16 @@ class ChangeStatusResponseTest extends AbstractTestCase
         $this->assertEquals($expected, $response->toArray());
     }
 
-    /**
-     * @return void
-     */
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $response = new ChangeStatusResponse([], []);
         $expected = ['SuccessfulResponses' => [], 'ErrorResponses' => []];
         $this->assertJsonStringEqualsJsonString(json_encode($expected), json_encode($response));
 
-        $response = new ChangeStatusResponse([new SuccessResponse('', 'message')], [new ErrorResponse('code', 'error', 'message')]);
+        $response = new ChangeStatusResponse(
+            [new SuccessResponse('', 'message')],
+            [new ErrorResponse('code', 'error', 'message')],
+        );
         $expected = [
             'SuccessfulResponses' => [['error' => '', 'msg' => 'message', 'merchantOrderId' => '']],
             'ErrorResponses' => [['code' => 'code', 'error' => 'error', 'message' => 'message', 'merchantOrderId' => '']],

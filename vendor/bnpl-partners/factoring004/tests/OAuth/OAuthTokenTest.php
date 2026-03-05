@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
 use PHPUnit\Framework\TestCase;
 
 class OAuthTokenTest extends TestCase
 {
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $expected = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $actual = OAuthToken::createFromArray([
@@ -19,7 +21,7 @@ class OAuthTokenTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetAccess()
+    public function testGetAccess(): void
     {
         $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $this->assertEquals('dGVzdA==', $token->getAccess());
@@ -28,7 +30,7 @@ class OAuthTokenTest extends TestCase
         $this->assertEquals('dG9rZW4=', $token->getAccess());
     }
 
-    public function testAccessExpiresAt()
+    public function testAccessExpiresAt(): void
     {
         $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $this->assertEquals(300, $token->getAccessExpiresAt());
@@ -37,7 +39,7 @@ class OAuthTokenTest extends TestCase
         $this->assertEquals(600, $token->getAccessExpiresAt());
     }
 
-    public function testGetRefresh()
+    public function testGetRefresh(): void
     {
         $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $this->assertEquals('dGVzdDE=', $token->getRefresh());
@@ -46,7 +48,7 @@ class OAuthTokenTest extends TestCase
         $this->assertEquals('dG9rZW4=', $token->getRefresh());
     }
 
-    public function testGetRefreshExpiresAt()
+    public function testGetRefreshExpiresAt(): void
     {
         $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $this->assertEquals(3600, $token->getRefreshExpiresAt());
@@ -55,7 +57,7 @@ class OAuthTokenTest extends TestCase
         $this->assertEquals(7200, $token->getRefreshExpiresAt());
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $expected = [
@@ -68,7 +70,7 @@ class OAuthTokenTest extends TestCase
         $this->assertEquals($expected, $token->toArray());
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $token = new OAuthToken('dGVzdA==', 300, 'dGVzdDE=', 3600);
         $expected = [

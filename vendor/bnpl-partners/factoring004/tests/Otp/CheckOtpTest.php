@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\Otp;
 
-use BnplPartners\Factoring004\AbstractTestCase;
+use PHPUnit\Framework\TestCase;
 
-class CheckOtpTest extends AbstractTestCase
+class CheckOtpTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $expected = new CheckOtp('test', '1000', 'test', 6000);
         $actual = CheckOtp::createFromArray(['merchantId' => 'test', 'merchantOrderId' => '1000', 'otp' => 'test', 'amount' => 6000]);
@@ -17,10 +16,7 @@ class CheckOtpTest extends AbstractTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetMerchantId()
+    public function testGetMerchantId(): void
     {
         $checkOtp = new CheckOtp('test', '1000', 'test', 6000);
         $this->assertEquals('test', $checkOtp->getMerchantId());
@@ -29,10 +25,7 @@ class CheckOtpTest extends AbstractTestCase
         $this->assertEquals('other', $checkOtp->getMerchantId());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetMerchantOrderId()
+    public function testGetMerchantOrderId(): void
     {
         $checkOtp = new CheckOtp('test', '1000', 'test', 6000);
         $this->assertEquals('1000', $checkOtp->getMerchantOrderId());
@@ -41,10 +34,7 @@ class CheckOtpTest extends AbstractTestCase
         $this->assertEquals('2000', $checkOtp->getMerchantOrderId());
     }
 
-    /**
-     * @return void
-     */
-    public function testGetOtp()
+    public function testGetOtp(): void
     {
         $checkOtp = new CheckOtp('test', '1000', 'test', 6000);
         $this->assertEquals('test', $checkOtp->getOtp());
@@ -53,10 +43,7 @@ class CheckOtpTest extends AbstractTestCase
         $this->assertEquals('another', $checkOtp->getOtp());
     }
 
-    /**
-     * @return void
-     */
-    public function testToArray()
+    public function testToArray(): void
     {
         $checkOtp = new CheckOtp('test', '1000', 'test', 6000);
         $expected = ['merchantId' => 'test', 'merchantOrderId' => '1000', 'otp' => 'test', 'amount' => 6000];

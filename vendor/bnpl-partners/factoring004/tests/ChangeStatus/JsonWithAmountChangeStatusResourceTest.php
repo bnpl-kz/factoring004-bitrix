@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\ChangeStatus;
 
 use BnplPartners\Factoring004\AbstractResourceTest;
@@ -11,13 +13,12 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 {
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testChangeStatusJson()
+    public function testChangeStatusJson(): void
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
         ]);
 
         $transport = $this->createMock(TransportInterface::class);
@@ -41,13 +42,12 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testChangeStatusJsonWithError()
+    public function testChangeStatusJsonWithError(): void
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
         ]);
 
         $transport = $this->createMock(TransportInterface::class);
@@ -71,13 +71,12 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
 
     /**
      * @throws \BnplPartners\Factoring004\Exception\PackageException
-     * @return void
      */
-    public function testChangeStatusJsonWithMixedResponse()
+    public function testChangeStatusJsonWithMixedResponse(): void
     {
         $orders = MerchantsOrders::createFromArray([
             'merchantId' => '1',
-            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
+            'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
         ]);
 
         $transport = $this->createMock(TransportInterface::class);
@@ -99,16 +98,13 @@ class JsonWithAmountChangeStatusResourceTest extends AbstractResourceTest
         $this->assertEquals($expected, $response);
     }
 
-    /**
-     * @return void
-     */
-    protected function callResourceMethod(ClientInterface $client)
+    protected function callResourceMethod(ClientInterface $client): void
     {
         $resource = new ChangeStatusResource($this->createTransport($client), static::BASE_URI);
         $resource->changeStatusJson([
             MerchantsOrders::createFromArray([
                 'merchantId' => '1',
-                'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RE_TURN()->getValue(), 'amount' => 6000]],
+                'orders' => [['orderId' => '1000', 'status' => ReturnStatus::RETURN()->getValue(), 'amount' => 6000]],
             ]),
         ]);
     }

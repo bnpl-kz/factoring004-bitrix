@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BnplPartners\Factoring004\OAuth;
 
 use Psr\SimpleCache\CacheInterface;
@@ -7,43 +9,27 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class CacheOAuthTokenManager implements OAuthTokenManagerInterface
 {
-    /**
-     * @var \BnplPartners\Factoring004\OAuth\OAuthTokenManagerInterface
-     */
-    private $tokenManager;
-    /**
-     * @var \Psr\SimpleCache\CacheInterface
-     */
-    private $cache;
-    /**
-     * @var string
-     */
-    private $cacheKey;
-    /**
-     * @var \BnplPartners\Factoring004\OAuth\OAuthTokenRefreshPolicy 
-     */
-    private $refreshPolicy;
+    private OAuthTokenManagerInterface $tokenManager;
+    private CacheInterface $cache;
+    private string $cacheKey;
+    private OAuthTokenRefreshPolicy $refreshPolicy;
 
-    /**
-     * @param string $cacheKey
-     */
     public function __construct(
         OAuthTokenManagerInterface $tokenManager,
         CacheInterface $cache,
-        $cacheKey,
+        string $cacheKey,
         OAuthTokenRefreshPolicy $refreshPolicy = null
     ) {
         $this->tokenManager = $tokenManager;
         $this->cache = $cache;
         $this->cacheKey = $cacheKey;
-        $this->refreshPolicy = $refreshPolicy ?: OAuthTokenRefreshPolicy::ALWAYS_RETRIEVE();
+        $this->refreshPolicy = $refreshPolicy ?? OAuthTokenRefreshPolicy::ALWAYS_RETRIEVE();
     }
 
     /**
-     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
      * @psalm-suppress InvalidCatch
      */
-    public function getAccessToken()
+    public function getAccessToken(): OAuthToken
     {
         try {
             $tokenData = $this->cache->get($this->cacheKey);
@@ -77,13 +63,7 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
         return $token;
     }
 
-    /**
-     * @param string $refreshToken
-     *
-     * @return \BnplPartners\Factoring004\OAuth\OAuthToken
-     * @throws \BnplPartners\Factoring004\Exception\OAuthException
-     */
-    public function refreshToken($refreshToken)
+    public function refreshToken(string $refreshToken): OAuthToken
     {
         $token = $this->tokenManager->refreshToken($refreshToken);
 
@@ -92,10 +72,7 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
         return $token;
     }
 
-    /**
-     * @return void
-     */
-    public function revokeToken()
+    public function revokeToken(): void
     {
         $this->clearCache();
         $this->tokenManager->revokeToken();
@@ -103,9 +80,8 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
 
     /**
      * @psalm-suppress InvalidCatch
-     * @return void
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         try {
             $this->cache->delete($this->cacheKey);
@@ -116,10 +92,8 @@ class CacheOAuthTokenManager implements OAuthTokenManagerInterface
 
     /**
      * @psalm-suppress InvalidCatch
-     *
-     * @return void
      */
-    private function storeToken(OAuthToken $token)
+    private function storeToken(OAuthToken $token): void
     {
         try {
             $this->cache->set($this->cacheKey, $token->toArray(), $token->getRefreshExpiresAt());
