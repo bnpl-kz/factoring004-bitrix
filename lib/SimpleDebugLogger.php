@@ -27,7 +27,7 @@ class SimpleDebugLogger extends AbstractLogger
         $this->levels = $this->getWritableLevels($level);
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         if (in_array($level, $this->levels, true)) {
             return;
