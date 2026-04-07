@@ -100,6 +100,22 @@ class PostlinkProcessor
             return $result;
         }
 
+        $payment->setFields([
+            'PAID' => 'Y',
+            'PS_STATUS' => $psStatus,
+            'PS_STATUS_CODE' => $status,
+            'PS_STATUS_DESCRIPTION' => 'Factoring004',
+            'PS_STATUS_MESSAGE' => implode('; ', [
+                'Status: ' . $status,
+                'PreAppId: ' . $data['preappId'],
+                'BillNumber: ' . $data['billNumber'],
+            ]),
+            'PS_SUM' => $payment->getSum(),
+            'PS_CURRENCY' => $payment->getOrder()->getCurrency(),
+            'PS_RESPONSE_DATE' => new DateTime(),
+        ]);
+        $order->save();
+
         $result->setPsData([
             'PS_STATUS' => $psStatus,
             'PS_STATUS_CODE' => $status,
